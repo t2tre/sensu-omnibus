@@ -210,6 +210,8 @@ build do
     # the next two patches are because xlc doesn't deal with long vs int types well
     patch source: "ruby-aix-atomic.patch", plevel: 1, env: patch_env
     patch source: "ruby-aix-vm-core.patch", plevel: 1, env: patch_env
+    # AIX libraries already define _ALL_SOURCES, need to #undef
+    patch source: "ruby-aix-configure-all-source.patch", plevel: 1, env: patch_env
 
     # per IBM, just help ruby along on what it's running on
     configure_command << "--host=powerpc-ibm-aix6.1.0.0 --target=powerpc-ibm-aix6.1.0.0 --build=powerpc-ibm-aix6.1.0.0 --enable-pthread"
