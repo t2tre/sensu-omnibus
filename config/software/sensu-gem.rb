@@ -1,5 +1,5 @@
 name "sensu-gem"
-default_version "0.22.1"
+default_version "0.22.2"
 
 dependency "ruby"
 dependency "rubygems"
