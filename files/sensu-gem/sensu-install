@@ -8,10 +8,6 @@
 #   this programming language.  do not touch.
 # - if you are under 40, get peer review from your elders.
 #
-#
-# Perform necessary sensu setup steps
-# prior to installing package.
-#
 
 is_darwin()
 {
@@ -33,27 +29,26 @@ is_freebsd()
   uname -v | grep "^FreeBSD" > /dev/null 2>&1
 }
 
-PROGNAME=`basename $0`
+EMBEDDED_RUBY=true
+ETC_DIR=
 
-error_exit()
-{
-  echo "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
-  exit 1
-}
+if is_freebsd; then
+  ETC_DIR=/usr/local/etc
+else
+  ETC_DIR=/etc
+fi
 
-stop_sensu_services()
-{
-  if is_aix; then
-    stopsrc -s sensu-client > /dev/null 2>&1
-    stopsrc -s sensu-api 2>&1 >/dev/null 2>&1
-    stopsrc -s sensu-server 2>&1 >/dev/null 2>&1
-  fi
-}
+if [ -f $ETC_DIR/default/sensu ]; then
+    . $ETC_DIR/default/sensu
+fi
 
-stop_sensu_services
+if [ -f $ETC_DIR/default/sensu-install ]; then
+    . $ETC_DIR/default/sensu-install
+fi
 
-# wait for services to stop
-sleep 6
+if [ $EMBEDDED_RUBY = "true" ]; then
+    export PATH=/opt/sensu/embedded/bin:$PATH
+    export GEM_PATH=/opt/sensu/embedded/lib/ruby/gems/2.3.0:$GEM_PATH
+fi
 
-exit 0
-EOF
+/opt/sensu/embedded/bin/sensu-install $@

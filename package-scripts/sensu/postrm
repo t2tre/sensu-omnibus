@@ -1,9 +1,74 @@
-#!/bin/bash
+#!/bin/sh
+#
+# WARNING: REQUIRES /bin/sh
+#
+# - must run on /bin/sh on solaris 9
+# - must run on /bin/sh on AIX 6.x
+# - if you think you are a bash wizard, you probably do not understand
+#   this programming language.  do not touch.
+# - if you are under 40, get peer review from your elders.
 #
 # Perform necessary sensu removal steps
 # after package is uninstalled.
 #
 
-echo "sensu has been uninstalled!"
+is_darwin()
+{
+  uname -v | grep "^Darwin" > /dev/null 2>&1
+}
+
+is_smartos()
+{
+  uname -v | grep "^joyent" > /dev/null 2>&1
+}
+
+is_aix()
+{
+  uname -a | grep "^AIX" > /dev/null 2>&1
+}
+
+is_freebsd()
+{
+  uname -v | grep "^FreeBSD" > /dev/null 2>&1
+}
+
+purge_sensu_services()
+{
+  if is_aix; then
+    rmssys -s sensu-client > /dev/null 2>&1
+    rmssys -s sensu-api > /dev/null 2>&1
+    rmssys -s sensu-server > /dev/null 2>&1
+  fi
+}
+
+purge_sensu_files()
+{
+  if [ -d /usr/share/sensu ]; then
+    rm -r /usr/share/sensu
+  fi
+  if [ -d /opt/sensu ]; then
+    rm -r /opt/sensu
+  fi
+  rm -rf /tmp/sensu_*_loaded_files
+}
+
+purge_sensu_user_group()
+{
+  if is_aix; then
+    if ! grep "^sensu:" /etc/passwd >/dev/null; then
+      rmuser sensu > /dev/null
+    fi
+
+    if ! grep "^sensu:" /etc/group >/dev/null; then
+      rmgroup sensu > /dev/null
+    fi
+  fi
+}
+
+purge_sensu_services
+purge_sensu_files
+purge_sensu_user_group
+
+echo "Sensu has been uninstalled!"
 
 exit 0
