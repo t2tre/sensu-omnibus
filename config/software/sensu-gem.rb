@@ -34,11 +34,11 @@ build do
   copy("#{files_dir}/config.json.example", "#{share_dir}/etc/sensu")
 
   # sensu-install
-  copy("#{files_dir}/sensu-install", embedded_bin_dir)
+  copy("#{files_dir}/sensu-install", bin_dir)
+  command("chmod +x #{bin_dir}/sensu-install")
 
   # make symlinks
-  link("#{bin_dir}/sensu-client", "#{embedded_bin_dir}/sensu-client")
-  link("#{bin_dir}/sensu-server", "#{embedded_bin_dir}/sensu-server")
-  link("#{bin_dir}/sensu-api", "#{embedded_bin_dir}/sensu-api")
-  link("#{bin_dir}/sensu-install", "#{embedded_bin_dir}/sensu-install")
+  link("#{embedded_bin_dir}/sensu-client", "#{bin_dir}/sensu-client")
+  link("#{embedded_bin_dir}/sensu-server", "#{bin_dir}/sensu-server")
+  link("#{embedded_bin_dir}/sensu-api", "#{bin_dir}/sensu-api")
 end
