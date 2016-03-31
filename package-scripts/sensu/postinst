@@ -127,11 +127,17 @@ create_system_services()
   fi
 }
 
+create_sensu_symlinks()
+{
+  ln -s /opt/sensu/bin/sensu-install /usr/bin/sensu-install
+}
+
 create_sensu_user_group
 create_sensu_dirs
 create_sensu_config_example
 chown_sensu_dirs
 create_system_services
+create_sensu_symlinks
 
 echo "Thank you for installing Sensu!"
 

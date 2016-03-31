@@ -65,9 +65,15 @@ purge_sensu_user_group()
   fi
 }
 
+purge_sensu_symlinks()
+{
+  rm -f /usr/bin/sensu-install
+}
+
 purge_sensu_services
 purge_sensu_files
 purge_sensu_user_group
+purge_sensu_symlinks
 
 echo "Sensu has been uninstalled!"
 
