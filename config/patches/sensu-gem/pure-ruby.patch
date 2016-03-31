@@ -1,0 +1,11 @@
+--- sensu/lib/sensu/daemon.rb.old	2016-03-21 11:05:12.000000000 -0700
++++ sensu/lib/sensu/daemon.rb	2016-03-21 11:14:48.000000000 -0700
+@@ -13,5 +13,7 @@
+ require "time"
+ require "uri"
+ 
++require "em/pure_ruby"
++
+ require "sensu/logger"
+ require "sensu/settings"
+ require "sensu/extensions"

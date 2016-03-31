@@ -122,8 +122,8 @@ chown_sensu_dirs()
 create_system_services()
 {
   if is_aix; then
-    rmssys -s sensu-client 2>&1 >/dev/null
-    mkssys -s sensu-client -p /opt/sensu/embedded/bin/sensu-client -u sensu -a "-l $LOG_FILE"
+    rmssys -s sensu-client 2>&1 > /dev/null
+    mkssys -s sensu-client -p /root/omnibus-sensu/files/sensu-gem/sensu-client -u sensu -S -n 15 -f 9 > /dev/null
   fi
 }
 

@@ -54,7 +54,7 @@ build do
     # run old make :(
     make env: env, bin: "/usr/ccs/bin/make"
     make "install", env: env, bin: "/usr/ccs/bin/make"
-  elsif windows?
+  elsif windows? || aix?
     # On windows, msys make 3.81 breaks with parallel builds.
     make env: env
     make "install", env: env

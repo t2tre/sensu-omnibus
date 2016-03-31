@@ -1,0 +1,14 @@
+--- eventmachine/lib/em/pure_ruby.rb.old	2016-03-21 11:25:02.000000000 -0700
++++ eventmachine/lib/em/pure_ruby.rb	2016-03-21 11:23:37.000000000 -0700
+@@ -58,5 +58,10 @@
+     end
+     
+     # @private
++    def set_pending_connect_timeout a, b
++      nil
++    end
++
++    # @private
+     def run_machine
+       Reactor.instance.run
+     end

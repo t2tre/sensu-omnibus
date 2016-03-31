@@ -11,12 +11,17 @@ build do
 
   env['CC'] = 'gcc'
 
+  patch_env = env.dup
+
   files_dir = "#{project.files_path}/#{name}"
 
   gem "install sensu" \
       " --version '#{version}'" \
       " --bindir '#{install_dir}/embedded/bin'" \
       " --no-ri --no-rdoc", env: env
+
+  patch_target = "#{install_dir}/embedded/lib/ruby/gems/2.3.0/gems/sensu-0.22.2/lib/sensu/daemon.rb"
+  patch source: "pure-ruby.patch", plevel: 1, env: patch_env, target: patch_target
 
   gem "install sensu-plugin" \
       " --version '1.2.0'" \
