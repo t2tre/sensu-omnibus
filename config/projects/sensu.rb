@@ -12,7 +12,11 @@ homepage "https://sensuapp.org"
 # and /opt/sensu on all other platforms
 install_dir "#{default_root}/#{name}"
 
+<<<<<<< Updated upstream
 version = "0.23.0"
+=======
+version = "0.23.1"
+>>>>>>> Stashed changes
 build_version version
 build_iteration 1
 

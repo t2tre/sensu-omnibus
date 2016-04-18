@@ -1,5 +1,5 @@
 name "sensu-gem"
-default_version "0.23.0"
+default_version "0.23.1"
 
 dependency "ruby"
 dependency "rubygems"
@@ -45,6 +45,10 @@ build do
   # sensu-install
   copy("#{files_dir}/sensu-install", bin_dir)
   command("chmod +x #{bin_dir}/sensu-install")
+
+  # sensu rc script
+  copy("#{files_dir}/sensu-client", "#{share_dir}/etc/rc.d")
+  command("chmod +x #{share_dir}/etc/rc.d/sensu-client")
 
   # sensu manifest (solaris)
   copy("#{files_dir}/sensu-client.xml", "#{share_dir}/lib/svc/manifest/site")
