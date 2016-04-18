@@ -59,7 +59,7 @@ fi
 
 cd $INSTALLER_DIR
 
-exec=$INSTALLER_DIR/bin/$sensu_service
+exec="exec $INSTALLER_DIR/bin/$sensu_service"
 
 options="-c $CONFIG_FILE -d $CONFD_DIR -e $EXTENSION_DIR -p $PID_FILE -l $LOG_FILE -L $LOG_LEVEL $OPTIONS"
 

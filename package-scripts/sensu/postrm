@@ -32,12 +32,19 @@ is_freebsd()
   uname -v | grep "^FreeBSD" > /dev/null 2>&1
 }
 
+is_solaris()
+{
+  uname -a | grep "^SunOS" > /dev/null 2>&1
+}
+
 purge_sensu_services()
 {
   if is_aix; then
     rmssys -s sensu-client > /dev/null 2>&1
     rmssys -s sensu-api > /dev/null 2>&1
     rmssys -s sensu-server > /dev/null 2>&1
+  elif is_solaris; then
+    rm -f /lib/svc/manifest/site/sensu-client.xml
   fi
 }
 
@@ -61,6 +68,14 @@ purge_sensu_user_group()
 
     if ! grep "^sensu:" /etc/group >/dev/null; then
       rmgroup sensu > /dev/null
+    fi
+  elif is_solaris; then
+    if ! grep "^sensu:" /etc/passwd >/dev/null; then
+      userdel sensu > /dev/null
+    fi
+
+    if ! grep "^sensu:" /etc/group >/dev/null; then
+      groupdel sensu > /dev/null
     fi
   fi
 }

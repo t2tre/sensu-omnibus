@@ -2,27 +2,33 @@ name "eventmachine"
 
 dependency "ruby"
 
-source git: "git@github.com:eventmachine/eventmachine.git"
+source git: "https://github.com/portertech/eventmachine.git"
 
-# TODO: use a proper version
-default_version "master"
+default_version "feature/pure_ruby_tls"
 
-version "master" do
-  source git: "git@github.com:eventmachine/eventmachine.git"
+version "feature/pure_ruby_tls" do
+  source git: "https://github.com/portertech/eventmachine.git"
 end
 
 build do
   env = with_standard_compiler_flags(with_embedded_path)
 
-  ENV["CC"] = "gcc"
-  ENV["CXX"] = "g++"
-
-  patch_env = env.dup
+  # these are needed to get eventmachine to compile on Solaris
+  # but eventmachine segfaults at runtime :(
+  #env['CXX'] = "g++ -m64"
+  #env['cppflags'] = "-D_XOPEN_SOURCE=700"
 
   command "gem install rake-compiler", env: env
-
   command "rake clean", env: env
-  command "rake compile", env: env
+
+  # disable C++ extensions so we don't need to compile them on platforms
+  # we're only using pure_ruby with
+  if aix? || solaris?
+    patch source: "disable-extensions.patch", plevel: 1, env: env
+  else
+    command "rake compile", env: env
+  end
+
   command "rake gem", env: env
 
   command "gem install pkg/eventmachine-1.2.0.1.gem", env: env

@@ -33,6 +33,11 @@ is_freebsd()
   uname -v | grep "^FreeBSD" > /dev/null 2>&1
 }
 
+is_solaris()
+{
+  uname -a | grep "^SunOS" > /dev/null 2>&1
+}
+
 PROGNAME=`basename $0`
 
 error_exit()
@@ -45,8 +50,8 @@ stop_sensu_services()
 {
   if is_aix; then
     stopsrc -s sensu-client > /dev/null 2>&1
-    stopsrc -s sensu-api 2>&1 >/dev/null 2>&1
-    stopsrc -s sensu-server 2>&1 >/dev/null 2>&1
+  elif is_solaris; then
+    svcadm disable sensu-client >/dev/null 2>&1
   fi
 }
 

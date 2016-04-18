@@ -32,6 +32,11 @@ is_freebsd()
   uname -v | grep "^FreeBSD" > /dev/null 2>&1
 }
 
+is_solaris()
+{
+  uname -a | grep "^SunOS" > /dev/null 2>&1
+}
+
 PROGNAME=`basename $0`
 
 if is_freebsd; then
@@ -41,8 +46,7 @@ else
 fi
 
 INSTALLER_DIR=/opt/sensu
-#LOG_DIR=/var/log/sensu
-LOG_DIR=/tmp
+LOG_DIR=/var/log/sensu
 CONFIG_DIR=$ETC_DIR/sensu
 CONFD_DIR=$CONFIG_DIR/conf.d
 PLUGINS_DIR=$CONFIG_DIR/plugins
@@ -55,8 +59,8 @@ LOG_LEVEL=info
 
 OPTIONS="-c $CONFIG_FILE -d $CONFD_DIR -e $EXTENSIONS_DIR -l $LOG_FILE -L $LOG_LEVEL"
 
-SENSU_PATHS=/opt/sensu/embedded/bin:$PATH:$PLUGINS_DIR:$HANDLERS_DIR
-SENSU_GEM_PATHS=/opt/sensu/embedded/lib/ruby/gems/2.2.0:$GEM_PATH
+SENSU_PATHS=$INSTALLER_DIR/embedded/bin:$PATH:$PLUGINS_DIR:$HANDLERS_DIR
+SENSU_GEM_PATHS=$INSTALLER_DIR/embedded/lib/ruby/gems/2.2.0:$GEM_PATH
 
 error_exit()
 {
@@ -86,6 +90,8 @@ create_sensu_user_group()
   if ! grep "^sensu:" /etc/group >/dev/null; then
     if is_aix; then
       mkgroup sensu
+    elif is_solaris; then
+      groupadd sensu
     fi
   fi
 
@@ -93,6 +99,9 @@ create_sensu_user_group()
   if ! grep "^sensu:" /etc/passwd >/dev/null; then
     if is_aix; then
       create_sensu_user_aix
+    elif is_solaris; then
+      useradd -d $INSTALLER_DIR -g sensu sensu # user will be disabled by default
+      passwd -N sensu # enable the user with nologin (NL)
     fi
   fi
 }
@@ -115,21 +124,31 @@ chown_sensu_dirs()
 {
   # Ensure all files/directories in $INSTALLER_DIR are owned by root.
   chown -Rh 0:0 $INSTALLER_DIR
-  chown -R sensu:sensu /etc/sensu
-  chown -R sensu:sensu /var/log/sensu
+  chown -R sensu:sensu $CONFIG_DIR
+  chown -R sensu:sensu $LOG_DIR
 }
 
 create_system_services()
 {
   if is_aix; then
     rmssys -s sensu-client 2>&1 > /dev/null
-    mkssys -s sensu-client -p /root/omnibus-sensu/files/sensu-gem/sensu-client -u sensu -S -n 15 -f 9 > /dev/null
+    mkssys -s sensu-client -p $INSTALLER_DIR/embedded/share/sensu/etc/rc.d/sensu-client -u sensu -S -n 15 -f 9 > /dev/null
+  fi
+}
+
+create_system_services()
+{
+  if is_aix; then
+    rmssys -s sensu-client 2>&1 > /dev/null
+    mkssys -s sensu-client -p $INSTALLER_DIR/embedded/share/sensu/etc/rc.d/sensu-client -u sensu -S -n 15 -f 9 > /dev/null
+  elif is_solaris; then
+    cp $INSTALLER_DIR/embedded/share/sensu/lib/svc/manifest/site/sensu-client.xml /lib/svc/manifest/site/sensu-client.xml > /dev/null
   fi
 }
 
 create_sensu_symlinks()
 {
-  ln -s /opt/sensu/bin/sensu-install /usr/bin/sensu-install
+  ln -s $INSTALLER_DIR/bin/sensu-install /usr/bin/sensu-install
 }
 
 create_sensu_user_group

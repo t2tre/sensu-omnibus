@@ -1,5 +1,5 @@
 name "sensu-gem"
-default_version "0.22.2"
+default_version "0.23.0"
 
 dependency "ruby"
 dependency "rubygems"
@@ -10,6 +10,8 @@ build do
   env = with_standard_compiler_flags(with_embedded_path)
 
   env['CC'] = 'gcc'
+  env['CXX'] = "g++ -m64"
+  env['cppflags'] = "-std=c99"
 
   patch_env = env.dup
 
@@ -34,6 +36,8 @@ build do
   # make directories
   mkdir("#{install_dir}/bin")
   mkdir("#{share_dir}/etc/sensu")
+  mkdir("#{share_dir}/etc/rc.d")
+  mkdir("#{share_dir}/lib/svc/manifest/site")
 
   # config.json.example
   copy("#{files_dir}/config.json.example", "#{share_dir}/etc/sensu")
@@ -41,6 +45,9 @@ build do
   # sensu-install
   copy("#{files_dir}/sensu-install", bin_dir)
   command("chmod +x #{bin_dir}/sensu-install")
+
+  # sensu manifest (solaris)
+  copy("#{files_dir}/sensu-client.xml", "#{share_dir}/lib/svc/manifest/site")
 
   # make symlinks
   link("#{embedded_bin_dir}/sensu-client", "#{bin_dir}/sensu-client")
