@@ -115,6 +115,10 @@ create_sensu_dirs()
   mkdir -p $EXTENSIONS_DIR
   mkdir -p $PLUGINS_DIR
   mkdir -p $LOG_DIR
+
+  if is_solaris; then
+    mkdir -p /lib/svc/manifest/site
+  fi
 }
 
 create_sensu_config_example()
