@@ -87,7 +87,8 @@ create_sensu_user_aix()
 create_sensu_user_group()
 {
   # create sensu group
-  if ! grep "^sensu:" /etc/group >/dev/null; then
+  grep "^sensu:" /etc/group > /dev/null
+  if [ "${?}" != "0" ]; then
     if is_aix; then
       mkgroup sensu
     elif is_solaris; then
@@ -96,7 +97,8 @@ create_sensu_user_group()
   fi
 
   # create sensu user
-  if ! grep "^sensu:" /etc/passwd >/dev/null; then
+  grep "^sensu:" /etc/passwd > /dev/null
+  if [ "${?}" != "0" ]; then
     if is_aix; then
       create_sensu_user_aix
     elif is_solaris; then
@@ -113,6 +115,10 @@ create_sensu_dirs()
   mkdir -p $EXTENSIONS_DIR
   mkdir -p $PLUGINS_DIR
   mkdir -p $LOG_DIR
+
+  if is_solaris; then
+    mkdir -p /lib/svc/manifest/site
+  fi
 }
 
 create_sensu_config_example()

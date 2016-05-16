@@ -61,20 +61,20 @@ purge_sensu_files()
 
 purge_sensu_user_group()
 {
-  if is_aix; then
-    if ! grep "^sensu:" /etc/passwd >/dev/null; then
+  grep "^sensu:" /etc/passwd > /dev/null
+  if [ "${?}" = "0" ]; then
+    if is_aix; then
       rmuser sensu > /dev/null
-    fi
-
-    if ! grep "^sensu:" /etc/group >/dev/null; then
-      rmgroup sensu > /dev/null
-    fi
-  elif is_solaris; then
-    if ! grep "^sensu:" /etc/passwd >/dev/null; then
+    elif is_solaris; then
       userdel sensu > /dev/null
     fi
+  fi
 
-    if ! grep "^sensu:" /etc/group >/dev/null; then
+  grep "^sensu:" /etc/group > /dev/null
+  if [ "${?}" = "0" ]; then
+    if is_aix; then
+      rmgroup sensu > /dev/null
+    elif is_solaris; then
       groupdel sensu > /dev/null
     fi
   fi

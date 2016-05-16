@@ -124,6 +124,10 @@ build do
     patch source: "openssl-1.0.1f-do-not-build-docs.patch", env: env
   end
 
+  if solaris?
+    patch source: "solaris-do-not-define-xopen-source.patch", env: env
+  end
+
   if windows?
     # Patch Makefile.shared to let us set the bit-ness of the resource compiler.
     patch source: "openssl-1.0.1q-take-windres-rcflags.patch", env: env
