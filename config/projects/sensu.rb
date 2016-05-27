@@ -12,7 +12,7 @@ homepage "https://sensuapp.org"
 # and /opt/sensu on all other platforms
 install_dir "#{default_root}/#{name}"
 
-version = "0.23.2"
+version = "0.23.3"
 build_version version
 build_iteration 1
 
