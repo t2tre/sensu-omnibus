@@ -152,7 +152,7 @@ website and click `Save image`.
 7. Set the PATH environment variable in in `/.bash_profile`:
 
   ```sh
-  echo 'export PATH=/opt/IBM/xlC/13.1.3/bin:/opt/IBM/xlc/13.1.3/bin:/opt/freeware/bin:/usr/bin:/etc:/usr/sbin:/usr/local/bin:/usr/ucb:$HOME/bin:/sbin:' >> ~/.bash_profile
+  echo 'export PATH=/opt/IBM/xlC/13.1.3/bin:/opt/IBM/xlc/13.1.3/bin:/usr/bin:/etc:/usr/sbin:/usr/local/bin:/opt/freeware/bin:/usr/ucb:/sbin:' >> ~/.bash_profile
   ```
 
 8. Allow `bash` as a shell and make `bash` the default shell:
