@@ -189,6 +189,7 @@ website and click `Save image`.
   OBJECT_MODE=32 ./Configure aix-cc shared
   OBJECT_MODE=32 make depend
   OBJECT_MODE=32 make
+  slibclean
   OBJECT_MODE=32 make install
   cd ..
   ```
