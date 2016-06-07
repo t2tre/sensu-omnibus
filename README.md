@@ -71,13 +71,7 @@ than two hours.
   installp -acXgd /cdrom bos.loc.utf.EN_US
   ```
 
-4. Set the root password to `r2wHFwq6`:
-
-  ```sh
-  passwd
-  ```
-
-5. Create the Saved Image by right-clicking the reservation ID on the IBM PDP
+4. Create the Saved Image by right-clicking the reservation ID on the IBM PDP
 website and click `Save image`.
 
 #### Installing the XL C/C++ compiler trial for AIX
@@ -183,9 +177,8 @@ website and click `Save image`.
   CC=xlc_r make install
   rpm -e wget
   cd ..
+  source ~/.bash_profile
   ```
-
-  **NOTE: If the `wget` command no longer works, either logoff/logon or try `source ~/.bash_profile`**
 
 11. Install the latest version of `openssl`:
 
