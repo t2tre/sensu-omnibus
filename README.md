@@ -34,11 +34,12 @@ than two hours.
 
 9. Select `IBM AIX 6.1` from `Select an image`.
 
-10. Unless you will be building a new Saved Image, select `FIXME` from `Saved images`.
+10. Unless you will be building a new Saved Image, select `Saved image` from
+`Select an image type` and `aix-6_1-with-xl-deps` from `Select an image`.
 
-10. Click `Add Resources to project`.
+11. Click `Add Resources to project`.
 
-11. Click `Create project and reservation`.
+12. Click `Create project and reservation`.
 
 #### Building a new Saved Image
 
