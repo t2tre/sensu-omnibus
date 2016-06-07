@@ -266,7 +266,7 @@ website and click `Save image`.
 19. Install `ruby`:
 
   ```sh
-  wget https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.1.tar.gz
+  wget --no-check-certificate https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.1.tar.gz
   gtar xf ruby-2.3.1.tar.gz
   cd ruby-2.3.1
   LDFLAGS="-L/usr/local/lib" CFLAGS="-qlanglvl=extc99 -I/usr/local/include -I/usr/local/lib/libffi-3.1/include" ./configure --disable-install-rdoc
