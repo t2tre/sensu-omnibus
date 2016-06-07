@@ -189,6 +189,7 @@ website and click `Save image`.
   OBJECT_MODE=32 ./Configure aix-cc shared
   OBJECT_MODE=32 make depend
   OBJECT_MODE=32 make
+  slibclean
   OBJECT_MODE=32 make install
   cd ..
   ```
@@ -234,19 +235,14 @@ website and click `Save image`.
   cd git-2.8.3
   autoconf
   ./configure --with-curl=/usr/local --without-tcltk
+  sed -e 's#va_copy#aix_va_copy#' strbuf.c > strbuf.c.bak && mv strbuf.c.bak strbuf.c
+  sed -e 's#define va_copy#define aix_va_copy#' git-compat-util.h > git-compat-util.h.bak && mv git-compat-util.h.bak git-compat-util.h
+  sed -e 's#^INSTALL = install#INSTALL = /opt/freeware/bin/install#' Makefile > Makefile.bak && mv Makefile.bak Makefile
   gmake
   gmake install
   cd ..
   git config --global user.email "justin@heavywater.io"
   git config --global user.name "Justin Kolberg"
-  ```
-
-  **NOTE: if `make` complains about `.va_copy` being an undefined symbol, run the commands below**
-
-  ```sh
-  sed -e 's#va_copy#aix_va_copy#' strbuf.c > strbuf.c.bak && mv strbuf.c.bak strbuf.c
-  sed -e 's#define va_copy#define aix_va_copy#' git-compat-util.h > git-compat-util.h.bak && mv git-compat-util.h.bak git-compat-util.h
-  sed -e 's#^INSTALL = install#INSTALL = /opt/freeware/bin/install#' Makefile > Makefile.bak && mv Makefile.bak Makefile
   ```
 
 17. Install `patch`:
@@ -270,7 +266,7 @@ website and click `Save image`.
 19. Install `ruby`:
 
   ```sh
-  wget https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.1.tar.gz
+  wget --no-check-certificate https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.1.tar.gz
   gtar xf ruby-2.3.1.tar.gz
   cd ruby-2.3.1
   LDFLAGS="-L/usr/local/lib" CFLAGS="-qlanglvl=extc99 -I/usr/local/include -I/usr/local/lib/libffi-3.1/include" ./configure --disable-install-rdoc
