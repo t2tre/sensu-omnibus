@@ -4,6 +4,16 @@
 # All Rights Reserved.
 #
 
+unless ENV.key?("SENSU_VERSION")
+  puts "SENSU_VERSION must be set"
+  exit 2
+end
+
+unless ENV.key?("BUILD_NUMBER")
+  puts "BUILD_NUMBER must be set"
+  exit 2
+end
+
 name "sensu"
 maintainer "justin@heavywater.io"
 homepage "https://sensuapp.org"
@@ -12,9 +22,9 @@ homepage "https://sensuapp.org"
 # and /opt/sensu on all other platforms
 install_dir "#{default_root}/#{name}"
 
-version = "0.24.1"
+version = ENV["SENSU_VERSION"]
 build_version version
-build_iteration 1
+build_iteration ENV["BUILD_NUMBER"]
 
 override "sensu-gem", version: version
 override "ruby", version: "2.3.0"
