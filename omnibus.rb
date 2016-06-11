@@ -8,6 +8,8 @@ require "openssl"
 
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
+append_timestamp false
+
 # Build internally
 # ------------------------------
 # By default, Omnibus uses system folders (like +/var+ and +/opt+) to build and
