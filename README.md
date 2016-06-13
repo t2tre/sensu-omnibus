@@ -8,6 +8,8 @@ Preparing Build Environments
 
 ### AIX 6.x/7.x (powerpc)
 
+**NOTE: Ensure the date is correctly set before following any of the AIX guides.**
+
 #### Requesting an AIX instance
 
 **NOTE: Caleb's IBM id is the only account that currently can spin up instances**
