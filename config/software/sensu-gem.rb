@@ -27,7 +27,7 @@ build do
       " --no-ri --no-rdoc", env: env
 
   gem "install sensu-plugin" \
-      " --version '1.3.0'" \
+      " --version '1.4.2'" \
       " --no-ri --no-rdoc", env: env
 
   share_dir = File.join(install_dir, "embedded", "share", "sensu")
