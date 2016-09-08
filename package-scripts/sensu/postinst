@@ -141,9 +141,11 @@ detect_tmp_sticky_bit()
 {
   LAST_BIT=`ls -ld /tmp | awk '{print substr($1,10,1)}'`
   if [ "x${LAST_BIT}" != "xt" ]; then
+    echo
     echo "********************** WARNING! **********************"
     echo " Sticky bit must be set on /tmp for Sensu to function "
     echo "******************************************************"
+    echo
   fi
 }
 
