@@ -52,6 +52,7 @@ CONFIG_DIR=$ETC_DIR/sensu
 CONFD_DIR=$CONFIG_DIR/conf.d
 PLUGINS_DIR=$CONFIG_DIR/plugins
 EXTENSIONS_DIR=$CONFIG_DIR/extensions
+DEFAULTS_DIR=$ETC_DIR/default
 
 LOG_FILE=$LOG_DIR/sensu-client.log
 CONFIG_FILE=$CONFIG_DIR/config.json
@@ -117,6 +118,7 @@ create_sensu_dirs()
   mkdir -p $PLUGINS_DIR
   mkdir -p $LOG_DIR
   mkdir -p $PID_DIR
+  mkdir -p $DEFAULTS_DIR
 
   if is_solaris; then
     mkdir -p /lib/svc/manifest/site
