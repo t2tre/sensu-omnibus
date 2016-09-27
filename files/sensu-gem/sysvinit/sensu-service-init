@@ -153,7 +153,7 @@ exec="/opt/sensu/bin/sensu-service"
 pidfile=$PID_DIR/$service_name.pid
 logfile=$LOG_DIR/$service_name.log
 
-options="start $service_name fork"
+options="start $1 fork"
 
 set_sensu_paths() {
     if [ "x$EMBEDDED_RUBY" = "xtrue" ]; then
