@@ -182,12 +182,22 @@ create_system_services()
     cp $SHARE_DIR/sensu/lib/svc/manifest/site/sensu-client.xml /lib/svc/manifest/site/sensu-client.xml > /dev/null
   elif is_linux; then
     if using_systemd; then
-      cp $SHARE_DIR/sensu/etc/systemd/system/sensu-* /etc/systemd/system
+      for service in api client server
+      do
+        cp "${SHARE_DIR}/sensu/etc/systemd/system/sensu-${service}" /etc/systemd/system
+      done
     elif using_upstart; then
-      cp $SHARE_DIR/sensu/etc/init/sensu-* /etc/init
+      for service in api client server
+      do
+        cp "${SHARE_DIR}/sensu/etc/init/sensu-${service}" /etc/init
+      done
     else
       # if not systemd or upstart, we assume sysvinit
-      cp $SHARE_DIR/sensu/etc/init.d/sensu-* /etc/init.d
+      for service in api client server service-init
+      do
+        cp "${SHARE_DIR}/sensu/etc/init.d/sensu-${service}" /etc/init.d
+        chmod 755 "/etc/init.d/sensu-${service}"
+      done
     fi
   fi
 }

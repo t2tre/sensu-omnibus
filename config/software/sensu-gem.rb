@@ -60,7 +60,10 @@ build do
     mkdir(service_share_dir)
 
     # copy the sensu service files to the share directory
-    %w[api client server].each do |sensu_service|
+    sensu_services = %w[api client server]
+    sensu_services << "service-init" if service_manager == :sysvinit
+
+    sensu_services.each do |sensu_service|
       filename = Helpers::filename_for_service(service_manager, sensu_service)
       source = File.join(files_dir, service_manager.to_s, filename)
       destination = File.join(service_share_dir, filename)
