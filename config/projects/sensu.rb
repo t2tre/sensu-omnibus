@@ -27,8 +27,8 @@ build_version version
 build_iteration ENV["BUILD_NUMBER"]
 
 override "sensu-gem", version: version
-override "ruby", version: "2.3.0"
-override "rubygems", version: "2.5.2"
+override "ruby", version: "2.1.8"
+override "rubygems", version: "2.6.6"
 
 # Creates required build directories
 dependency "preparation"

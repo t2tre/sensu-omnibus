@@ -20,6 +20,7 @@ license "BSD-2-Clause"
 license_file "BSDL"
 license_file "COPYING"
 license_file "LEGAL"
+skip_transitive_dependency_licensing true
 
 # - chef-client cannot use 2.2.x yet due to a bug in IRB that affects chef-shell on linux:
 #   https://bugs.ruby-lang.org/issues/11869
@@ -29,8 +30,6 @@ default_version "2.1.8"
 
 fips_enabled = (project.overrides[:fips] && project.overrides[:fips][:enabled]) || false
 
-
-dependency "patch" if solaris_10?
 dependency "ncurses" unless windows? || version.satisfies?(">= 2.1")
 dependency "zlib"
 dependency "openssl"
@@ -42,15 +41,17 @@ dependency "libyaml"
 # and that's the only one we will ever use.
 dependency "libiconv"
 
-
+version("2.3.1")      { source sha256: "b87c738cb2032bf4920fef8e3864dc5cf8eae9d89d8d523ce0236945c5797dcd" }
 version("2.3.0")      { source md5: "e81740ac7b14a9f837e9573601db3162" }
 
+version("2.2.5")      { source md5: "bd8e349d4fb2c75d90817649674f94be" }
 version("2.2.4")      { source md5: "9a5e15f9d5255ba37ace18771b0a8dd2" }
 version("2.2.3")      { source md5: "150a5efc5f5d8a8011f30aa2594a7654" }
 version("2.2.2")      { source md5: "326e99ddc75381c7b50c85f7089f3260" }
 version("2.2.1")      { source md5: "b49fc67a834e4f77249eb73eecffb1c9" }
 version("2.2.0")      { source md5: "cd03b28fd0b555970f5c4fd481700852" }
 
+version("2.1.9")      { source sha256: "034cb9c50676d2c09b3b6cf5c8003585acea05008d9a29fa737c54d52c1eb70c" }
 version("2.1.8")      { source md5: "091b62f0a9796a3c55de2a228a0e6ef3" }
 version("2.1.7")      { source md5: "2e143b8e19b056df46479ae4412550c9" }
 version("2.1.6")      { source md5: "6e5564364be085c45576787b48eeb75f" }
@@ -72,7 +73,7 @@ source url: "https://cache.ruby-lang.org/pub/ruby/#{version.match(/^(\d+\.\d+)/)
 
 relative_path "ruby-#{version}"
 
-env = with_standard_compiler_flags(with_embedded_path({}, msys: true), bfd_flags: true)
+env = with_standard_compiler_flags(with_embedded_path)
 
 if mac_os_x?
   # -Qunused-arguments suppresses "argument unused during compilation"
@@ -81,8 +82,8 @@ if mac_os_x?
   # would be harmless, except that autoconf treats any output to stderr as
   # a failure when it makes a test program to check your CFLAGS (regardless
   # of the actual exit code from the compiler).
-  env['CFLAGS'] << " -I#{install_dir}/embedded/include/ncurses -arch x86_64 -m64 -O3 -g -pipe -Qunused-arguments"
-  env['LDFLAGS'] << " -arch x86_64"
+  env["CFLAGS"] << " -I#{install_dir}/embedded/include/ncurses -arch x86_64 -m64 -O3 -g -pipe -Qunused-arguments"
+  env["LDFLAGS"] << " -arch x86_64"
 elsif freebsd?
   # Stops "libtinfo.so.5.9: could not read symbols: Bad value" error when
   # compiling ext/readline. See the following for more info:
@@ -90,54 +91,52 @@ elsif freebsd?
   #   https://lists.freebsd.org/pipermail/freebsd-current/2013-October/045425.html
   #   http://mailing.freebsd.ports-bugs.narkive.com/kCgK8sNQ/ports-183106-patch-sysutils-libcdio-does-not-build-on-10-0-and-head
   #
-  env['LDFLAGS'] << " -ltinfow"
+  env["LDFLAGS"] << " -ltinfow"
 elsif aix?
   # this magic per IBM
-  env['LDSHARED'] = "xlc -G"
-  env['CFLAGS'] = "-I#{install_dir}/embedded/include/ncurses -I#{install_dir}/embedded/include"
+  env["LDSHARED"] = "xlc -G"
+  env["CFLAGS"] = "-I#{install_dir}/embedded/include/ncurses -I#{install_dir}/embedded/include"
   # this magic per IBM
-  env['XCFLAGS'] = "-DRUBY_EXPORT"
+  env["XCFLAGS"] = "-DRUBY_EXPORT"
   # need CPPFLAGS set so ruby doesn't try to be too clever
-  env['CPPFLAGS'] = "-I#{install_dir}/embedded/include/ncurses -I#{install_dir}/embedded/include"
-  env['SOLIBS'] = "-lm -lc"
+  env["CPPFLAGS"] = "-I#{install_dir}/embedded/include/ncurses -I#{install_dir}/embedded/include"
+  env["SOLIBS"] = "-lm -lc"
   # need to use GNU m4, default m4 doesn't work
-  env['M4'] = "/opt/freeware/bin/m4"
+  env["M4"] = "/opt/freeware/bin/m4"
 elsif solaris_10?
   if sparc?
     # Known issue with rubby where too much GCC optimization blows up miniruby on sparc
-    env['CFLAGS'] << " -std=c99 -O0 -g -pipe -mcpu=v9"
-    env['LDFLAGS'] << " -mcpu=v9"
+    env["CFLAGS"] << " -std=c99 -O3 -g -pipe -mcpu=v9"
+    env["LDFLAGS"] << " -mcpu=v9"
   else
-    env['CFLAGS'] << " -std=c99 -O3 -g -pipe"
+    env["CFLAGS"] << " -std=c99 -O3 -g -pipe"
   end
-elsif solaris_11?
-  env['CFLAGS'] << " -std=c99 -O3 -g -pipe"
 elsif windows?
-  env['CPPFLAGS'] << " -DFD_SETSIZE=2048"
-else  # including linux
+  env["CPPFLAGS"] << " -DFD_SETSIZE=2048"
+else # including linux
   if version.satisfies?(">= 2.3.0") &&
-    rhel? && platform_version.satisfies?("< 6.0")
-    env['CFLAGS'] << " -O2 -g -pipe"
+      rhel? && platform_version.satisfies?("< 6.0")
+    env["CFLAGS"] << " -O2 -g -pipe"
   else
-    env['CFLAGS'] << " -O3 -g -pipe"
+    env["CFLAGS"] << " -O3 -g -pipe"
   end
 end
 
 build do
   # AIX needs /opt/freeware/bin only for patch
   patch_env = env.dup
-  patch_env['PATH'] = "/opt/freeware/bin:#{env['PATH']}" if aix?
+  patch_env["PATH"] = "/opt/freeware/bin:#{env['PATH']}" if aix?
 
-  if solaris_10? && version.satisfies?('>= 2.1')
+  if solaris_10? && version.satisfies?(">= 2.1")
     patch source: "ruby-no-stack-protector.patch", plevel: 1, env: patch_env
-  elsif solaris_10? && version =~ /^1.9/
-    patch source: "ruby-sparc-1.9.3-c99.patch", plevel: 1, env: patch_env
+  elsif solaris_11? && version =~ /^2.1/
+    patch source: "ruby-solaris-linux-socket-compat.patch", plevel: 1, env: patch_env
   end
 
   # wrlinux7/ios_xr build boxes from Cisco include libssp and there is no way to
   # disable ruby from linking against it, but Cisco switches will not have the
   # library.  Disabling it as we do for Solaris.
-  if ios_xr? && version.satisfies?('>= 2.1')
+  if ios_xr? && version.satisfies?(">= 2.1")
     patch source: "ruby-no-stack-protector.patch", plevel: 1, env: patch_env
   end
 
@@ -148,25 +147,23 @@ build do
   # other platforms.  generally you need to have a condition where the
   # embedded and non-embedded libs get into a fight (libiconv, openssl, etc)
   # and ruby trying to set LD_LIBRARY_PATH itself gets it wrong.
-  if version.satisfies?('>= 2.1')
-    patch source: "ruby-2_1_3-no-mkmf.patch", plevel: 1, env: patch_env
+  #
+  # Also, fix paths emitted in the makefile on windows on both msys and msys2.
+  if version.satisfies?(">= 2.1")
+    patch source: "ruby-mkmf.patch", plevel: 1, env: patch_env
     # should intentionally break and fail to apply on 2.2, patch will need to
     # be fixed.
   end
-
-  # Patch Makefile.in to allow RCFLAGS environment variable to be accepted
-  # when invoking WINDRES.
-  patch source: 'ruby-take-windres-rcflags.patch', plevel: 1, env: patch_env
 
   # Fix reserve stack segmentation fault when building on RHEL5 or below
   # Currently only affects 2.1.7 and 2.2.3. This patch taken from the fix
   # in Ruby trunk and expected to be included in future point releases.
   # https://redmine.ruby-lang.org/issues/11602
   if rhel? &&
-     platform_version.satisfies?('< 6') &&
-     (version == '2.1.7' || version == '2.2.3')
+      platform_version.satisfies?("< 6") &&
+      (version == "2.1.7" || version == "2.2.3")
 
-     patch source: 'ruby-fix-reserve-stack-segfault.patch', plevel: 1, env: patch_env
+    patch source: "ruby-fix-reserve-stack-segfault.patch", plevel: 1, env: patch_env
   end
 
   configure_command = ["--with-out-ext=dbm,readline",
@@ -176,9 +173,8 @@ build do
                        "--without-gdbm",
                        "--without-tk",
                        "--disable-dtrace"]
-  configure_command << "--with-ext=psych" if version.satisfies?('< 2.3')
+  configure_command << "--with-ext=psych" if version.satisfies?("< 2.3")
   configure_command << "--with-bundled-md5" if fips_enabled
-  configure_command << "--enable-rpath" if solaris_11?
 
   if aix?
     # need to patch ruby's configure file so it knows how to find shared libraries
@@ -215,6 +211,12 @@ build do
     configure_command << "ac_cv_func_dl_iterate_phdr=no"
     configure_command << "--with-opt-dir=#{install_dir}/embedded"
   elsif windows?
+    if version.satisfies?(">= 2.3")
+      # Windows Nano Server COM libraries do not support Apartment threading
+      # instead COINIT_MULTITHREADED must be used
+      patch source: "ruby_nano.patch", plevel: 1, env: patch_env
+    end
+
     configure_command << " debugflags=-g"
   else
     configure_command << "--with-opt-dir=#{install_dir}/embedded"
@@ -223,16 +225,31 @@ build do
   # FFS: works around a bug that infects AIX when it picks up our pkg-config
   # AFAIK, ruby does not need or use this pkg-config it just causes the build to fail.
   # The alternative would be to patch configure to remove all the pkg-config garbage entirely
-  env.merge!("PKG_CONFIG" => "/bin/true") if aix?
+  env["PKG_CONFIG"] = "/bin/true" if aix?
 
   configure(*configure_command, env: env)
+  make "-j #{workers}", env: env
+  make "-j #{workers} install", env: env
+
   if windows?
-    # On windows, msys make 3.81 breaks with parallel builds.
-    make env: env
-    make "install", env: env
+    # Needed now that we switched to msys2 and have not figured out how to tell
+    # it how to statically link yet
+    dlls = ["libwinpthread-1"]
+    if windows_arch_i386?
+      dlls << "libgcc_s_dw2-1"
+    else
+      dlls << "libgcc_s_seh-1"
+    end
+    dlls.each do |dll|
+      arch_suffix = windows_arch_i386? ? "32" : "64"
+      windows_path = "C:/msys2/mingw#{arch_suffix}/bin/#{dll}.dll"
+      if File.exist?(windows_path)
+        copy windows_path, "#{install_dir}/embedded/bin/#{dll}.dll"
+      else
+        raise "Cannot find required DLL needed for dynamic linking: #{windows_path}"
+      end
+    end
   else
-    make "-j #{workers}", env: env
-    make "-j #{workers} install", env: env
   end
 
 end
