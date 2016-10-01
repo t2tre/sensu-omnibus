@@ -56,7 +56,9 @@ purge_sensu_files()
   if [ -d /opt/sensu ]; then
     rm -r /opt/sensu
   fi
-  rm -rf /tmp/sensu_*_loaded_files
+  if [ -d /var/cache/sensu ]; then
+    rm -rf /var/cache/sensu
+  fi
 }
 
 purge_sensu_user_group()

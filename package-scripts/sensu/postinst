@@ -66,6 +66,7 @@ EMBEDDED_BIN_DIR=$EMBEDDED_DIR/bin
 SHARE_DIR=$EMBEDDED_DIR/share
 LOG_DIR=/var/log/sensu
 PID_DIR=/var/run/sensu
+TMP_DIR=/var/cache/sensu
 CONFIG_DIR=$ETC_DIR/sensu
 CONFD_DIR=$CONFIG_DIR/conf.d
 PLUGINS_DIR=$CONFIG_DIR/plugins
@@ -141,6 +142,7 @@ create_sensu_dirs()
   mkdir -p $LOG_DIR
   mkdir -p $PID_DIR
   mkdir -p $DEFAULTS_DIR
+  mkdir -p $TMP_DIR
 
   if is_solaris; then
     mkdir -p /lib/svc/manifest/site
@@ -159,6 +161,7 @@ chown_sensu_dirs()
   chown -R sensu:sensu $CONFIG_DIR
   chown -R sensu:sensu $LOG_DIR
   chown -R sensu:sensu $PID_DIR
+  chown -R sensu:sensu $TMP_DIR
 }
 
 detect_tmp_sticky_bit()
