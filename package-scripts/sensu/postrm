@@ -48,8 +48,26 @@ purge_sensu_services()
   fi
 }
 
+purge_sensu_service_files()
+{
+  sensu_services="client server api service-init"
+  for sensu_service in $sensu_services; do
+    systemd_file="/etc/systemd/system/${sensu_service}.service"
+    if [ -f $systemd_file ]; then
+      rm -f $systemd_file
+    fi
+    if [ -f $upstart_file ]; then
+      rm -f $upstart_file
+    fi
+    if [ -f $sysvinit_file ]; then
+      rm -f $sysvinit_file ]
+    fi
+  done
+}
+
 purge_sensu_files()
 {
+  purge_sensu_files
   if [ -d /usr/share/sensu ]; then
     rm -r /usr/share/sensu
   fi
