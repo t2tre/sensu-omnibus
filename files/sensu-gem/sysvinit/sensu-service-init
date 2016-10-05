@@ -27,6 +27,9 @@ PID_DIR=/var/run/sensu
 USER=sensu
 SERVICE_MAX_WAIT=10
 
+# explicitly add /sbin to PATH so that start-stop-server is always available
+PATH=$PATH:/sbin
+
 if [ -f /etc/default/sensu ]; then
     . /etc/default/sensu
 fi
