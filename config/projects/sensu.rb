@@ -30,6 +30,14 @@ override "sensu-gem", version: version
 override "ruby", version: "2.1.8"
 override "rubygems", version: "2.6.6"
 
+# TODO: config files are removed during actions such as dpkg --purge
+#if linux?
+#  config_file "/etc/sensu/config.json.example"
+#  config_file "/etc/sensu/conf.d/README.md"
+#  config_file "/etc/logrotate.d/sensu"
+#  config_file "/etc/default/sensu"
+#end
+
 # Creates required build directories
 dependency "preparation"
 

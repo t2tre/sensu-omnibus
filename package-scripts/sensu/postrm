@@ -37,6 +37,40 @@ is_solaris()
   uname -a | grep "^SunOS" > /dev/null 2>&1
 }
 
+is_linux()
+{
+  uname -a | grep "^Linux" > /dev/null 2>&1
+}
+
+using_systemd()
+{
+  [ -e "/proc/1/comm" ] && grep -q "^systemd$" /proc/1/comm
+}
+
+using_upstart()
+{
+  [ -e "/sbin/initctl" ]
+}
+
+purge_linux_service_files()
+{
+  sensu_services="client server api service-init"
+  for sensu_service in $sensu_services; do
+    systemd_file="/etc/systemd/system/sensu-${sensu_service}.service"
+    upstart_file="/etc/init/sensu-${sensu_service}.conf"
+    sysvinit_file="/etc/init.d/sensu-${sensu_service}"
+    if [ -f $systemd_file ]; then
+      rm -f $systemd_file
+    fi
+    if [ -f $upstart_file ]; then
+      rm -f $upstart_file
+    fi
+    if [ -f $sysvinit_file ]; then
+      rm -f $sysvinit_file
+    fi
+  done
+}
+
 purge_sensu_services()
 {
   if is_aix; then
@@ -45,29 +79,13 @@ purge_sensu_services()
     rmssys -s sensu-server > /dev/null 2>&1
   elif is_solaris; then
     rm -f /lib/svc/manifest/site/sensu-client.xml
+  elif is_linux; then
+    purge_linux_service_files
   fi
-}
-
-purge_sensu_service_files()
-{
-  sensu_services="client server api service-init"
-  for sensu_service in $sensu_services; do
-    systemd_file="/etc/systemd/system/${sensu_service}.service"
-    if [ -f $systemd_file ]; then
-      rm -f $systemd_file
-    fi
-    if [ -f $upstart_file ]; then
-      rm -f $upstart_file
-    fi
-    if [ -f $sysvinit_file ]; then
-      rm -f $sysvinit_file ]
-    fi
-  done
 }
 
 purge_sensu_files()
 {
-  purge_sensu_files
   if [ -d /usr/share/sensu ]; then
     rm -r /usr/share/sensu
   fi

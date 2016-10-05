@@ -37,11 +37,16 @@ build do
   # make directories
   mkdir("#{install_dir}/bin")
   mkdir("#{share_dir}/etc/sensu")
+  mkdir("#{share_dir}/etc/default")
+  mkdir("#{share_dir}/etc/logrotate.d")
   mkdir("#{share_dir}/etc/rc.d")
   mkdir("#{share_dir}/lib/svc/manifest/site")
 
   # config.json.example
   copy("#{files_dir}/config.json.example", "#{share_dir}/etc/sensu")
+
+  # default file
+  copy("#{files_dir}/default/sensu", "#{share_dir}/etc/default")
 
   # sensu-install
   copy("#{files_dir}/bin/sensu-install", bin_dir)
@@ -50,6 +55,9 @@ build do
   # sensu-service
   copy("#{files_dir}/bin/sensu-service", bin_dir)
   command("chmod +x #{bin_dir}/sensu-service")
+
+  # logrotate.d config
+  copy("#{files_dir}/logrotate.d/sensu", "#{share_dir}/etc/logrotate.d")
 
   # service wrappers
   Helpers::SERVICE_MANAGERS.each do |service_manager|
@@ -70,10 +78,6 @@ build do
       copy(source, destination)
     end
   end
-
-  # no matched files for glob copy
-  # `/home/vagrant/sensu/files/sensu-gem/etc/systemd/system/sensu-api.service'
-  # to `/opt/sensu/embedded/share/sensu/sensu-api.service'
 
   # sensu rc script
   copy("#{files_dir}/sensu-client", "#{share_dir}/etc/rc.d")

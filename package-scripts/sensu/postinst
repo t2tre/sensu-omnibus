@@ -151,8 +151,24 @@ create_sensu_dirs()
 
 create_sensu_config_example()
 {
-  cp $SHARE_DIR/sensu/etc/sensu/config.json.example $CONFIG_DIR/
+  cp $SHARE_DIR/sensu/etc/sensu/config.json.example $CONFIG_DIR
 }
+
+create_sensu_default()
+{
+  if [ ! -d "${ETC_DIR}/default" ]; then
+    mkdir $ETC_DIR/default
+  fi
+  cp $SHARE_DIR/sensu/etc/default/sensu $ETC_DIR/default/sensu
+}
+
+create_sensu_logrotated_config()
+{
+  if [ -d "${ETC_DIR}/logrotate.d" ]; then
+    cp $SHARE_DIR/sensu/etc/logrotate.d/sensu $ETC_DIR/logrotate.d
+  fi
+}
+
 
 chown_sensu_dirs()
 {
@@ -162,18 +178,6 @@ chown_sensu_dirs()
   chown -R sensu:sensu $LOG_DIR
   chown -R sensu:sensu $PID_DIR
   chown -R sensu:sensu $TMP_DIR
-}
-
-detect_tmp_sticky_bit()
-{
-  LAST_BIT=`ls -ld /tmp | awk '{print substr($1,10,1)}'`
-  if [ "x${LAST_BIT}" != "xt" ]; then
-    echo
-    echo "********************** WARNING! **********************"
-    echo " Sticky bit must be set on /tmp for Sensu to function "
-    echo "******************************************************"
-    echo
-  fi
 }
 
 create_system_services()
@@ -187,12 +191,12 @@ create_system_services()
     if using_systemd; then
       for service in api client server
       do
-        cp "${SHARE_DIR}/sensu/etc/systemd/system/sensu-${service}" /etc/systemd/system
+        cp "${SHARE_DIR}/sensu/etc/systemd/system/sensu-${service}.service" /etc/systemd/system
       done
     elif using_upstart; then
       for service in api client server
       do
-        cp "${SHARE_DIR}/sensu/etc/init/sensu-${service}" /etc/init
+        cp "${SHARE_DIR}/sensu/etc/init/sensu-${service}.conf" /etc/init
       done
     else
       # if not systemd or upstart, we assume sysvinit
@@ -210,10 +214,11 @@ create_sensu_symlinks()
   ln -s $INSTALLER_DIR/bin/sensu-install /usr/bin/sensu-install
 }
 
-detect_tmp_sticky_bit
 create_sensu_user_group
 create_sensu_dirs
 create_sensu_config_example
+create_sensu_default
+create_sensu_logrotated_config
 chown_sensu_dirs
 create_system_services
 create_sensu_symlinks

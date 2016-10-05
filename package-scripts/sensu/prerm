@@ -66,8 +66,8 @@ stop_sensu_services()
   if is_aix; then
     stopsrc -s sensu-client > /dev/null 2>&1
   elif is_solaris; then
-    svcadm disable sensu-client >/dev/null 2>&1
-  else is_linux; then
+    svcadm disable sensu-client > /dev/null 2>&1
+  elif is_linux; then
     sensu_services="client server api"
     for sensu_service in $sensu_services; do
       if using_systemd; then
