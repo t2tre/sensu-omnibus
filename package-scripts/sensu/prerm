@@ -48,11 +48,6 @@ using_systemd()
   [ -e "/proc/1/comm" ] && grep -q "^systemd$" /proc/1/comm
 }
 
-using_upstart()
-{
-  [ -e "/sbin/initctl" ]
-}
-
 PROGNAME=`basename $0`
 
 error_exit()
@@ -72,8 +67,6 @@ stop_sensu_services()
     for sensu_service in $sensu_services; do
       if using_systemd; then
         systemctl stop "sensu-${sensu_service}" || true
-      elif using_upstart; then
-        service "sensu-${sensu_service}" stop || true
       else
         /etc/init.d/sensu-$sensu_service stop || true
       fi

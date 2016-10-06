@@ -1,16 +1,26 @@
 module Helpers
   SERVICE_MANAGERS = [
     :systemd,
-    :upstart,
     :sysvinit
   ].freeze
+
+  def self.services(service_manager)
+    services = [
+      "sensu-api",
+      "sensu-client",
+      "sensu-server",
+    ]
+    case service_manager
+    when :sysvinit
+      services << "service-init"
+    end
+    services
+  end
 
   def self.directory_for_service(service_manager)
     case service_manager
     when :systemd
       "/etc/systemd/system"
-    when :upstart
-      "/etc/init"
     when :sysvinit
       "/etc/init.d"
     end
@@ -20,8 +30,6 @@ module Helpers
     case service_manager
     when :systemd
       "sensu-#{service}.service"
-    when :upstart
-      "sensu-#{service}.conf"
     when :sysvinit
       "sensu-#{service}"
     end

@@ -47,11 +47,6 @@ using_systemd()
   [ -e "/proc/1/comm" ] && grep -q "^systemd$" /proc/1/comm
 }
 
-using_upstart()
-{
-  [ -e "/sbin/initctl" ]
-}
-
 PROGNAME=`basename $0`
 
 if is_freebsd; then
@@ -193,13 +188,8 @@ create_system_services()
       do
         cp "${SHARE_DIR}/sensu/etc/systemd/system/sensu-${service}.service" /etc/systemd/system
       done
-    elif using_upstart; then
-      for service in api client server
-      do
-        cp "${SHARE_DIR}/sensu/etc/init/sensu-${service}.conf" /etc/init
-      done
     else
-      # if not systemd or upstart, we assume sysvinit
+      # if not systemd, we assume sysvinit
       for service in api client server service-init
       do
         cp "${SHARE_DIR}/sensu/etc/init.d/sensu-${service}" /etc/init.d
