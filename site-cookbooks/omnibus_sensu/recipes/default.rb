@@ -6,6 +6,10 @@
 
 include_recipe "omnibus::default"
 
+gem_package "ffi-yajl" do
+  gem_binary "/opt/omnibus-toolchain/bin/gem"
+end
+
 omnibus_build "sensu" do
   project_dir "/home/vagrant/sensu"
   log_level :internal
