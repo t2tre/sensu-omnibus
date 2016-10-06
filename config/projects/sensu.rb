@@ -27,7 +27,7 @@ build_version version
 build_iteration ENV["BUILD_NUMBER"]
 
 override "sensu-gem", version: version
-override "ruby", version: "2.1.8"
+override "ruby", version: "2.3.0"
 override "rubygems", version: "2.6.6"
 
 # TODO: config files are removed during actions such as dpkg --purge
