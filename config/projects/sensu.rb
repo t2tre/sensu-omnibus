@@ -30,6 +30,13 @@ override "sensu-gem", version: version
 override "ruby", version: "2.3.0"
 override "rubygems", version: "2.6.6"
 
+# createrepo is having a hard time with package metadata including
+# the dist tag (e.g. sensu-0.26.4-5.el5.x86_64.rpm). We're forcefully
+# disabling the inclusion of dist tag until we can find a solution.
+package :rpm do
+  dist_tag false
+end
+
 # TODO: config files are removed during actions such as dpkg --purge
 #if linux?
 #  config_file "/etc/sensu/config.json.example"
