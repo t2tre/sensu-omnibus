@@ -12,7 +12,7 @@ module Helpers
     ]
     case service_manager
     when :sysvinit
-      services << "service-init"
+      services << "sensu-service-init"
     end
     services
   end
@@ -29,9 +29,9 @@ module Helpers
   def self.filename_for_service(service_manager, service)
     case service_manager
     when :systemd
-      "sensu-#{service}.service"
+      "#{service}.service"
     when :sysvinit
-      "sensu-#{service}"
+      service
     end
   end
 end
