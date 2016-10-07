@@ -39,13 +39,9 @@ package :deb do
   vendor vendor
 end
 
-# createrepo is having a hard time with package metadata including
-# the dist tag (e.g. sensu-0.26.4-5.el5.x86_64.rpm). We're forcefully
-# disabling the inclusion of dist tag until we can find a solution.
 package :rpm do
   group "Monitoring"
   vendor vendor
-  dist_tag false
 end
 
 # TODO: config files are removed during actions such as dpkg --purge
