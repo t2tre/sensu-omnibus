@@ -15,8 +15,12 @@ unless ENV.key?("BUILD_NUMBER")
 end
 
 name "sensu"
-maintainer "justin@heavywater.io"
+maintainer "support@sensuapp.com"
 homepage "https://sensuapp.org"
+license "MIT License"
+description "A monitoring framework that aims to be simple, malleable, and scaleable."
+
+vendor = "Sensu <support@sensuapp.com>"
 
 # Defaults to C:/sensu on Windows
 # and /opt/sensu on all other platforms
@@ -29,6 +33,16 @@ build_iteration ENV["BUILD_NUMBER"]
 override "sensu-gem", version: version
 override "ruby", version: "2.3.0"
 override "rubygems", version: "2.6.6"
+
+package :deb do
+  section "Monitoring"
+  vendor vendor
+end
+
+package :rpm do
+  group "Monitoring"
+  vendor vendor
+end
 
 # TODO: config files are removed during actions such as dpkg --purge
 #if linux?
