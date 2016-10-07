@@ -1,5 +1,6 @@
 source 'https://supermarket.chef.io'
 
+cookbook 'omnibus_sensu', path: 'site-cookbooks/omnibus_sensu'
 cookbook 'omnibus'
 
 # Uncomment to use the latest version of the Omnibus cookbook from GitHub

@@ -38,6 +38,16 @@ is_solaris()
   uname -a | grep "^SunOS" > /dev/null 2>&1
 }
 
+is_linux()
+{
+  uname -a | grep "^Linux" > /dev/null 2>&1
+}
+
+using_systemd()
+{
+  [ -e "/proc/1/comm" ] && grep -q "^systemd$" /proc/1/comm
+}
+
 PROGNAME=`basename $0`
 
 error_exit()
@@ -51,7 +61,16 @@ stop_sensu_services()
   if is_aix; then
     stopsrc -s sensu-client > /dev/null 2>&1
   elif is_solaris; then
-    svcadm disable sensu-client >/dev/null 2>&1
+    svcadm disable sensu-client > /dev/null 2>&1
+  elif is_linux; then
+    sensu_services="client server api"
+    for sensu_service in $sensu_services; do
+      if using_systemd; then
+        systemctl stop "sensu-${sensu_service}" || true
+      else
+        /etc/init.d/sensu-$sensu_service stop || true
+      fi
+    done
   fi
 }
 

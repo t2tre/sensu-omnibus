@@ -37,6 +37,16 @@ is_solaris()
   uname -a | grep "^SunOS" > /dev/null 2>&1
 }
 
+is_linux()
+{
+  uname -a | grep "^Linux" > /dev/null 2>&1
+}
+
+using_systemd()
+{
+  [ -e "/proc/1/comm" ] && grep -q "^systemd$" /proc/1/comm
+}
+
 PROGNAME=`basename $0`
 
 if is_freebsd; then
@@ -46,8 +56,12 @@ else
 fi
 
 INSTALLER_DIR=/opt/sensu
+EMBEDDED_DIR=$INSTALLER_DIR/embedded
+EMBEDDED_BIN_DIR=$EMBEDDED_DIR/bin
+SHARE_DIR=$EMBEDDED_DIR/share
 LOG_DIR=/var/log/sensu
 PID_DIR=/var/run/sensu
+TMP_DIR=/var/cache/sensu
 CONFIG_DIR=$ETC_DIR/sensu
 CONFD_DIR=$CONFIG_DIR/conf.d
 PLUGINS_DIR=$CONFIG_DIR/plugins
@@ -61,8 +75,8 @@ LOG_LEVEL=info
 
 OPTIONS="-c $CONFIG_FILE -d $CONFD_DIR -e $EXTENSIONS_DIR -l $LOG_FILE -L $LOG_LEVEL"
 
-SENSU_PATHS=$INSTALLER_DIR/embedded/bin:$PATH:$PLUGINS_DIR:$HANDLERS_DIR
-SENSU_GEM_PATHS=$INSTALLER_DIR/embedded/lib/ruby/gems/2.2.0:$GEM_PATH
+SENSU_PATHS=$EMBEDDED_BIN_DIR:$PATH:$PLUGINS_DIR:$HANDLERS_DIR
+SENSU_GEM_PATHS=$EMBEDDED_DIR/lib/ruby/gems/2.2.0:$GEM_PATH
 
 error_exit()
 {
@@ -95,6 +109,8 @@ create_sensu_user_group()
       mkgroup sensu
     elif is_solaris; then
       groupadd sensu
+    elif is_linux; then
+      groupadd -r sensu
     fi
   fi
 
@@ -106,6 +122,8 @@ create_sensu_user_group()
     elif is_solaris; then
       useradd -d $INSTALLER_DIR -g sensu sensu # user will be disabled by default
       passwd -N sensu # enable the user with nologin (NL)
+    elif is_linux; then
+      useradd -r -g sensu -d /opt/sensu -s /bin/false -c "Sensu Monitoring Framework" sensu
     fi
   fi
 }
@@ -119,6 +137,7 @@ create_sensu_dirs()
   mkdir -p $LOG_DIR
   mkdir -p $PID_DIR
   mkdir -p $DEFAULTS_DIR
+  mkdir -p $TMP_DIR
 
   if is_solaris; then
     mkdir -p /lib/svc/manifest/site
@@ -127,8 +146,24 @@ create_sensu_dirs()
 
 create_sensu_config_example()
 {
-  cp $INSTALLER_DIR/embedded/share/sensu/etc/sensu/config.json.example $CONFIG_DIR/
+  cp $SHARE_DIR/sensu/etc/sensu/config.json.example $CONFIG_DIR
 }
+
+create_sensu_default()
+{
+  if [ ! -d "${ETC_DIR}/default" ]; then
+    mkdir $ETC_DIR/default
+  fi
+  cp $SHARE_DIR/sensu/etc/default/sensu $ETC_DIR/default/sensu
+}
+
+create_sensu_logrotated_config()
+{
+  if [ -d "${ETC_DIR}/logrotate.d" ]; then
+    cp $SHARE_DIR/sensu/etc/logrotate.d/sensu $ETC_DIR/logrotate.d
+  fi
+}
+
 
 chown_sensu_dirs()
 {
@@ -137,35 +172,30 @@ chown_sensu_dirs()
   chown -R sensu:sensu $CONFIG_DIR
   chown -R sensu:sensu $LOG_DIR
   chown -R sensu:sensu $PID_DIR
-}
-
-detect_tmp_sticky_bit()
-{
-  LAST_BIT=`ls -ld /tmp | awk '{print substr($1,10,1)}'`
-  if [ "x${LAST_BIT}" != "xt" ]; then
-    echo
-    echo "********************** WARNING! **********************"
-    echo " Sticky bit must be set on /tmp for Sensu to function "
-    echo "******************************************************"
-    echo
-  fi
+  chown -R sensu:sensu $TMP_DIR
 }
 
 create_system_services()
 {
   if is_aix; then
     rmssys -s sensu-client 2>&1 > /dev/null
-    mkssys -s sensu-client -p $INSTALLER_DIR/embedded/share/sensu/etc/rc.d/sensu-client -u sensu -S -n 15 -f 9 > /dev/null
-  fi
-}
-
-create_system_services()
-{
-  if is_aix; then
-    rmssys -s sensu-client 2>&1 > /dev/null
-    mkssys -s sensu-client -p $INSTALLER_DIR/embedded/share/sensu/etc/rc.d/sensu-client -u sensu -S -n 15 -f 9 > /dev/null
+    mkssys -s sensu-client -p $SHARE_DIR/sensu/etc/rc.d/sensu-client -u sensu -S -n 15 -f 9 > /dev/null
   elif is_solaris; then
-    cp $INSTALLER_DIR/embedded/share/sensu/lib/svc/manifest/site/sensu-client.xml /lib/svc/manifest/site/sensu-client.xml > /dev/null
+    cp $SHARE_DIR/sensu/lib/svc/manifest/site/sensu-client.xml /lib/svc/manifest/site/sensu-client.xml > /dev/null
+  elif is_linux; then
+    if using_systemd; then
+      for service in api client server
+      do
+        cp "${SHARE_DIR}/sensu/etc/systemd/system/sensu-${service}.service" /etc/systemd/system
+      done
+    else
+      # if not systemd, we assume sysvinit
+      for service in api client server service-init
+      do
+        cp "${SHARE_DIR}/sensu/etc/init.d/sensu-${service}" /etc/init.d
+        chmod 755 "/etc/init.d/sensu-${service}"
+      done
+    fi
   fi
 }
 
@@ -174,10 +204,11 @@ create_sensu_symlinks()
   ln -s $INSTALLER_DIR/bin/sensu-install /usr/bin/sensu-install
 }
 
-detect_tmp_sticky_bit
 create_sensu_user_group
 create_sensu_dirs
 create_sensu_config_example
+create_sensu_default
+create_sensu_logrotated_config
 chown_sensu_dirs
 create_system_services
 create_sensu_symlinks
