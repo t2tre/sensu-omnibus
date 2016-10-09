@@ -304,7 +304,7 @@ status() {
 
 validate_config() {
     validate_pidfile=$PID_DIR/$service_name-validate.pid
-    start_daemon $USER $validate_pidfile $exec "validate $service_name fork"
+    start_daemon $USER $validate_pidfile $exec "validate $sensu_service fork"
 }
 
 restart() {
