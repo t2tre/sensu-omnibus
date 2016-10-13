@@ -31,6 +31,8 @@ platforms:
     run_list: yum-epel::default
   - name: debian-7.8
     run_list: apt::default
+  - name: debian-7.8-i386
+    run_list: apt::default
   - name: debian-6.0.10
     run_list: apt::default
   - name: freebsd-10.1
