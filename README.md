@@ -6,8 +6,8 @@ This project creates full-stack platform-specific packages for
 Preparing Build Environments
 ----------------------------
 
-[AIX](platform-docs/AIX.md)
-[Solaris 10](platform-docs/SOLARIS_10.md)
+* [AIX](platform-docs/AIX.md)
+* [Solaris 10](platform-docs/SOLARIS_10.md)
 
 Installation
 ------------
