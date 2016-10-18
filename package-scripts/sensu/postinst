@@ -78,6 +78,8 @@ OPTIONS="-c $CONFIG_FILE -d $CONFD_DIR -e $EXTENSIONS_DIR -l $LOG_FILE -L $LOG_L
 SENSU_PATHS=$EMBEDDED_BIN_DIR:$PATH:$PLUGINS_DIR:$HANDLERS_DIR
 SENSU_GEM_PATHS=$EMBEDDED_DIR/lib/ruby/gems/2.2.0:$GEM_PATH
 
+SYSV_SCRIPTS_EXIST=false
+
 error_exit()
 {
   echo "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
@@ -164,7 +166,6 @@ create_sensu_logrotated_config()
   fi
 }
 
-
 chown_sensu_dirs()
 {
   # Ensure all files/directories in $INSTALLER_DIR are owned by root.
@@ -184,24 +185,55 @@ create_system_services()
     cp $SHARE_DIR/sensu/lib/svc/manifest/site/sensu-client.xml /lib/svc/manifest/site/sensu-client.xml > /dev/null
   elif is_linux; then
     if using_systemd; then
-      for service in api client server
-      do
-        cp "${SHARE_DIR}/sensu/etc/systemd/system/sensu-${service}.service" /etc/systemd/system
-      done
+      echo -n "systemd detected, "
+      sysv_init_test
+      if [ "x${SYSV_EXISTS}" = "xtrue" ]; then
+        echo "but sysv init scripts are present so we'll use those instead"
+        install_sysv_scripts
+      else
+        echo "installing unit files"
+        install_systemd_units
+      fi
     else
       # if not systemd, we assume sysvinit
-      for service in api client server service-init
-      do
-        cp "${SHARE_DIR}/sensu/etc/init.d/sensu-${service}" /etc/init.d
-        chmod 755 "/etc/init.d/sensu-${service}"
-      done
+      echo "systemd not detected, installing sysv init scripts"
+      install_sysv_scripts
     fi
   fi
+}
+
+install_systemd_units()
+{
+  for service in api client server
+  do
+    echo "installing sensu-${service}.service systemd unit"
+    cp "${SHARE_DIR}/sensu/etc/systemd/system/sensu-${service}.service" /etc/systemd/system
+  done
+}
+
+install_sysv_scripts()
+{
+  for service in api client server service-init
+  do
+    echo "Installing sensu-${service} sysv init script"
+    cp "${SHARE_DIR}/sensu/etc/init.d/sensu-${service}" /etc/init.d
+    chmod 755 "/etc/init.d/sensu-${service}"
+  done
 }
 
 create_sensu_symlinks()
 {
   ln -s $INSTALLER_DIR/bin/sensu-install /usr/bin/sensu-install
+}
+
+sysv_init_test()
+{
+  for service in api client server
+  do
+    if [ -f "/etc/init.d/sensu-${service}" ]; then
+      SYSV_EXISTS=true
+    fi
+  done
 }
 
 create_sensu_user_group
