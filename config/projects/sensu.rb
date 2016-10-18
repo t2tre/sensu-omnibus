@@ -40,7 +40,7 @@ package :deb do
 end
 
 package :rpm do
-  group "Monitoring"
+  category "Monitoring"
   vendor vendor
 end
 
