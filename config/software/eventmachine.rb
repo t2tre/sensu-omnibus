@@ -23,7 +23,7 @@ build do
   #env['CXX'] = "g++ -m64"
   #env['cppflags'] = "-D_XOPEN_SOURCE=700"
 
-  command "gem install rake-compiler", env: env
+  command "gem install --no-document rake-compiler", env: env
   command "rake clean", env: env
 
   # disable C++ extensions so we don't need to compile them on platforms
@@ -36,5 +36,5 @@ build do
 
   command "rake gem", env: env
 
-  command "gem install pkg/eventmachine-1.2.0.1.gem", env: env
+  command "gem install --no-document pkg/eventmachine-1.2.0.1.gem", env: env
 end
