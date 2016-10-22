@@ -98,6 +98,8 @@ purge_sensu_user_group()
       userdel sensu > /dev/null
     elif is_linux; then
       userdel -f sensu
+    elif is_freebsd; then
+      pw userdel sensu
     fi
   fi
 
@@ -109,6 +111,8 @@ purge_sensu_user_group()
       groupdel sensu > /dev/null
     elif is_linux; then
       groupdel sensu
+    elif is_freebsd; then
+      pw groupdel sensu
     fi
   fi
 }
