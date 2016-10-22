@@ -14,7 +14,7 @@ driver:
     cpus: 2
     memory: 2048
   synced_folders:
-    - ['.', '/home/vagrant/sensu']
+    - ['.', '/home/vagrant/sensu', 'type: :rsync']
 
 provisioner:
   name: chef_zero
@@ -35,7 +35,7 @@ platforms:
     run_list: apt::default
   - name: debian-6.0.10
     run_list: apt::default
-  - name: freebsd-10.1
+  - name: freebsd-10.3
     run_list: freebsd::portsnap
   - name: freebsd-9.3
     run_list:
