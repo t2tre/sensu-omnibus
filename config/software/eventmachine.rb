@@ -1,5 +1,6 @@
 name "eventmachine"
 
+dependency "libstdc++"
 dependency "ruby"
 
 source git: "https://github.com/portertech/eventmachine.git"
