@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Install omnibus
-gem 'omnibus', :git => 'https://github.com/amdprophet/omnibus.git', :branch => 'pkgng'
+gem 'omnibus', :git => 'https://github.com/sensu/omnibus.git', :branch => 'master'
 gem 'ffi-yajl', '2.3.0'
 
 # Use Chef's software definitions. It is recommended that you write your own
