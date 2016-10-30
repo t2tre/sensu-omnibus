@@ -23,6 +23,8 @@ if node['platform'] == 'freebsd'
     portsnap_bin = 'portsnap'
     portsnap_options = 'cron'
   when /10/
+    package "gcc"
+
     portsnap_bin = 'portsnap'
     portsnap_options = '--interactive'
   else

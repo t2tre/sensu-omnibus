@@ -1,0 +1,50 @@
+#!/bin/sh
+
+# PROVIDE: <%= service_name %>
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+<% service = service_name.gsub("sensu_", "") -%>
+name="<%= service_name %>"
+rcvar="<%= service_name %>_enable"
+
+command="/opt/sensu/bin/sensu-service"
+command_args="start <%= service %> fork"
+command_interpreter="/opt/sensu/embedded/bin/ruby"
+
+pidfile="/var/run/sensu/sensu-<%= service %>.pid"
+procname="/opt/sensu/bin/sensu-<%= service %>"
+
+extra_commands="validate_config"
+
+start_precmd="start_precmd"
+restart_precmd="restart_precmd"
+validate_config_cmd="<%= service_name %>_validate_config"
+
+<%= service_name %>_chroot="/"
+<%= service_name %>_user="sensu"
+
+<%= service_name %>_validate_config() {
+  echo "Validating sensu-<%= service %> configuration"
+  ${command} validate <%= service %>
+  if [ $? != 0 ]; then
+    return 1
+  fi
+}
+
+start_precmd() {
+  if ! <%= service_name %>_validate_config; then
+    return 1
+  fi
+}
+
+restart_precmd() {
+  if ! <%= service_name %>_validate_config; then
+    return 1
+  fi
+}
+
+load_rc_config $name
+run_rc_command "$1"

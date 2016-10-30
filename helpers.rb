@@ -13,6 +13,10 @@ module Helpers
     case service_manager
     when :sysvinit
       services << "sensu-service-init"
+    when :rcd
+      services.map! do |service|
+        service.gsub("-", "_")
+      end
     end
     services
   end
@@ -23,6 +27,8 @@ module Helpers
       "/etc/systemd/system"
     when :sysvinit
       "/etc/init.d"
+    when :rcd
+      "/usr/local/etc/rc.d"
     end
   end
 
@@ -32,6 +38,8 @@ module Helpers
       "#{service}.service"
     when :sysvinit
       service
+    when :rcd
+      service.gsub("_", "-")
     end
   end
 end

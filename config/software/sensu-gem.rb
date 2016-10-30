@@ -77,8 +77,21 @@ build do
   end
 
   # sensu rc script
-  copy("#{files_dir}/sensu-client", "#{share_dir}/etc/rc.d")
-  command("chmod +x #{share_dir}/etc/rc.d/sensu-client")
+  Helpers::services(:rcd).each do |service|
+    service_filename = Helpers::filename_for_service(:rcd, service)
+    service_directory = Helpers::directory_for_service(:rcd)
+    destination = File.join(service_directory, service_filename)
+    options = {
+      source: "rc.d/sensu-service.erb",
+      dest: destination,
+      vars: {
+        :service_name => service
+      },
+      mode: 0755
+    }
+    erb(options)
+    project.extra_package_file(destination)
+  end
 
   # sensu manifest (solaris)
   copy("#{files_dir}/smf/sensu-client.xml", "#{share_dir}/lib/svc/manifest/site")
