@@ -36,6 +36,8 @@ platforms:
   - name: debian-6.0.10
     run_list: apt::default
   - name: freebsd-11.0
+    driver:
+      box: sensu/freebsd-11.0
     run_list:
       - omnibus_sensu::freebsd_portsnap
       - freebsd::pkgng
