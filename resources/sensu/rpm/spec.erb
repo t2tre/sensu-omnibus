@@ -18,7 +18,7 @@
 Name: <%= name %>
 Version: <%= version %>
 Release: <%= iteration %><%= dist_tag ? dist_tag : '' %>
-Epoch: 1 # hardcode epoch to 1 to maintain compatibility with old sensu packages
+Epoch: 1
 Summary:  <%= description.split("\n").first.empty? ? "_" : description.split("\n").first %>
 AutoReqProv: no
 BuildRoot: %buildroot
