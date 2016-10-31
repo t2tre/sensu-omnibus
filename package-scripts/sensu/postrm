@@ -96,6 +96,8 @@ purge_sensu_user_group()
       rmuser sensu > /dev/null
     elif is_solaris; then
       userdel sensu > /dev/null
+    elif is_linux; then
+      userdel -f sensu
     fi
   fi
 
@@ -105,6 +107,8 @@ purge_sensu_user_group()
       rmgroup sensu > /dev/null
     elif is_solaris; then
       groupdel sensu > /dev/null
+    elif is_linux; then
+      groupdel sensu
     fi
   fi
 }
