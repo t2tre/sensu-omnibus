@@ -76,21 +76,23 @@ build do
     end
   end
 
-  # sensu rc script
-  Helpers::services(:rcd).each do |service|
-    service_filename = Helpers::filename_for_service(:rcd, service)
-    service_directory = Helpers::directory_for_service(:rcd)
-    destination = File.join(service_directory, service_filename)
-    options = {
-      source: "rc.d/sensu-service.erb",
-      dest: destination,
-      vars: {
-        :service_name => service
-      },
-      mode: 0755
-    }
-    erb(options)
-    project.extra_package_file(destination)
+  # sensu rc.d script
+  if freebsd?
+    Helpers::services(:rcd).each do |service|
+      service_filename = Helpers::filename_for_service(:rcd, service)
+      service_directory = Helpers::directory_for_service(:rcd)
+      destination = File.join(service_directory, service_filename)
+      options = {
+        source: "rc.d/sensu-service.erb",
+        dest: destination,
+        vars: {
+          :service_name => service
+        },
+        mode: 0755
+      }
+      erb(options)
+      project.extra_package_file(destination)
+    end
   end
 
   # sensu manifest (solaris)
