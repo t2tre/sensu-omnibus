@@ -111,6 +111,8 @@ create_sensu_user_group()
       mkgroup sensu
     elif is_solaris; then
       groupadd sensu
+    elif is_freebsd; then
+      pw groupadd sensu
     elif is_linux; then
       groupadd -r sensu
     fi
@@ -124,6 +126,8 @@ create_sensu_user_group()
     elif is_solaris; then
       useradd -d $INSTALLER_DIR -g sensu sensu # user will be disabled by default
       passwd -N sensu # enable the user with nologin (NL)
+    elif is_freebsd; then
+      pw adduser sensu -g sensu -d /nonexistent -s /usr/sbin/nologin -c "Sensu Monitoring Framework"
     elif is_linux; then
       useradd -r -g sensu -d /opt/sensu -s /bin/false -c "Sensu Monitoring Framework" sensu
     fi

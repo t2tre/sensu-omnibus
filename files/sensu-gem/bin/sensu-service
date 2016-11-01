@@ -1,24 +1,70 @@
 #!/bin/sh
+#
+# WARNING: REQUIRES /bin/sh
+#
+# - must run on /bin/sh on solaris 9
+# - must run on /bin/sh on AIX 6.x
+# - if you think you are a bash wizard, you probably do not understand
+#   this programming language.  do not touch.
+# - if you are under 40, get peer review from your elders.
+#
+
+is_darwin()
+{
+  uname -v | grep "^Darwin" > /dev/null 2>&1
+}
+
+is_smartos()
+{
+  uname -v | grep "^joyent" > /dev/null 2>&1
+}
+
+is_aix()
+{
+  uname -a | grep "^AIX" > /dev/null 2>&1
+}
+
+is_freebsd()
+{
+  uname -v | grep "^FreeBSD" > /dev/null 2>&1
+}
+
+is_solaris()
+{
+  uname -a | grep "^SunOS" > /dev/null 2>&1
+}
+
+is_linux()
+{
+  uname -a | grep "^Linux" > /dev/null 2>&1
+}
 
 action=$1
 sensu_service=sensu-$2
 forking=$3
 
-CONFIG_FILE=/etc/sensu/config.json
-CONFIG_DIR=/etc/sensu/conf.d
-EXTENSION_DIR=/etc/sensu/extensions
-PLUGINS_DIR=/etc/sensu/plugins
-HANDLERS_DIR=/etc/sensu/handlers
+ETC_DIR=/etc
+
+if is_freebsd; then
+  ETC_DIR=/usr/local/etc
+fi
+
+INSTALLER_DIR=/opt/sensu
+CONFIG_DIR=$ETC_DIR/sensu
+CONFIG_FILE=$CONFIG_DIR/config.json
+CONFD_DIR=$CONFIG_DIR/conf.d
+EXTENSION_DIR=$CONFIG_DIR/extensions
+PLUGINS_DIR=$CONFIG_DIR/plugins
 PID_DIR=/var/run/sensu
 LOG_DIR=/var/log/sensu
 LOG_LEVEL=info
 USER=sensu
 
-if [ -f /etc/default/sensu ]; then
-    . /etc/default/sensu
+if [ -f $ETC_DIR/default/sensu ]; then
+    . $ETC_DIR/default/sensu
 fi
 
-cd /opt/sensu
+cd $INSTALLER_DIR
 
 svc_exec="/opt/sensu/bin/$sensu_service"
 
@@ -40,10 +86,13 @@ ensure_dir() {
 
 set_sensu_paths() {
     if [ "x$EMBEDDED_RUBY" = "xtrue" ]; then
-        export PATH=/opt/sensu/embedded/bin:$PATH:$PLUGINS_DIR:$HANDLERS_DIR
-        export GEM_PATH=/opt/sensu/embedded/lib/ruby/gems/2.3.0:$GEM_PATH
+        PATH=$INSTALLER_DIR/embedded/bin:$PATH:$PLUGINS_DIR:$HANDLERS_DIR
+        GEM_PATH=$INSTALLER_DIR/embedded/lib/ruby/gems/2.3.0:$GEM_PATH
+        export PATH
+        export GEM_PATH
     else
-        export PATH=$PATH:$PLUGINS_DIR:$HANDLERS_DIR
+        PATH=$PATH:$PLUGINS_DIR:$HANDLERS_DIR
+        export PATH
     fi
 }
 
