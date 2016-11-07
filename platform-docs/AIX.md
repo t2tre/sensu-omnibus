@@ -192,6 +192,7 @@ website and click `Save image`.
 
   ```sh
   wget --no-check-certificate -O /usr/local/ssl/certs/cacert.pem http://curl.haxx.se/ca/cacert.pem
+  wget --no-check-certificate -O /var/ssl/cert.pem http://curl.haxx.se/ca/cacert.pem
   ```
 
 13. Install a newer version of `curl` and link it against `openssl`:
