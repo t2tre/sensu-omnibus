@@ -4,6 +4,7 @@ default_version "0.26.1"
 dependency "ruby"
 dependency "rubygems"
 dependency "libffi"
+dependency "rb-readline-gem"
 dependency "eventmachine"
 
 build do
