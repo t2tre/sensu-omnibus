@@ -70,7 +70,7 @@ svc_exec="/opt/sensu/bin/$sensu_service"
 
 logfile=$LOG_DIR/$sensu_service.log
 pidfile=$PID_DIR/$sensu_service.pid
-options="-c $CONFIG_FILE -d $CONFIG_DIR -e $EXTENSION_DIR -p $pidfile -l $logfile -L $LOG_LEVEL $OPTIONS"
+options="-c $CONFIG_FILE -d $CONFD_DIR -e $EXTENSION_DIR -p $pidfile -l $logfile -L $LOG_LEVEL $OPTIONS"
 
 if [ "x$forking" = "xfork" ]; then
     options="-b $options"
@@ -97,7 +97,7 @@ set_sensu_paths() {
 }
 
 validate() {
-    validate_options="--validate_config -b -c $CONFIG_FILE -d $CONFIG_DIR -e $EXTENSION_DIR $OPTIONS"
+    validate_options="--validate_config -b -c $CONFIG_FILE -d $CONFD_DIR -e $EXTENSION_DIR $OPTIONS"
     $svc_exec $validate_options
 }
 
