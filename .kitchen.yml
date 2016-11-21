@@ -57,6 +57,13 @@ platforms:
     run_list: apt::default
   - name: ubuntu-12.04-i386
     run_list: apt::default
+  - name: solaris-11
+    driver:
+      box: plaurin/solaris-11_3
+      ssh:
+        password: "1vagrant"
+      synced_folders:
+        - ['.', '/export/home/vagrant/sensu', 'owner: "vagrant"', 'type: :rsync']
 
 suites:
   - name: default

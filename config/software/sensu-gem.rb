@@ -10,10 +10,6 @@ dependency "eventmachine"
 build do
   env = with_standard_compiler_flags(with_embedded_path)
 
-  #env['CC'] = 'gcc'
-  #env['CXX'] = "g++ -m64"
-  #env['cppflags'] = "-std=c99"
-
   patch_env = env.dup
 
   files_dir = "#{project.files_path}/#{name}"

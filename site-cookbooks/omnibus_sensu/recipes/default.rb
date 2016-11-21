@@ -10,8 +10,14 @@ gem_package "ffi-yajl" do
   gem_binary "/opt/omnibus-toolchain/bin/gem"
 end
 
+project_dir = "/home/vagrant/sensu"
+
+if solaris?
+  project_dir = "/export/home/vagrant/sensu"
+end
+
 omnibus_build "sensu" do
-  project_dir "/home/vagrant/sensu"
+  project_dir project_dir
   log_level :internal
   build_user "root"
   environment({
