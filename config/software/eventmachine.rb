@@ -3,12 +3,12 @@ name "eventmachine"
 dependency "libstdc++"
 dependency "ruby"
 
-source git: "https://github.com/portertech/eventmachine.git"
+source git: "https://github.com/eventmachine/eventmachine.git"
 
-default_version "feature/pure_ruby_tls"
+default_version "v1.2.1"
 
-version "feature/pure_ruby_tls" do
-  source git: "https://github.com/portertech/eventmachine.git"
+version "v1.2.1" do
+  source git: "https://github.com/eventmachine/eventmachine.git"
 end
 
 build do
@@ -37,5 +37,5 @@ build do
 
   command "rake gem", env: env
 
-  command "gem install --no-document pkg/eventmachine-1.2.0.1.gem", env: env
+  command "gem install --no-document pkg/eventmachine-1.2.1.gem", env: env
 end
