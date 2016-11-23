@@ -212,7 +212,6 @@ install_systemd_units()
   do
     echo "installing sensu-${service}.service systemd unit"
     cp "${SHARE_DIR}/sensu/etc/systemd/system/sensu-${service}.service" "/lib/systemd/system/sensu-${service}.service"
-    ln -s "/lib/systemd/system/sensu-${service}.service" "/etc/systemd/system/sensu-${service}.service"
   done
 }
 
