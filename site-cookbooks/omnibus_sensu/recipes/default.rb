@@ -6,6 +6,12 @@
 
 include_recipe "omnibus::default"
 
+case node["platform_family"]
+when "rhel"
+  package "gpg"
+  package "pygpgme"
+end
+
 gem_package "ffi-yajl" do
   gem_binary "/opt/omnibus-toolchain/bin/gem"
 end
@@ -16,6 +22,7 @@ omnibus_build "sensu" do
   build_user "root"
   environment({
     "SENSU_VERSION" => node["omnibus_sensu"]["build_version"],
-    "BUILD_NUMBER" => node["omnibus_sensu"]["build_iteration"]
+    "BUILD_NUMBER" => node["omnibus_sensu"]["build_iteration"],
+    "GPG_PASSPHRASE" => node["omnibus_sensu"]["gpg_passphrase"]
   })
 end

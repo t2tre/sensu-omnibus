@@ -42,6 +42,7 @@ end
 package :rpm do
   category "Monitoring"
   vendor vendor
+  signing_passphrase ENV["GPG_PASSPHRASE"] if ENV.key?("GPG_PASSPHRASE")
 end
 
 # TODO: config files are removed during actions such as dpkg --purge

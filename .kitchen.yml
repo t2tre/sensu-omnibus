@@ -1,6 +1,14 @@
 <%
 build_version = ENV["SENSU_VERSION"]
 build_iteration = ENV["BUILD_NUMBER"]
+gpg_passphrase = ENV["GPG_PASSPHRASE"]
+gnupg_path = ENV["GNUPG_PATH"]
+
+if gpg_passphrase && gnupg_path
+  # no-op
+elsif gpg_passphrase || gnupg_path
+  raise "Both GPG_PASSPHRASE and GNUPG_PATH must be set for signed RPMs"
+end
 
 unless build_version && build_iteration
   raise "SENSU_VERSION and BUILD_NUMBER must be set"
@@ -23,11 +31,35 @@ provisioner:
 platforms:
   - name: centos-7.1
     run_list: yum-epel::default
+    driver:
+      synced_folders:
+        - ['.', '/home/vagrant/sensu', 'type: :rsync']
+        <% if gpg_passphrase && gnupg_path %>
+        - ['<%= gnupg_path %>', '/home/vagrant/.gnupg', 'type: :rsync']
+        <% end %>
   - name: centos-6.6
     run_list: yum-epel::default
+    driver:
+      synced_folders:
+        - ['.', '/home/vagrant/sensu', 'type: :rsync']
+        <% if gpg_passphrase && gnupg_path %>
+        - ['<%= gnupg_path %>', '/home/vagrant/.gnupg', 'type: :rsync']
+        <% end %>
   - name: centos-5.11
     run_list: yum-epel::default
+    driver:
+      synced_folders:
+        - ['.', '/home/vagrant/sensu', 'type: :rsync']
+        <% if gpg_passphrase && gnupg_path %>
+        - ['<%= gnupg_path %>', '/home/vagrant/.gnupg', 'type: :rsync']
+        <% end %>
   - name: centos-5.11-i386
+    driver:
+      synced_folders:
+        - ['.', '/home/vagrant/sensu', 'type: :rsync']
+        <% if gpg_passphrase && gnupg_path %>
+        - ['<%= gnupg_path %>', '/home/vagrant/.gnupg', 'type: :rsync']
+        <% end %>
     run_list: yum-epel::default
   - name: debian-7.8
     run_list: apt::default
@@ -70,3 +102,4 @@ suites:
       omnibus_sensu:
         build_version: "<%= build_version %>"
         build_iteration: "<%= build_iteration %>"
+        gpg_passphrase: "<%= gpg_passphrase %>"
