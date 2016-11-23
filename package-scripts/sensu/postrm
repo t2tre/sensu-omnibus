@@ -88,35 +88,6 @@ purge_sensu_files()
   fi
 }
 
-purge_sensu_user_group()
-{
-  grep "^sensu:" /etc/passwd > /dev/null
-  if [ "${?}" = "0" ]; then
-    if is_aix; then
-      rmuser sensu > /dev/null
-    elif is_solaris; then
-      userdel sensu > /dev/null
-    elif is_linux; then
-      userdel -f sensu
-    elif is_freebsd; then
-      pw userdel sensu
-    fi
-  fi
-
-  grep "^sensu:" /etc/group > /dev/null
-  if [ "${?}" = "0" ]; then
-    if is_aix; then
-      rmgroup sensu > /dev/null
-    elif is_solaris; then
-      groupdel sensu > /dev/null
-    elif is_linux; then
-      groupdel sensu
-    elif is_freebsd; then
-      pw groupdel sensu
-    fi
-  fi
-}
-
 purge_sensu_symlinks()
 {
   rm -f /usr/bin/sensu-install
@@ -124,7 +95,6 @@ purge_sensu_symlinks()
 
 purge_sensu_services
 purge_sensu_files
-purge_sensu_user_group
 purge_sensu_symlinks
 
 echo "Sensu has been uninstalled!"
