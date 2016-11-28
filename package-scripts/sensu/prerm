@@ -13,6 +13,8 @@
 # prior to installing package.
 #
 
+set -e
+
 is_darwin()
 {
   uname -v | grep "^Darwin" > /dev/null 2>&1
