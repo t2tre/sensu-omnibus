@@ -4,8 +4,8 @@
 <!--
     Manifest created by svcbundle (2016-Apr-18 08:32:10-0700)
 -->
-<service_bundle type="manifest" name="application/sensu-client">
-    <service version="1" type="service" name="application/sensu-client">
+<service_bundle type="manifest" name="application/<%= service_name %>">
+    <service version="1" type="service" name="application/<%= service_name %>">
         <!--
             The following dependency keeps us from starting until the
             multi-user milestone is reached.
@@ -15,7 +15,7 @@
             <service_fmri value="svc:/milestone/multi-user"/>
         </dependency>
         <exec_method timeout_seconds="60" type="method" name="start"
-            exec="/opt/sensu/embedded/share/sensu/etc/rc.d/sensu-client"/>
+            exec="/opt/sensu/bin/sensu-service <%= service_shortname %>"/>
         <!--
             The exec attribute below can be changed to a command that SMF
             should execute to stop the service.  See smf_method(5) for more

@@ -10,10 +10,6 @@ dependency "eventmachine"
 build do
   env = with_standard_compiler_flags(with_embedded_path)
 
-  #env['CC'] = 'gcc'
-  #env['CXX'] = "g++ -m64"
-  #env['cppflags'] = "-std=c99"
-
   patch_env = env.dup
 
   files_dir = "#{project.files_path}/#{name}"
@@ -60,40 +56,30 @@ build do
   # logrotate.d config
   copy("#{files_dir}/logrotate.d/sensu", "#{share_dir}/etc/logrotate.d")
 
+  # determine which service manager to use
+  platform = ohai["platform"]
+  platform_family = ohai["platform_family"]
+  platform_version = ohai["platform_version"]
+  service_manager = Helpers::service_manager_for(platform, platform_version)
+
   # service wrappers
-  Helpers::SERVICE_MANAGERS.each do |service_manager|
-    service_dir = Helpers::directory_for_service(service_manager)
+  service_dir = Helpers::directory_for_service(platform_family, service_manager)
 
-    # create share dir for service manager
-    service_share_dir = File.join(share_dir, service_dir)
-    mkdir(service_share_dir)
-
-    # copy the sensu service files to the share directory
-    Helpers::services(service_manager).each do |sensu_service|
-      filename = Helpers::filename_for_service(service_manager, sensu_service)
-      source = File.join(files_dir, service_manager.to_s, filename)
-      destination = File.join(service_share_dir, filename)
-      copy(source, destination)
-    end
-  end
-
-  # sensu rc.d script
-  if freebsd?
-    Helpers::services(:rcd).each do |service|
-      service_filename = Helpers::filename_for_service(:rcd, service)
-      service_directory = Helpers::directory_for_service(:rcd)
-      destination = File.join(service_directory, service_filename)
-      options = {
-        source: "rc.d/sensu-service.erb",
-        dest: destination,
-        vars: {
-          :service_name => service
-        },
-        mode: 0755
-      }
-      erb(options)
-      project.extra_package_file(destination)
-    end
+  # copy the sensu service files to their destination
+  Helpers::services(service_manager).each do |sensu_service|
+    filename = Helpers::filename_for_service(service_manager, sensu_service)
+    destination = File.join(service_dir, filename)
+    options = {
+      source: "#{service_manager}/sensu-service.erb",
+      dest: destination,
+      vars: {
+        :service_name => sensu_service,
+        :service_shortname => sensu_service.gsub("/sensu[-_]/", "")
+      },
+      mode: 0755
+    }
+    erb(options)
+    project.extra_package_file(destination)
   end
 
   # sensu manifest (solaris)

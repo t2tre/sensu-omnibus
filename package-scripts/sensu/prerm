@@ -14,6 +14,7 @@
 #
 
 set -e
+set -x
 
 is_darwin()
 {

@@ -13,6 +13,7 @@
 #
 
 set -e
+set -x
 
 is_darwin()
 {
@@ -93,8 +94,10 @@ create_sensu_user_aix()
   # add /usr/bin/false to the list of allowed shells
   # NOTE: this is all terrible and makes kittens cry.
   # it should all be replaced by a single, idempotent command
+  set +e
   /usr/bin/lssec -f /etc/security/login.cfg -s usw -a shells | /usr/bin/grep "/usr/bin/false" > /dev/null
   RC=$?
+  set -e
   if [ "${RC}" != "0" ]; then
     SHVAL=`/usr/bin/lssec -f /etc/security/login.cfg -s usw -a shells | /usr/bin/cut -d '=' -f2`
     /usr/bin/chsec -f /etc/security/login.cfg -s usw -a shells="${SHVAL},/usr/bin/false"
@@ -107,8 +110,10 @@ create_sensu_user_aix()
 create_sensu_user_group()
 {
   # create sensu group
+  set +e
   grep "^sensu:" /etc/group > /dev/null
   if [ "${?}" != "0" ]; then
+    set -e
     if is_aix; then
       mkgroup sensu
     elif is_solaris; then
@@ -121,8 +126,10 @@ create_sensu_user_group()
   fi
 
   # create sensu user
+  set +e
   grep "^sensu:" /etc/passwd > /dev/null
   if [ "${?}" != "0" ]; then
+    set -e
     if is_aix; then
       create_sensu_user_aix
     elif is_solaris; then
@@ -162,7 +169,7 @@ create_sensu_default()
   if [ ! -d "${ETC_DIR}/default" ]; then
     mkdir $ETC_DIR/default
   fi
-  cp $SHARE_DIR/sensu/etc/default/sensu $ETC_DIR/default/sensu
+  cp $SHARE_DIR/sensu/etc/default/sensu $ETC_DIR/default/senszu
 }
 
 create_sensu_logrotated_config()
@@ -186,60 +193,13 @@ create_system_services()
 {
   if is_aix; then
     rmssys -s sensu-client 2>&1 > /dev/null
-    mkssys -s sensu-client -p $SHARE_DIR/sensu/etc/rc.d/sensu-client -u sensu -S -n 15 -f 9 > /dev/null
-  elif is_solaris; then
-    cp $SHARE_DIR/sensu/lib/svc/manifest/site/sensu-client.xml /lib/svc/manifest/site/sensu-client.xml > /dev/null
-  elif is_linux; then
-    if using_systemd; then
-      echo -n "systemd detected, "
-      sysv_init_test
-      if [ "x${SYSV_EXISTS}" = "xtrue" ]; then
-        echo "but sysv init scripts are present so we'll use those instead"
-        install_sysv_scripts
-      else
-        echo "installing unit files"
-        install_systemd_units
-      fi
-    else
-      # if not systemd, we assume sysvinit
-      echo "systemd not detected, installing sysv init scripts"
-      install_sysv_scripts
-    fi
+    mkssys -s sensu-client -p "/opt/sensu/bin/sensu-service client" -u sensu -S -n 15 -f 9 > /dev/null
   fi
-}
-
-install_systemd_units()
-{
-  for service in api client server
-  do
-    echo "installing sensu-${service}.service systemd unit"
-    cp "${SHARE_DIR}/sensu/etc/systemd/system/sensu-${service}.service" "/lib/systemd/system/sensu-${service}.service"
-  done
-}
-
-install_sysv_scripts()
-{
-  for service in api client server service-init
-  do
-    echo "Installing sensu-${service} sysv init script"
-    cp "${SHARE_DIR}/sensu/etc/init.d/sensu-${service}" /etc/init.d
-    chmod 755 "/etc/init.d/sensu-${service}"
-  done
 }
 
 create_sensu_symlinks()
 {
   ln -sf $INSTALLER_DIR/bin/sensu-install /usr/bin/sensu-install
-}
-
-sysv_init_test()
-{
-  for service in api client server
-  do
-    if [ -f "/etc/init.d/sensu-${service}" ]; then
-      SYSV_EXISTS=true
-    fi
-  done
 }
 
 create_sensu_user_group
