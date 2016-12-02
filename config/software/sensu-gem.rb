@@ -74,7 +74,7 @@ build do
       dest: destination,
       vars: {
         :service_name => sensu_service,
-        :service_shortname => sensu_service.gsub("/sensu[-_]/", "")
+        :service_shortname => sensu_service.gsub(/sensu[-_]/, "")
       },
       mode: 0755
     }

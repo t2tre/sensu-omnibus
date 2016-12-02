@@ -56,6 +56,9 @@ end
 # Creates required build directories
 dependency "preparation"
 
+# package scripts erb templates
+dependency "package-scripts"
+
 # sensu dependencies/components
 dependency "sensu-gem"
 
@@ -64,3 +67,8 @@ dependency "version-manifest"
 
 exclude "**/.git"
 exclude "**/bundler/git"
+
+# Our package scripts are generated from .erb files,
+# so we will grab them from an excluded folder
+package_scripts_path "#{install_dir}/.package_util/package-scripts"
+exclude '.package_util'

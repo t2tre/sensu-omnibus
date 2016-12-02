@@ -17,41 +17,56 @@ set -x
 
 is_darwin()
 {
+  set +e
   uname -v | grep "^Darwin" > /dev/null 2>&1
+  set -e
 }
 
 is_smartos()
 {
+  set +e
   uname -v | grep "^joyent" > /dev/null 2>&1
+  set -e
 }
 
 is_aix()
 {
+  set +e
   uname -a | grep "^AIX" > /dev/null 2>&1
+  set -e
 }
 
 is_freebsd()
 {
+  set +e
   uname -v | grep "^FreeBSD" > /dev/null 2>&1
+  set -e
 }
 
 is_solaris()
 {
+  set +e
   uname -a | grep "^SunOS" > /dev/null 2>&1
+  set -e
 }
 
 is_linux()
 {
+  set +e
   uname -a | grep "^Linux" > /dev/null 2>&1
+  set -e
 }
 
 using_systemd()
 {
+  set +e
   [ -e "/proc/1/comm" ] && grep -q "^systemd$" /proc/1/comm
+  set -e
 }
 
 purge_linux_service_files()
 {
+  set -e
   sensu_services="client server api service-init"
   for sensu_service in $sensu_services; do
     systemd_file="/etc/systemd/system/sensu-${sensu_service}.service"
@@ -67,6 +82,7 @@ purge_linux_service_files()
 
 purge_sensu_services()
 {
+  set -e
   if is_aix; then
     rmssys -s sensu-client > /dev/null 2>&1
     rmssys -s sensu-api > /dev/null 2>&1
@@ -80,6 +96,7 @@ purge_sensu_services()
 
 purge_sensu_files()
 {
+  set -e
   if [ -d /usr/share/sensu ]; then
     rm -r /usr/share/sensu
   fi
@@ -93,6 +110,7 @@ purge_sensu_files()
 
 purge_sensu_symlinks()
 {
+  set -e
   rm -f /usr/bin/sensu-install
 }
 

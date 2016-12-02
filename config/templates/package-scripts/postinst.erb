@@ -15,48 +15,13 @@
 set -e
 set -x
 
-is_darwin()
-{
-  uname -v | grep "^Darwin" > /dev/null 2>&1
-}
-
-is_smartos()
-{
-  uname -v | grep "^joyent" > /dev/null 2>&1
-}
-
-is_aix()
-{
-  uname -a | grep "^AIX" > /dev/null 2>&1
-}
-
-is_freebsd()
-{
-  uname -v | grep "^FreeBSD" > /dev/null 2>&1
-}
-
-is_solaris()
-{
-  uname -a | grep "^SunOS" > /dev/null 2>&1
-}
-
-is_linux()
-{
-  uname -a | grep "^Linux" > /dev/null 2>&1
-}
-
-using_systemd()
-{
-  [ -e "/proc/1/comm" ] && grep -q "^systemd$" /proc/1/comm
-}
-
 PROGNAME=`basename $0`
 
-if is_freebsd; then
-  ETC_DIR=/usr/local/etc
-else
-  ETC_DIR=/etc
-fi
+<% if platform_family == "freebsd" -%>
+ETC_DIR=/usr/local/etc
+<% else -%>
+ETC_DIR=/etc
+<% end -%>
 
 INSTALLER_DIR=/opt/sensu
 EMBEDDED_DIR=$INSTALLER_DIR/embedded
@@ -112,39 +77,46 @@ create_sensu_user_group()
   # create sensu group
   set +e
   grep "^sensu:" /etc/group > /dev/null
-  if [ "${?}" != "0" ]; then
-    set -e
-    if is_aix; then
-      mkgroup sensu
-    elif is_solaris; then
-      groupadd sensu
-    elif is_freebsd; then
-      pw groupadd sensu
-    elif is_linux; then
-      groupadd -r sensu
-    fi
+  RC=$?
+  set -e
+  if [ "${RC}" != "0" ]; then
+    <% case platform_family
+    when "aix" -%>
+    mkgroup sensu
+    <% when "solaris" -%>
+    groupadd sensu
+    <% when "freebsd" -%>
+    pw groupadd sensu
+    <% when "debian", "rhel" -%>
+    groupadd -r sensu
+    <% else raise "Group creation undefined for platform family \"#{platform_family}\"" -%>
+    <% end -%>
   fi
 
   # create sensu user
   set +e
   grep "^sensu:" /etc/passwd > /dev/null
-  if [ "${?}" != "0" ]; then
-    set -e
-    if is_aix; then
-      create_sensu_user_aix
-    elif is_solaris; then
-      useradd -d $INSTALLER_DIR -g sensu sensu # user will be disabled by default
-      passwd -N sensu # enable the user with nologin (NL)
-    elif is_freebsd; then
-      pw adduser sensu -g sensu -d /nonexistent -s /usr/sbin/nologin -c "Sensu Monitoring Framework"
-    elif is_linux; then
-      useradd -r -g sensu -d /opt/sensu -s /bin/false -c "Sensu Monitoring Framework" sensu
-    fi
+  RC=$?
+  set -e
+  if [ "${RC}" != "0" ]; then
+    <% case platform_family
+    when "aix" -%>
+    create_sensu_user_aix
+    <% when "solaris" -%>
+    useradd -d $INSTALLER_DIR -g sensu sensu # user will be disabled by default
+    passwd -N sensu # enable the user with nologin (NL)
+    <% when "freebsd" -%>
+    pw adduser sensu -g sensu -d /nonexistent -s /usr/sbin/nologin -c "Sensu Monitoring Framework"
+    <% when "debian", "rhel" -%>
+    useradd -r -g sensu -d /opt/sensu -s /bin/false -c "Sensu Monitoring Framework" sensu
+    <% else raise "User creation undefined for platform family \"#{platform_family}\"" -%>
+    <% end -%>
   fi
 }
 
 create_sensu_dirs()
 {
+  set -e
   mkdir -p $CONFIG_DIR
   mkdir -p $CONFD_DIR
   mkdir -p $EXTENSIONS_DIR
@@ -154,18 +126,20 @@ create_sensu_dirs()
   mkdir -p $DEFAULTS_DIR
   mkdir -p $TMP_DIR
 
-  if is_solaris; then
-    mkdir -p /lib/svc/manifest/site
-  fi
+  <% if platform_family == "solaris" -%>
+  mkdir -p /lib/svc/manifest/site
+  <% end -%>
 }
 
 create_sensu_config_example()
 {
+  set -e
   cp $SHARE_DIR/sensu/etc/sensu/config.json.example $CONFIG_DIR
 }
 
 create_sensu_default()
 {
+  set -e
   if [ ! -d "${ETC_DIR}/default" ]; then
     mkdir $ETC_DIR/default
   fi
@@ -174,6 +148,7 @@ create_sensu_default()
 
 create_sensu_logrotated_config()
 {
+  set -e
   if [ -d "${ETC_DIR}/logrotate.d" ]; then
     cp $SHARE_DIR/sensu/etc/logrotate.d/sensu $ETC_DIR/logrotate.d
   fi
@@ -181,6 +156,7 @@ create_sensu_logrotated_config()
 
 chown_sensu_dirs()
 {
+  set -e
   # Ensure all files/directories in $INSTALLER_DIR are owned by root.
   chown -Rh 0:0 $INSTALLER_DIR
   chown -R sensu:sensu $CONFIG_DIR
@@ -191,14 +167,16 @@ chown_sensu_dirs()
 
 create_system_services()
 {
-  if is_aix; then
-    rmssys -s sensu-client 2>&1 > /dev/null
-    mkssys -s sensu-client -p "/opt/sensu/bin/sensu-service client" -u sensu -S -n 15 -f 9 > /dev/null
-  fi
+  set -e
+  <% if platform_family == "aix" -%>
+  rmssys -s sensu-client 2>&1 > /dev/null
+  mkssys -s sensu-client -p "/opt/sensu/bin/sensu-service client" -u sensu -S -n 15 -f 9 > /dev/null
+  <% end -%>
 }
 
 create_sensu_symlinks()
 {
+  set -e
   ln -sf $INSTALLER_DIR/bin/sensu-install /usr/bin/sensu-install
 }
 
