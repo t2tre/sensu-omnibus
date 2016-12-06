@@ -43,6 +43,11 @@ append_timestamp false
 # s3_secret_key  ENV['AWS_SECRET_ACCESS_KEY']
 # s3_bucket      ENV['AWS_S3_BUCKET']
 
+# Enable S3 asset caching
+# ------------------------------
+publish_s3_access_key ENV['AWS_ACCESS_KEY_ID']
+publish_s3_secret_key ENV['AWS_SECRET_ACCESS_KEY']
+
 # Customize compiler bits
 # ------------------------------
 # solaris_compiler 'gcc'
