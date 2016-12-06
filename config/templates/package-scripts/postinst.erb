@@ -114,46 +114,6 @@ create_sensu_user_group()
   fi
 }
 
-create_sensu_dirs()
-{
-  set -e
-  mkdir -p $CONFIG_DIR
-  mkdir -p $CONFD_DIR
-  mkdir -p $EXTENSIONS_DIR
-  mkdir -p $PLUGINS_DIR
-  mkdir -p $LOG_DIR
-  mkdir -p $PID_DIR
-  mkdir -p $DEFAULTS_DIR
-  mkdir -p $TMP_DIR
-
-  <% if platform_family == "solaris" -%>
-  mkdir -p /lib/svc/manifest/site
-  <% end -%>
-}
-
-create_sensu_config_example()
-{
-  set -e
-  cp $SHARE_DIR/sensu/etc/sensu/config.json.example $CONFIG_DIR
-}
-
-create_sensu_default()
-{
-  set -e
-  if [ ! -d "${ETC_DIR}/default" ]; then
-    mkdir $ETC_DIR/default
-  fi
-  cp $SHARE_DIR/sensu/etc/default/sensu $ETC_DIR/default/senszu
-}
-
-create_sensu_logrotated_config()
-{
-  set -e
-  if [ -d "${ETC_DIR}/logrotate.d" ]; then
-    cp $SHARE_DIR/sensu/etc/logrotate.d/sensu $ETC_DIR/logrotate.d
-  fi
-}
-
 chown_sensu_dirs()
 {
   set -e
@@ -174,20 +134,9 @@ create_system_services()
   <% end -%>
 }
 
-create_sensu_symlinks()
-{
-  set -e
-  ln -sf $INSTALLER_DIR/bin/sensu-install /usr/bin/sensu-install
-}
-
 create_sensu_user_group
-create_sensu_dirs
-create_sensu_config_example
-create_sensu_default
-create_sensu_logrotated_config
 chown_sensu_dirs
 create_system_services
-create_sensu_symlinks
 
 echo "Thank you for installing Sensu!"
 
