@@ -6,16 +6,15 @@
 
 . /etc/rc.subr
 
-<% service = service_name.gsub("sensu_", "") -%>
 name="<%= service_name %>"
 rcvar="<%= service_name %>_enable"
 
 command="/opt/sensu/bin/sensu-service"
-command_args="start <%= service %> fork"
+command_args="start <%= service_shortname %> fork"
 command_interpreter="/opt/sensu/embedded/bin/ruby"
 
-pidfile="/var/run/sensu/sensu-<%= service %>.pid"
-procname="/opt/sensu/bin/sensu-<%= service %>"
+pidfile="/var/run/sensu/sensu-<%= service_shortname %>.pid"
+procname="/opt/sensu/bin/sensu-<%= service_shortname %>"
 
 extra_commands="validate_config"
 
@@ -27,8 +26,8 @@ validate_config_cmd="<%= service_name %>_validate_config"
 <%= service_name %>_user="sensu"
 
 <%= service_name %>_validate_config() {
-  echo "Validating sensu-<%= service %> configuration"
-  su -m $sensu_client_user -c "${command} validate <%= service %>"
+  echo "Validating sensu-<%= service_shortname %> configuration"
+  su -m $sensu_client_user -c "${command} validate <%= service_shortname %>"
   if [ $? != 0 ]; then
     return 1
   fi

@@ -4,7 +4,7 @@
 # description: Sensu monitoring framework service
 
 ### BEGIN INIT INFO
-# Provides:       sensu-service
+# Provides:       <%= service_shortname %>
 # Required-Start: $remote_fs $network
 # Required-Stop:  $remote_fs $network
 # Default-Start:  2 3 4 5
@@ -12,8 +12,7 @@
 # Description:    Sensu monitoring framework service script
 ### END INIT INFO
 
-sensu_service=$1
-service_name=sensu-$1
+service_name=<%= service_name %>
 
 EMBEDDED_RUBY=true
 CONFIG_FILE=/etc/sensu/config.json
@@ -156,7 +155,7 @@ exec="/opt/sensu/bin/sensu-service"
 pidfile=$PID_DIR/$service_name.pid
 logfile=$LOG_DIR/$service_name.log
 
-options="start $1 fork"
+options="start <%= service_shortname %> fork"
 
 set_sensu_paths() {
     if [ "x$EMBEDDED_RUBY" = "xtrue" ]; then
@@ -240,7 +239,7 @@ stop() {
     fi
 
     if [ -n "$pid" ]; then
-  
+
         # test if pid is running
         kill -0 $pid > /dev/null 2>&1
         retval=$?
@@ -315,7 +314,7 @@ status() {
 
 validate_config() {
     validate_pidfile=$PID_DIR/$service_name-validate.pid
-    start_daemon $USER $validate_pidfile $exec "validate $sensu_service fork"
+    start_daemon $USER $validate_pidfile $exec "validate <%= service_shortname %> fork"
 }
 
 restart() {
@@ -338,7 +337,7 @@ restart() {
     fi
 }
 
-case "$2" in
+case "$1" in
     start)
         start
         ;;
@@ -355,7 +354,7 @@ case "$2" in
         validate_config
         ;;
     *)
-        echo "Usage: $0 {client|server|api} {start|stop|status|restart|validate_config}"
+        echo "Usage: $0 {start|stop|status|restart|validate_config}"
         exit 2
 esac
 

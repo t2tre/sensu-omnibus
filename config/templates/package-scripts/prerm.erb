@@ -14,40 +14,55 @@
 #
 
 set -e
+set -x
 
 is_darwin()
 {
+  set +e
   uname -v | grep "^Darwin" > /dev/null 2>&1
+  set -e
 }
 
 is_smartos()
 {
+  set +e
   uname -v | grep "^joyent" > /dev/null 2>&1
+  set -e
 }
 
 is_aix()
 {
+  set +e
   uname -a | grep "^AIX" > /dev/null 2>&1
+  set -e
 }
 
 is_freebsd()
 {
+  set +e
   uname -v | grep "^FreeBSD" > /dev/null 2>&1
+  set -e
 }
 
 is_solaris()
 {
+  set +e
   uname -a | grep "^SunOS" > /dev/null 2>&1
+  set -e
 }
 
 is_linux()
 {
+  set +e
   uname -a | grep "^Linux" > /dev/null 2>&1
+  set -e
 }
 
 using_systemd()
 {
+  set +e
   [ -e "/proc/1/comm" ] && grep -q "^systemd$" /proc/1/comm
+  set -e
 }
 
 PROGNAME=`basename $0`
@@ -60,6 +75,7 @@ error_exit()
 
 stop_sensu_services()
 {
+  set -e
   if is_aix; then
     stopsrc -s sensu-client > /dev/null 2>&1
   elif is_solaris; then

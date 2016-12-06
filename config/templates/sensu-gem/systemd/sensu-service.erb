@@ -1,10 +1,10 @@
 [Unit]
-Description=sensu server
+Description=sensu <%= service_shortname %>
 
 [Service]
 User=sensu
 Group=sensu
-ExecStart=/opt/sensu/bin/sensu-service start server
+ExecStart=/opt/sensu/bin/sensu-service start <%= service_shortname %>
 KillMode=process
 Restart=on-failure
 RestartSec=1min

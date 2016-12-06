@@ -1,8 +1,44 @@
 module Helpers
   SERVICE_MANAGERS = [
     :systemd,
-    :sysvinit
+    :sysvinit,
+    :rcd,
+    :smf,
   ].freeze
+
+  def self.service_manager_for(platform, version)
+    case platform
+    when /redhat/, /centos/, /scientific/, /amazon/
+      case
+      when version < "7"
+        :sysvinit
+      when version >= "7"
+        :systemd
+      end
+    when /debian/, /raspbian/
+      case
+      when version < "8"
+        :sysvinit
+      when version >= "8"
+        :systemd
+      end
+    when /ubuntu/
+      case
+      when version < "15.04"
+        :sysvinit
+      when version >= "15.04"
+        :systemd
+      end
+    when /freebsd/
+      :rcd
+    when /aix/
+      :ssys
+    when /solaris2/
+      :smf
+    else
+      raise "#{platform_family} is not a supported build target"
+    end
+  end
 
   def self.services(service_manager)
     services = [
@@ -11,24 +47,37 @@ module Helpers
       "sensu-server",
     ]
     case service_manager
-    when :sysvinit
-      services << "sensu-service-init"
     when :rcd
       services.map! do |service|
         service.gsub("-", "_")
       end
+    when :ssys
+      services = ["sensu-client"]
     end
     services
   end
 
-  def self.directory_for_service(service_manager)
+  def self.directory_for_service(platform_family, service_manager)
+    unknown_combo = "No service directory defined for service manager " +
+      "\"#{service_manager}\" on platform \"#{platform_family}\""
     case service_manager
     when :systemd
       "/etc/systemd/system"
     when :sysvinit
-      "/etc/init.d"
+      case platform_family
+      when "debian"
+        "/etc/init.d"
+      when "rhel"
+        "/etc/rc.d/init.d"
+      else
+        raise unknown_combo
+      end
     when :rcd
       "/usr/local/etc/rc.d"
+    when :smf
+      "/lib/svc/manifest/site"
+    else
+      raise unknown_combo
     end
   end
 
@@ -36,10 +85,14 @@ module Helpers
     case service_manager
     when :systemd
       "#{service}.service"
-    when :sysvinit
+    when :sysvinit, :ssys
       service
     when :rcd
       service.gsub("_", "-")
+    when :smf
+      "#{service}.xml"
+    else
+      raise "Could not determine filename for #{service} and #{service_manager}"
     end
   end
 end
