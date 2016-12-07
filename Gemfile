@@ -17,6 +17,7 @@ group :development do
   gem 'berkshelf', '~> 4.2'
 
   # Use Test Kitchen with Vagrant for converging the build environment
-  gem 'test-kitchen',    '~> 1.4'
-  gem 'kitchen-vagrant', '~> 0.18'
+  gem 'test-kitchen',            '~> 1.4'
+  gem 'kitchen-vagrant',         '~> 0.18'
+  gem 'kitchen-ec2',             '~> 1.2'
 end
