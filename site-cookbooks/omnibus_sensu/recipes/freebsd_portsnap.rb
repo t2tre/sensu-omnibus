@@ -26,7 +26,7 @@ if node['platform'] == 'freebsd'
     package "gcc"
 
     portsnap_bin = 'portsnap'
-    portsnap_options = '--interactive'
+    portsnap_options = 'cron'
   else
     portsnap_bin = File.join(Chef::Config[:file_cache_path], 'portsnap')
     portsnap_options = ''
