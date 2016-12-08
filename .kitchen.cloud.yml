@@ -57,6 +57,8 @@ platforms:
       - omnibus_sensu::freebsd_portsnap
       - freebsd::pkgng
   - name: freebsd-10.3
+    driver:
+      user_data: "user-data/freebsd-10.sh"
     run_list:
       - omnibus_sensu::freebsd_portsnap
       - freebsd::pkgng

@@ -5,7 +5,13 @@
 # Copyright (c) 2016 Sensu, All Rights Reserved.
 
 include_recipe "omnibus::default"
-include_recipe "git"
+
+case node["platform_family"]
+when "freebsd"
+  package "git"
+else
+  include_recipe "git"
+end
 
 case node["platform_family"]
 when "rhel"
@@ -15,6 +21,13 @@ end
 
 gem_package "ffi-yajl" do
   gem_binary "/opt/omnibus-toolchain/bin/gem"
+end
+
+directory node["omnibus_sensu"]["project_dir"] do
+  user node["omnibus"]["build_user"]
+  group node["omnibus"]["build_user_group"]
+  recursive true
+  action :create
 end
 
 git node["omnibus_sensu"]["project_dir"] do
@@ -62,5 +75,5 @@ execute "publish_sensu_#{artifact_id}_artifact" do
     'LOGNAME' => node["omnibus"]["build_user"],
     'AWS_S3_BUCKET' => node["omnibus_sensu"]["aws"]["artifact_bucket_name"]
   })
-  only_if lazy { node["omnibus_sensu"]["publish_artifacts"] }
+  only_if { node["omnibus_sensu"]["publish_artifacts"] }
 end
