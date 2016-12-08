@@ -26,7 +26,7 @@ if node['platform'] == 'freebsd'
     package "gcc"
 
     portsnap_bin = 'portsnap'
-    portsnap_options = 'cron'
+    portsnap_options = '--interactive'
   else
     portsnap_bin = File.join(Chef::Config[:file_cache_path], 'portsnap')
     portsnap_options = ''
@@ -49,7 +49,7 @@ if node['platform'] == 'freebsd'
 
   # Ensure we have a ports tree
   unless File.exist?('/usr/ports/.portsnap.INDEX')
-    e = execute "#{portsnap_bin} fetch extract #{portsnap_options}".strip do
+    e = execute "#{portsnap_bin} #{portsnap_options} fetch extract".strip do
       action(node['freebsd']['compiletime_portsnap'] ? :nothing : :run)
     end
     e.run_action(:run) if node['freebsd']['compiletime_portsnap']
