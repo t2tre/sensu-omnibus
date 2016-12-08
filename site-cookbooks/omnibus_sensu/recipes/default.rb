@@ -64,7 +64,7 @@ execute "publish_sensu_#{artifact_id}_s3" do
   command(
     <<-CODE.gsub(/^ {10}/, '')
           . #{::File.join(build_user_home, 'load-omnibus-toolchain.sh')}
-          bundle exec omnibus publish s3 #{node["omnibus_sensu"]["publishers"]["aws"]["bucket_name"]} "pkg/sensu*.#{value_for_platform(pkg_suffix_map)}"
+          bundle exec omnibus publish s3 #{node["omnibus_sensu"]["publishers"]["s3"]["bucket_name"]} "pkg/sensu*.#{value_for_platform(pkg_suffix_map)}"
         CODE
   )
   cwd node["omnibus_sensu"]["project_dir"]
@@ -75,14 +75,14 @@ execute "publish_sensu_#{artifact_id}_s3" do
     'LOGNAME' => node["omnibus"]["build_user"],
     'AWS_S3_BUCKET' => node["omnibus_sensu"]["publishers"]["s3"]["bucket_name"]
   })
-  only_if { node["omnibus_sensu"]["publishers"].has_key?("s3") }
+  only_if { !node["omnibus_sensu"]["publishers"]["s3"].empty? }
 end
 
 execute "publish_sensu_#{artifact_id}_artifactory" do
   command(
     <<-CODE.gsub(/^ {10}/, '')
           . #{::File.join(build_user_home, 'load-omnibus-toolchain.sh')}
-          bundle exec omnibus publish artifactory #{node["omnibus_sensu"]["publishsers"]["artifactory"]["repository"]} "pkg/sensu*.#{value_for_platform(pkg_suffix_map)}"
+          bundle exec omnibus publish artifactory #{node["omnibus_sensu"]["publishers"]["artifactory"]["repository"]} "pkg/sensu*.#{value_for_platform(pkg_suffix_map)}"
         CODE
   )
   cwd node["omnibus_sensu"]["project_dir"]
@@ -96,5 +96,5 @@ execute "publish_sensu_#{artifact_id}_artifactory" do
     'ARTIFACTORY_USERNAME' => node["omnibus_sensu"]["publishers"]["artifactory"]["username"],
     'ARTIFACTORY_PASSWORD' => node["omnibus_sensu"]["publishers"]["artifactory"]["password"]
   })
-  only_if { node["omnibus_sensu"]["publishers"].has_key?("artifactory") }
+  only_if { !node["omnibus_sensu"]["publishers"]["artifactory"].empty? }
 end
