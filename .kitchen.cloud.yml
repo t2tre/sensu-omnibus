@@ -6,6 +6,19 @@ gnupg_path = ENV["GNUPG_PATH"]
 aws_ssh_key_id = ENV["AWS_SSH_KEY_ID"]
 aws_ssh_key_path = ENV["AWS_SSH_KEY_PATH"]
 
+artifactory = {}
+artifactory[:repository] = ENV["ARTIFACTORY_REPOSITORY"]
+artifactory[:base_path] = ENV["ARTIFACTORY_BASE_PATH"]
+artifactory[:endpoint] = ENV["ARTIFACTORY_ENDPOINT"]
+artifactory[:username] = ENV["ARTIFACTORY_USERNAME"]
+artifactory[:password] = ENV["ARTIFACTORY_PASSWORD"]
+artifactory_enabled = !artifactory.any? { |k,v| v.nil? }
+
+s3 = {}
+s3[:bucket_region] = ENV["S3_BUCKET_REGION"]
+s3[:bucket_name] = ENV["S3_BUCKET_NAME"]
+s3_enabled = !s3.any? { |k,v| v.nil? }
+
 if gpg_passphrase && gnupg_path
   # no-op
 elsif gpg_passphrase || gnupg_path
@@ -32,6 +45,22 @@ transport:
 provisioner:
   name: chef_zero
   require_chef_omnibus: 12.13.37
+  attributes:
+    omnibus_sensu:
+      publishers:
+        <% if artifactory_enabled %>
+        artifactory:
+          repository: <%= artifactory[:repository] %>
+          base_path: <%= artifactory[:base_path] %>
+          endpoint: <%= artifactory[:endpoint] %>
+          username: <%= artifactory[:username] %>
+          password: <%= artifactory[:password] %>
+        <% end %>
+        <% if s3_enabled %>
+        s3:
+          bucket_region: <%= s3[:bucket_region]
+          bucket_name: <%= s3[:bucket_name]
+        <% end %>
 
 platforms:
   - name: centos-7

@@ -60,11 +60,11 @@ pkg_suffix_map = {
 
 artifact_id = node["omnibus_sensu"]["build_version"] + node["omnibus_sensu"]["build_iteration"]
 
-execute "publish_sensu_#{artifact_id}_artifact" do
+execute "publish_sensu_#{artifact_id}_s3" do
   command(
     <<-CODE.gsub(/^ {10}/, '')
           . #{::File.join(build_user_home, 'load-omnibus-toolchain.sh')}
-          bundle exec omnibus publish s3 #{node["omnibus_sensu"]["aws"]["artifact_bucket_name"]} "pkg/sensu*.#{value_for_platform(pkg_suffix_map)}"
+          bundle exec omnibus publish s3 #{node["omnibus_sensu"]["publishers"]["aws"]["bucket_name"]} "pkg/sensu*.#{value_for_platform(pkg_suffix_map)}"
         CODE
   )
   cwd node["omnibus_sensu"]["project_dir"]
@@ -73,7 +73,28 @@ execute "publish_sensu_#{artifact_id}_artifact" do
     'USER' => node["omnibus"]["build_user"],
     'USERNAME' => node["omnibus"]["build_user"],
     'LOGNAME' => node["omnibus"]["build_user"],
-    'AWS_S3_BUCKET' => node["omnibus_sensu"]["aws"]["artifact_bucket_name"]
+    'AWS_S3_BUCKET' => node["omnibus_sensu"]["publishers"]["s3"]["bucket_name"]
   })
-  only_if { node["omnibus_sensu"]["publish_artifacts"] }
+  only_if { node["omnibus_sensu"]["publishers"].has_key?("s3") }
+end
+
+execute "publish_sensu_#{artifact_id}_artifactory" do
+  command(
+    <<-CODE.gsub(/^ {10}/, '')
+          . #{::File.join(build_user_home, 'load-omnibus-toolchain.sh')}
+          bundle exec omnibus publish artifactory #{node["omnibus_sensu"]["publishsers"]["artifactory"]["repository"]} "pkg/sensu*.#{value_for_platform(pkg_suffix_map)}"
+        CODE
+  )
+  cwd node["omnibus_sensu"]["project_dir"]
+  user node["omnibus"]["build_user"]
+  environment shared_env.merge!({
+    'USER' => node["omnibus"]["build_user"],
+    'USERNAME' => node["omnibus"]["build_user"],
+    'LOGNAME' => node["omnibus"]["build_user"],
+    'ARTIFACTORY_BASE_PATH' => node["omnibus_sensu"]["publishers"]["artifactory"]["base_path"],
+    'ARTIFACTORY_ENDPOINT' => node["omnibus_sensu"]["publishers"]["artifactory"]["endpoint"],
+    'ARTIFACTORY_USERNAME' => node["omnibus_sensu"]["publishers"]["artifactory"]["username"],
+    'ARTIFACTORY_PASSWORD' => node["omnibus_sensu"]["publishers"]["artifactory"]["password"]
+  })
+  only_if { node["omnibus_sensu"]["publishers"].has_key?("artifactory") }
 end
