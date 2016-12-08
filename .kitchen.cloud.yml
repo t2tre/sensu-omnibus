@@ -58,8 +58,8 @@ provisioner:
         <% end %>
         <% if s3_enabled %>
         s3:
-          bucket_region: <%= s3[:bucket_region]
-          bucket_name: <%= s3[:bucket_name]
+          bucket_region: <%= s3[:bucket_region] %>
+          bucket_name: <%= s3[:bucket_name] %>
         <% end %>
 
 platforms:
