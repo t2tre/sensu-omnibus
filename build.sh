@@ -16,7 +16,7 @@ if [ $(git describe --tags --exact-match $OMNIBUS_COMMIT) ]; then
     TAG_ITERATION=`git describe --abbrev=0 --tags | awk -F'-' '{print $2}'`
     export SENSU_VERSION=$TAG_VERSION
     export BUILD_NUMBER=$TAG_ITERATION
-
+    export KITCHEN_LOCAL_YAML=.kitchen.cloud.yml
     echo "Build artifact will be published as ${version}-${iteration}"
     bundle exec rake kitchen:default-$BUILD_PLATFORM
 else
