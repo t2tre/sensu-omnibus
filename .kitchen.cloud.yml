@@ -8,8 +8,8 @@ aws_ssh_key_path = ENV["AWS_SSH_KEY_PATH"]
 
 artifactory = {}
 artifactory[:repository] = ENV["ARTIFACTORY_REPOSITORY"]
-artifactory[:base_path] = ENV["ARTIFACTORY_BASE_PATH"]
-artifactory[:endpoint] = ENV["ARTIFACTORY_ENDPOINT"]
+artifactory[:base_path] = ENV.fetch("ARTIFACTORY_BASE_PATH", "com/sensuapp")
+artifactory[:endpoint] = ENV.fetch("ARTIFACTORY_ENDPOINT", "https://sensu.jfrog.io/sensu")
 artifactory[:username] = ENV["ARTIFACTORY_USERNAME"]
 artifactory[:password] = ENV["ARTIFACTORY_PASSWORD"]
 artifactory_enabled = !artifactory.any? { |k,v| v.nil? }
