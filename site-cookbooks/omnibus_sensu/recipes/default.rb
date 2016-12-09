@@ -55,7 +55,8 @@ pkg_suffix_map = {
   [:ubuntu, :debian]                   => { :default => "deb" },
   [:redhat, :centos, :fedora, :suse]   => { :default => "rpm" },
   :solaris                             => { "5.10" => "solaris", "5.11" => "ips" },
-  :aix                                 => { :default => "bff" }
+  :aix                                 => { :default => "bff" },
+  :freebsd                             => { :default => "txz" }
 }
 
 artifact_id = node["omnibus_sensu"]["build_version"] + node["omnibus_sensu"]["build_iteration"]
