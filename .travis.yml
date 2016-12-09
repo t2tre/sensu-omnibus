@@ -6,7 +6,9 @@ before_install:
 - gem update --system
 - gem --version
 - gem install bundler --version 1.11.2
-script: "./build.sh"
+script: openssl aes-256-cbc -K $encrypted_d8b89d758c52_key -iv $encrypted_d8b89d758c52_iv
+  -in sensu-omnibus-artifact-builder.pem.enc -out sensu-omnibus-artifact-builder.pem
+  -d && ./build.sh
 branches:
   only:
   - master
@@ -26,4 +28,4 @@ env:
   - BUILD_PLATFORM=freebsd-10 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
   - BUILD_PLATFORM=freebsd-9 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
   global:
-  - secure: s1CfELuT6wys2xTVCgNytd/DofR0XWhdlhqJyQv0n0q1CwSKz3nSLjqrFE3zpOq+7TsRW3t99vwdwFuV75rbBaiJHSS/B5qeLssUZYyFoSx4MDqBHjWm4c0WS6Q9GwVAehGzySCSKXf8jK4qx8iij+CI0qMRC+CXXzHe2mJ4Q1ELY+rA2rtsxIes3n3tkt3LUjpq79lRyRVeExBuT4kmofLoQU2v1FNvz70IY3q/QFkUNMPIr9pZmIY564YothigX6RcKFj2G26EhQWaLFOvVsBIs10+y/WCyEFE9H01Z1c+PS/vK0qJCd3eRTXnwbf2mYoygrXVwjuS8GORfZ4U3cBpy5010BAf30hODnbJMkM7YsPXZ/30buikXsZcuK8IHrYRrU2Rx9KGES6iidfFNpkCUkAr8V/r5ZkbUfW5EZlucbUwEvXsE77i4IPaGmpj6tjDGTJG/qtbukqO93R8Zt9xfqgkVLVzvHbBUOtg+5M2+iV9DzEJ2xXmVyTaYjB6Zw76uPbcOjvR/CnB85xAxgFxYlnqLtITeUzNEjXKvvYAPPa/lD2w+Zzb8zWAWR4M4mYc+cfLQLeAHg7clEYwSnS2jL7TpksFuRFqUVsj9BCG4gHPSCmtvH8jCRjYzg8cueS84RUDtEZnJB+me2QOW3NFpLspOGBKUHndqBFvcOc=
+    secure: MCQDX/28gUPCwZaSaBNnvteYTqhuaulhxAmC7C7dixw+DyUnkyBsgfNBmi4FCLPIIsnDTVmuodGjP17gYTsmt/3HwhYtsH9SrN/9/meI3iS7kvYx1fHX2DnQqMqlOErlSbZ28BgIJNm/Ze7EhRFG4G03YpMT5/prSbus31TrmUkUIhZqj8cQ5LWfN7GlnMzDlGTikS/dRrBSKscBtjyiavbbNtF6LuVcBaLOAzcFxSv0PH73+2UviUK19sFs7s6xSQ69z12ovsn6QIPg0DztwLntk9Rkv2LUyp1KmASTYbWGmpv6bx+4W9lUL4syRNNTGlytdVLhTSis9KgNj8W8JCU179X1AXPwE0lmeFKQsA0J6cPPsuGMTDavfnaWMhV3CKCkQxAOoIhWPX/JBWrUSEFe5j52W1jpyXL0RN//B0mJHfXqFGuqVRTqxPIGkGVINvdpveys/PMQRCkwvAtPIkfQs5KG4it53OBYgpOyHl7kmTDzxwuyCY7yJeol2PPb3R8ZxFUqYBZiVnRz063hryhjbWgY+x1eLnd2P80oqxqmAx2EOczbh8/EQodqVmF4cWHsT6uYdnWrtYyDoSk7fXWVVn3aWuPGVhzWANhNDpUJ6aw4gl4rtt+hhvH+hricPK5rkEcBtdHwwYB+Ea+odQBONYNQPmHcWxk3GBuj7nQ=
