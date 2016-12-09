@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 # Install omnibus
 gem 'omnibus', :git => 'https://github.com/sensu/omnibus.git', :branch => 'master'
 gem 'ffi-yajl', '2.3.0'
+gem 'artifactory', '2.5.1'
 
 # Use Chef's software definitions. It is recommended that you write your own
 # software definitions, but you can clone/fork Chef's to get you started.
