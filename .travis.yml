@@ -1,16 +1,18 @@
 sudo: false
 language: ruby
 rvm: 2.3.0
-bundler_args: --without='vagrant'
+bundler_args: "--without='vagrant'"
 before_install:
-  - gem update --system
-  - gem --version
-  - gem install bundler --version 1.11.2
+- gem update --system
+- gem --version
+- gem install bundler --version 1.11.2
+script: "./build.sh"
 branches:
   only:
   - master
-  - /^v\d.*\.\d.*\.\d.*-.*\d$/
+  - "/^v\\d.*\\.\\d.*\\.\\d.*-.*\\d$/"
 env:
+  matrix:
   - BUILD_PLATFORM=debian-7 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
   - BUILD_PLATFORM=debian-7-i386 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
   - BUILD_PLATFORM=debian-6 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
@@ -24,5 +26,4 @@ env:
   - BUILD_PLATFORM=freebsd-10 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
   - BUILD_PLATFORM=freebsd-9 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
   global:
-    secure: s1CfELuT6wys2xTVCgNytd/DofR0XWhdlhqJyQv0n0q1CwSKz3nSLjqrFE3zpOq+7TsRW3t99vwdwFuV75rbBaiJHSS/B5qeLssUZYyFoSx4MDqBHjWm4c0WS6Q9GwVAehGzySCSKXf8jK4qx8iij+CI0qMRC+CXXzHe2mJ4Q1ELY+rA2rtsxIes3n3tkt3LUjpq79lRyRVeExBuT4kmofLoQU2v1FNvz70IY3q/QFkUNMPIr9pZmIY564YothigX6RcKFj2G26EhQWaLFOvVsBIs10+y/WCyEFE9H01Z1c+PS/vK0qJCd3eRTXnwbf2mYoygrXVwjuS8GORfZ4U3cBpy5010BAf30hODnbJMkM7YsPXZ/30buikXsZcuK8IHrYRrU2Rx9KGES6iidfFNpkCUkAr8V/r5ZkbUfW5EZlucbUwEvXsE77i4IPaGmpj6tjDGTJG/qtbukqO93R8Zt9xfqgkVLVzvHbBUOtg+5M2+iV9DzEJ2xXmVyTaYjB6Zw76uPbcOjvR/CnB85xAxgFxYlnqLtITeUzNEjXKvvYAPPa/lD2w+Zzb8zWAWR4M4mYc+cfLQLeAHg7clEYwSnS2jL7TpksFuRFqUVsj9BCG4gHPSCmtvH8jCRjYzg8cueS84RUDtEZnJB+me2QOW3NFpLspOGBKUHndqBFvcOc=
-script: "./build.sh"
+  - secure: s1CfELuT6wys2xTVCgNytd/DofR0XWhdlhqJyQv0n0q1CwSKz3nSLjqrFE3zpOq+7TsRW3t99vwdwFuV75rbBaiJHSS/B5qeLssUZYyFoSx4MDqBHjWm4c0WS6Q9GwVAehGzySCSKXf8jK4qx8iij+CI0qMRC+CXXzHe2mJ4Q1ELY+rA2rtsxIes3n3tkt3LUjpq79lRyRVeExBuT4kmofLoQU2v1FNvz70IY3q/QFkUNMPIr9pZmIY564YothigX6RcKFj2G26EhQWaLFOvVsBIs10+y/WCyEFE9H01Z1c+PS/vK0qJCd3eRTXnwbf2mYoygrXVwjuS8GORfZ4U3cBpy5010BAf30hODnbJMkM7YsPXZ/30buikXsZcuK8IHrYRrU2Rx9KGES6iidfFNpkCUkAr8V/r5ZkbUfW5EZlucbUwEvXsE77i4IPaGmpj6tjDGTJG/qtbukqO93R8Zt9xfqgkVLVzvHbBUOtg+5M2+iV9DzEJ2xXmVyTaYjB6Zw76uPbcOjvR/CnB85xAxgFxYlnqLtITeUzNEjXKvvYAPPa/lD2w+Zzb8zWAWR4M4mYc+cfLQLeAHg7clEYwSnS2jL7TpksFuRFqUVsj9BCG4gHPSCmtvH8jCRjYzg8cueS84RUDtEZnJB+me2QOW3NFpLspOGBKUHndqBFvcOc=
