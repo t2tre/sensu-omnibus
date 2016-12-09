@@ -8,6 +8,5 @@ pkg/*
 bin/*
 files/**/cache/
 vendor/cookbooks
-*.lock
 *~
 .envrc
