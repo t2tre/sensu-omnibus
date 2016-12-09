@@ -20,7 +20,7 @@ env:
   - BUILD_PLATFORM=ubuntu-1204-i386 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
   - BUILD_PLATFORM=centos-7 ARTIFACTORY_REPOSITORY=sensu-yum-unstable
   - BUILD_PLATFORM=centos-6 ARTIFACTORY_REPOSITORY=sensu-yum-unstable
-  - BUILD_PLATFORM=freebsd-110 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
-  - BUILD_PLATFORM=freebsd-103 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
-  - BUILD_PLATFORM=freebsd-93 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
+  - BUILD_PLATFORM=freebsd-11 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
+  - BUILD_PLATFORM=freebsd-10 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
+  - BUILD_PLATFORM=freebsd-9 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
 script: ./build.sh
