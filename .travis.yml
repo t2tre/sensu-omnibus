@@ -1,0 +1,26 @@
+sudo: false
+language: ruby
+rvm: 2.3.0
+bundler_args: --without='vagrant'
+before_install:
+  - gem update --system
+  - gem --version
+  - gem install bundler --version 1.11.2
+branches:
+  only:
+  - master
+  - /^v\d.*\.\d.*\.\d.*-.*\d$/
+env:
+  - BUILD_PLATFORM=debian-7 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
+  - BUILD_PLATFORM=debian-7-i386 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
+  - BUILD_PLATFORM=debian-6 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
+  - BUILD_PLATFORM=ubuntu-1604 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
+  - BUILD_PLATFORM=ubuntu-1404 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
+  - BUILD_PLATFORM=ubuntu-1204 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
+  - BUILD_PLATFORM=ubuntu-1204-i386 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
+  - BUILD_PLATFORM=centos-7 ARTIFACTORY_REPOSITORY=sensu-yum-unstable
+  - BUILD_PLATFORM=centos-6 ARTIFACTORY_REPOSITORY=sensu-yum-unstable
+  - BUILD_PLATFORM=freebsd-110 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
+  - BUILD_PLATFORM=freebsd-103 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
+  - BUILD_PLATFORM=freebsd-93 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
+script: ./build.sh
