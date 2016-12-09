@@ -11,8 +11,8 @@ fi
 
 OMNIBUS_COMMIT=`git rev-parse HEAD`
 
-if [ $(git describe --tags --exact-match $OMNIBUS_COMMIT) ]; then
-    TAG_VERSION=`git describe --abbrev=0 --tags | awk -F'-' '{print $1}'`
+if [ `git describe --tags --exact-match $OMNIBUS_COMMIT` ]; then
+    TAG_VERSION=`git describe --abbrev=0 --tags | awk -F'-' '{print $1}' | sed 's/v//g'`
     TAG_ITERATION=`git describe --abbrev=0 --tags | awk -F'-' '{print $2}'`
     export SENSU_VERSION=$TAG_VERSION
     export BUILD_NUMBER=$TAG_ITERATION

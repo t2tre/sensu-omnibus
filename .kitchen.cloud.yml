@@ -33,7 +33,9 @@ end
 driver:
   name: ec2
   instance_type: m3.medium
-  iam_profile_name: sensu-omnibus-artifact-manager
+  <% if ENV['AWS_IAM_PROFILE_NAME'] %>
+  iam_profile_name: <% ENV['AWS_IAM_PROFILE_NAME'] %>
+  <% end %>
   <% unless aws_ssh_key_id.nil? %>
   aws_ssh_key_id: <%= aws_ssh_key_id %>
   <% end %>
