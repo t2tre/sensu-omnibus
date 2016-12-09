@@ -7,7 +7,7 @@ before_install:
 - gem --version
 - gem install bundler --version 1.11.2
 - "openssl aes-256-cbc -K $encrypted_d8b89d758c52_key -iv $encrypted_d8b89d758c52_iv -in .travis/sensu-omnibus-artifact-builder.pem.enc -out .travis/sensu-omnibus-artifact-builder.pem -d"
-script: "./build.sh"
+script: travis_wait 30 ./build.sh
 branches:
   only:
   - master
