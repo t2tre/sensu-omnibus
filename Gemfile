@@ -1,13 +1,11 @@
 source 'https://rubygems.org'
 
+gem 'rake'
+
 # Install omnibus
 gem 'omnibus', :git => 'https://github.com/sensu/omnibus.git', :branch => 'master'
 gem 'ffi-yajl', '2.3.0'
 gem 'artifactory', '2.5.1'
-
-# Use Chef's software definitions. It is recommended that you write your own
-# software definitions, but you can clone/fork Chef's to get you started.
-# gem 'omnibus-software', github: 'opscode/omnibus-software'
 
 # This development group is installed by default when you run `bundle install`,
 # but if you are using Omnibus in a CI-based infrastructure, you do not need
@@ -17,8 +15,14 @@ group :development do
   # Use Berkshelf for resolving cookbook dependencies
   gem 'berkshelf', '~> 4.2'
 
-  # Use Test Kitchen with Vagrant for converging the build environment
+  # Use Test Kitchen for converging the build environment
   gem 'test-kitchen',            '~> 1.4'
+end
+
+group :vagrant do
   gem 'kitchen-vagrant',         '~> 0.18'
+end
+
+group :ec2 do
   gem 'kitchen-ec2',             '~> 1.2'
 end
