@@ -39,6 +39,12 @@ driver:
   <% unless aws_ssh_key_id.nil? %>
   aws_ssh_key_id: <%= aws_ssh_key_id %>
   <% end %>
+  tags:
+    "Name": sensu-omnibus-artifact-builder
+    "created-by": "test-kitchen"
+  <% if ENV['TRAVIS'] == 'true' %>
+    "travis-job-number": <%= TRAVIS_JOB_NUMBER %>
+  <% end %>
 <% unless aws_ssh_key_path.nil? %>
 transport:
   ssh_key: <%= aws_ssh_key_path %>
