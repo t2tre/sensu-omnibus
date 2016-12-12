@@ -68,10 +68,13 @@ platforms:
     run_list: yum-epel::default
   - name: centos-6
     run_list: yum-epel::default
-  - name: centos-5.11
-    run_list: yum-epel::default
-  - name: centos-5.11-i386
+  - name: centos-5
     driver:
+      image_id: ami-2a911c1a
+    run_list: yum-epel::default
+  - name: centos-5-i386
+    driver:
+      image_id: ami-2a911c1a
       instance_type: m1.medium
     run_list: yum-epel::default
   - name: debian-7
