@@ -56,6 +56,7 @@ shared_env = {
   edit_resource(:execute, ["sensu: ", omnibus_cmd_string].join) do
     command ""
     live_stream true
+    action :nothing
   end
 end
 
