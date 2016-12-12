@@ -48,20 +48,22 @@ shared_env = {
   "AWS_SECRET_ACCESS_KEY" => node["omnibus_sensu"]["publishers"]["s3"]["secret_access_key"]
 }
 
+# pre-create omnibus execute resources which should be updated once omnibus_build lwrp executes
+[
+  "bundle exec omnibus build sensu --log-level internal --config /opt/sensu-omnibus/omnibus.rb ",
+  "bundle install --without development --deployment"
+].each do |omnibus_cmd_string|
+  edit_resource(:execute, ["sensu: ", omnibus_cmd_string].join) do
+    command ""
+    live_stream true
+  end
+end
+
 omnibus_build "sensu" do
   project_dir node["omnibus_sensu"]["project_dir"]
   log_level :internal
   build_user "root"
   environment shared_env
-end
-
-[
-  "bundle exec omnibus build sensu --log-level internal --config /opt/sensu-omnibus/omnibus.rb ",
-  "bundle install --without development --deployment"
-].each do |omnibus_cmd_string|
-  edit_resource!(:execute, ["sensu: ", omnibus_cmd_string].join) do
-    live_stream true
-  end
 end
 
 pkg_suffix_map = {
