@@ -8,8 +8,8 @@ aws_ssh_key_path = ENV["AWS_SSH_KEY_PATH"]
 
 s3 = {}
 s3[:region] = ENV["AWS_REGION"]
-s3[:artifact_bucket] = ENV["S3_ARTIFACT_BUCKET"]
-s3[:cache_bucket] = ENV["S3_CACHE_BUCKET"]
+s3[:artifact_bucket] = ENV["AWS_S3_ARTIFACT_BUCKET"]
+s3[:cache_bucket] = ENV["AWS_S3_CACHE_BUCKET"]
 s3_enabled = !s3.any? { |k,v| v.nil? }
 
 if ENV.key?("AWS_ACCESS_KEY_ID") && ENV.key?("AWS_SECRET_ACCESS_KEY")
