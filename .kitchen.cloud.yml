@@ -80,7 +80,9 @@ platforms:
     driver:
       instance_type: m1.medium
     run_list: apt::default
-  - name: debian-6
+  - name: debian-6-x86_64
+    run_list: apt::default
+  - name: debian-6-i386
     run_list: apt::default
   - name: freebsd-11
     driver:
