@@ -6,8 +6,10 @@ before_install:
 - gem update --system
 - gem --version
 - gem install bundler --version 1.11.2
-- "openssl aes-256-cbc -K $encrypted_d8b89d758c52_key -iv $encrypted_d8b89d758c52_iv -in .travis/sensu-omnibus-artifact-builder.pem.enc -out .travis/sensu-omnibus-artifact-builder.pem -d"
-script: ./build.sh
+- openssl aes-256-cbc -K $encrypted_d8b89d758c52_key -iv $encrypted_d8b89d758c52_iv
+  -in .travis/sensu-omnibus-artifact-builder.pem.enc -out .travis/sensu-omnibus-artifact-builder.pem
+  -d
+script: "./build.sh"
 branches:
   only:
   - master
@@ -30,4 +32,6 @@ env:
   - AWS_REGION=us-west-2
   - AWS_S3_CACHE_BUCKET=sensu-omnibus-cache
   - AWS_S3_ARTIFACT_BUCKET=sensu-omnibus-artifacts
-  - secure: DtnxUv18YOUX/dRAiKANrP9TsFbF2iSwPjGSu8pi9sa/kofwVFB7G9YUSxg9ot6MimoEDrvaQivpTWJVP8i7673TnNKaEwd8TZhXhMuBLs//9/GFk6xEoBJ8oO7U/JjilG6oReQgiwx5rwNV+sTU9nBMfuvvR3WGZ95o9MM4h+jlvzKesi2bSNUz0bxEyShU/DRNO7Ep6KPpFGB5thPPri8dq/1lXH4SnQOZHo/JOwsXqw28TwCaeI/V7mLe137fmlwICG+IQP6JcBpItK1p8LI4Knqb7PS1XibiIHIN3yfoTPpFQ+MMWzBXkLdZD6u6zqPc4vngDxnrHAQVMaKN9BqZrm/tCtueHEejDdFu6g/Ncwgpl7rpRUoT2ocL3ak5Zr3L7am4H1RXKE6Sky/WtwqdUk/KTk/5g7TwMMLsyxXes9/8Bq4SILWYWXCylczvyzNGJm/n9DTNjNhGtfQBdG7yHgtIdDo0/UBl11YRj5GekZHKwa56gf1HjyCNh+YDEXeprmeV9db1UfjV8oQ1sXE/V9FHqT69CcVcgvugZSpd8suiBuynObjjipVmPUXeOpe5BdWSTmc2TYk7/cSdONFw6omSWWOoTaK1ty98nSGLzGFMc6KKcwxkm1HP/fVxyhefWGnxEWEOpZYwC7ARwcIlemUh8HgR8+NtZX2K79w=
+  - AWS_SSH_KEY_ID=sensu-omnibus-builder
+  - AWS_SSH_KEY_PATH=.travis/sensu-omnibus-artifact-builder.pem
+  - secure: i5BU8vTJvS4jUAupUyGj4ccAYcn3uk7HbcMNRWijeFQ/7OhOrfjtVdAHQHR+Pp43qNdffseMAgPnX4xeU4T3NWUUHY21FQ4DtIVyDwrQWLnZ4AGGYtAcsiCa4GrKO2UQvySotByJ7uNCNjGuRjzcwdb8ZsKgPiXbx3bvsoPiBKyEK5Nf7EYj1VItR4ENsI274pCl0eUffqAe99vEmMwbhCmVQagLQcP24DijUyOaN55BmsU+/n2zzOSwigk2V/OSlxsahGsCgKVsVOq7TYZUwFvlheyBa7/5r0Tr/Aoa9ORmN/Hdy1CLaMccIBrbsuWHGwb6CsWDMUuqoSvmqgjUGuhX0sPP/le8FWHw+Fi1AHEWJCqqml909kzo8jPRaSvxhylPeAuPuf7QCc0x/3E8hssioVd9PvS7Vv37g+vCPthkBi2mdpBt3y1SF+jAdzkeQtphEPKbJ8ShiwTx9l6H3ajY2Wjzva06mkSm59ZlnOLA+C8goCDWqftGitzzFVsRN6iECjs0tyj3yZpVLy2Is+C14nee7r9e3N0joiQIrVhKRwxZEGCXRofnqBlNOntMk3Op0AK7WsWfNxXK4YioD3vOpTM3yGOsGURvAGHznbBxq6sysdc5xAsyDueXQuvbomGIOsBzcg0gFoBI23X+atRndRdQ8S64rGydSuZYSp4=
