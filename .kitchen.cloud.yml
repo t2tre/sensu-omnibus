@@ -7,9 +7,15 @@ aws_ssh_key_id = ENV["AWS_SSH_KEY_ID"]
 aws_ssh_key_path = ENV["AWS_SSH_KEY_PATH"]
 
 s3 = {}
-s3[:bucket_region] = ENV["S3_BUCKET_REGION"]
-s3[:bucket_name] = ENV["S3_BUCKET_NAME"]
+s3[:region] = ENV["AWS_REGION"]
+s3[:artifact_bucket] = ENV["S3_ARTIFACT_BUCKET"]
+s3[:cache_bucket] = ENV["S3_CACHE_BUCKET"]
 s3_enabled = !s3.any? { |k,v| v.nil? }
+
+if ENV.key?("AWS_ACCESS_KEY_ID") && ENV.key?("AWS_SECRET_ACCESS_KEY")
+  s3.merge!(:access_key_id => ENV["AWS_ACCESS_KEY_ID"])
+  s3.merge!(:secret_access_key => ENV["AWS_SECRET_ACCESS_KEY"])
+end
 
 if gpg_passphrase && gnupg_path
   # no-op
@@ -32,7 +38,7 @@ driver:
   aws_ssh_key_id: <%= aws_ssh_key_id %>
   <% end %>
   tags:
-    "Name": sensu-omnibus-artifact-builder
+    "Name": "sensu-omnibus-artifact-builder <%= ENV['BUILD_PLATFORM'] %>"
     "created-by": "test-kitchen"
   <% if ENV['TRAVIS'] == 'true' %>
     "travis-job-number": <%= TRAVIS_JOB_NUMBER %>
@@ -50,8 +56,11 @@ provisioner:
       publishers:
         <% if s3_enabled %>
         s3:
-          bucket_region: <%= s3[:bucket_region] %>
-          bucket_name: <%= s3[:bucket_name] %>
+          region: <%= s3[:region] %>
+          access_key_id: <%= s3[:access_key_id] %>
+          secret_access_key: <%= s3[:secret_access_key] %>
+          artifact_bucket: <%= s3[:artifact_bucket] %>
+          cache_bucket: <%= s3[:cache_bucket] %>
         <% end %>
 
 platforms:

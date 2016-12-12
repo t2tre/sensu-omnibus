@@ -38,10 +38,11 @@ append_timestamp false
 
 # Enable S3 asset caching
 # ------------------------------
-# use_s3_caching true
-# s3_access_key  ENV['AWS_ACCESS_KEY_ID']
-# s3_secret_key  ENV['AWS_SECRET_ACCESS_KEY']
-# s3_bucket      ENV['AWS_S3_BUCKET']
+use_s3_caching true
+s3_access_key  ENV['AWS_ACCESS_KEY_ID']
+s3_secret_key  ENV['AWS_SECRET_ACCESS_KEY']
+s3_bucket      ENV['AWS_S3_CACHE_BUCKET']
+s3_region      ENV['AWS_REGION']
 
 # Enable S3 asset caching
 # ------------------------------

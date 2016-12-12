@@ -41,7 +41,11 @@ end
 shared_env = {
   "SENSU_VERSION" => node["omnibus_sensu"]["build_version"],
   "BUILD_NUMBER" => node["omnibus_sensu"]["build_iteration"],
-  "GPG_PASSPHRASE" => node["omnibus_sensu"]["gpg_passphrase"]
+  "GPG_PASSPHRASE" => node["omnibus_sensu"]["gpg_passphrase"],
+  "AWS_REGION" => node["omnibus_sensu"]["publishers"]["s3"]["region"],
+  "AWS_S3_CACHE_BUCKET" => node["omnibus_sensu"]["publishers"]["s3"]["cache_bucket"],
+  "AWS_ACCESS_KEY_ID" => node["omnibus_sensu"]["publishers"]["s3"]["access_key_id"],
+  "AWS_SECRET_ACCESS_KEY" => node["omnibus_sensu"]["publishers"]["s3"]["secret_access_key"]
 }
 
 omnibus_build "sensu" do
@@ -49,6 +53,15 @@ omnibus_build "sensu" do
   log_level :internal
   build_user "root"
   environment shared_env
+end
+
+[
+  "bundle exec omnibus build sensu --log-level internal --config /opt/sensu-omnibus/omnibus.rb",
+  "bundle install --without development --deployment"
+].each do |omnibus_cmd_string|
+  edit_resource!(:execute, ["sensu: ", omnibus_cmd_string].join) do
+    live_stream true
+  end
 end
 
 pkg_suffix_map = {
