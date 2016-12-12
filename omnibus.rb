@@ -48,12 +48,6 @@ append_timestamp false
 publish_s3_access_key ENV['AWS_ACCESS_KEY_ID']
 publish_s3_secret_key ENV['AWS_SECRET_ACCESS_KEY']
 
-# Enable Artifactory asset publishing
-artifactory_base_path ENV["ARTIFACTORY_BASE_PATH"]
-artifactory_endpoint ENV["ARTIFACTORY_ENDPOINT"]
-artifactory_username ENV["ARTIFACTORY_USERNAME"]
-artifactory_password ENV["ARTIFACTORY_PASSWORD"]
-
 # Customize compiler bits
 # ------------------------------
 # solaris_compiler 'gcc'
