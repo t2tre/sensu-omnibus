@@ -83,16 +83,20 @@ platforms:
   - name: debian-6
     run_list: apt::default
   - name: freebsd-11
+    driver:
+      user_data: "user-data/freebsd.sh"
     run_list:
       - omnibus_sensu::freebsd_portsnap
       - freebsd::pkgng
   - name: freebsd-10
     driver:
-      user_data: "user-data/freebsd-10.sh"
+      user_data: "user-data/freebsd.sh"
     run_list:
       - omnibus_sensu::freebsd_portsnap
       - freebsd::pkgng
   - name: freebsd-9
+    driver:
+      user_data: "user-data/freebsd.sh"
     run_list:
       - freebsd::portsnap
       - freebsd::pkgng
