@@ -41,7 +41,7 @@ driver:
     "Name": "sensu-omnibus-artifact-builder <%= ENV['BUILD_PLATFORM'] %>"
     "created-by": "test-kitchen"
   <% if ENV['TRAVIS'] == 'true' %>
-    "travis-job-number": <%= TRAVIS_JOB_NUMBER %>
+    "travis-job-number": <%= ENV['TRAVIS_JOB_NUMBER'].nil? 'unknown' : ENV['TRAVIS_JOB_NUMBER'] %>
   <% end %>
 <% unless aws_ssh_key_path.nil? %>
 transport:
