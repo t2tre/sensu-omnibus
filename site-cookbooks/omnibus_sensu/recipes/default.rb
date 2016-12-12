@@ -70,7 +70,7 @@ execute "publish_sensu_#{artifact_id}_s3" do
   command(
     <<-CODE.gsub(/^ {10}/, '')
           . #{::File.join(build_user_home, 'load-omnibus-toolchain.sh')}
-          bundle exec omnibus publish s3 #{node["omnibus_sensu"]["publishers"]["s3"]["bucket_name"]} "pkg/sensu*.#{value_for_platform(pkg_suffix_map)}"
+          bundle exec omnibus publish s3 #{node["omnibus_sensu"]["publishers"]["s3"]["artifact_bucket"]} "pkg/sensu*.#{value_for_platform(pkg_suffix_map)}"
         CODE
   )
   cwd node["omnibus_sensu"]["project_dir"]
