@@ -38,14 +38,24 @@ git node["omnibus_sensu"]["project_dir"] do
   action :sync
 end
 
+template ::File.join(node["omnibus_sensu"]["project_dir"], "omnibus.rb") do
+  source "omnibus.rb.erb"
+  sensitive true
+  user node["omnibus"]["build_user"]
+  group node["omnibus"]["build_user_group"]
+  variables(
+    :use_s3_caching => true,
+    :aws_region => node["omnibus_sensu"]["publishers"]["s3"]["region"],
+    :aws_access_key_id => node["omnibus_sensu"]["publishers"]["s3"]["access_key_id"],
+    :aws_secret_access_key => node["omnibus_sensu"]["publishers"]["s3"]["secret_access_key"],
+    :aws_s3_cache_bucket => node["omnibus_sensu"]["publishers"]["s3"]["cache_bucket"]
+  )
+end
+
 shared_env = {
   "SENSU_VERSION" => node["omnibus_sensu"]["build_version"],
   "BUILD_NUMBER" => node["omnibus_sensu"]["build_iteration"],
-  "GPG_PASSPHRASE" => node["omnibus_sensu"]["gpg_passphrase"],
-  "AWS_REGION" => node["omnibus_sensu"]["publishers"]["s3"]["region"],
-  "AWS_S3_CACHE_BUCKET" => node["omnibus_sensu"]["publishers"]["s3"]["cache_bucket"],
-  "AWS_ACCESS_KEY_ID" => node["omnibus_sensu"]["publishers"]["s3"]["access_key_id"],
-  "AWS_SECRET_ACCESS_KEY" => node["omnibus_sensu"]["publishers"]["s3"]["secret_access_key"]
+  "GPG_PASSPHRASE" => node["omnibus_sensu"]["gpg_passphrase"]
 }
 
 omnibus_build "sensu" do
