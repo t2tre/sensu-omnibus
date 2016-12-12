@@ -56,7 +56,7 @@ omnibus_build "sensu" do
 end
 
 [
-  "bundle exec omnibus build sensu --log-level internal --config /opt/sensu-omnibus/omnibus.rb",
+  "bundle exec omnibus build sensu --log-level internal --config /opt/sensu-omnibus/omnibus.rb ",
   "bundle install --without development --deployment"
 ].each do |omnibus_cmd_string|
   edit_resource!(:execute, ["sensu: ", omnibus_cmd_string].join) do
