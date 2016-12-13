@@ -106,13 +106,6 @@ platforms:
     run_list:
       - omnibus_sensu::freebsd_portsnap
       - freebsd::pkgng
-  - name: freebsd-11-i386
-    driver:
-      instance_type: m1.medium
-      user_data: "user-data/freebsd.sh"
-    run_list:
-      - omnibus_sensu::freebsd_portsnap
-      - freebsd::pkgng
   - name: freebsd-10
     driver:
       user_data: "user-data/freebsd.sh"
