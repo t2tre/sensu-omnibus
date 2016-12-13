@@ -52,11 +52,13 @@ if node['platform'] == 'freebsd'
     e = execute "#{portsnap_bin} #{portsnap_options} fetch extract".strip do
       action(node['freebsd']['compiletime_portsnap'] ? :nothing : :run)
     end
+    e.live_stream(true)
     e.run_action(:run) if node['freebsd']['compiletime_portsnap']
   end
 
   e = execute "#{portsnap_bin} update #{portsnap_options}".strip do
     action(node['freebsd']['compiletime_portsnap'] ? :nothing : :run)
   end
+  e.live_stream(true)
   e.run_action(:run) if node['freebsd']['compiletime_portsnap']
 end
