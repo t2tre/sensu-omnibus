@@ -44,7 +44,6 @@ template ::File.join(node["omnibus_sensu"]["project_dir"], "omnibus.rb") do
   user node["omnibus"]["build_user"]
   group node["omnibus"]["build_user_group"]
   variables(
-    :use_s3_caching => true,
     :aws_region => node["omnibus_sensu"]["publishers"]["s3"]["region"],
     :aws_access_key_id => node["omnibus_sensu"]["publishers"]["s3"]["access_key_id"],
     :aws_secret_access_key => node["omnibus_sensu"]["publishers"]["s3"]["secret_access_key"],

@@ -38,7 +38,7 @@ append_timestamp false
 
 # Enable S3 asset caching
 # ------------------------------
-use_s3_caching <%= @use_s3_caching %>
+use_s3_caching <%= @aws_s3_cache_bucket.nil? ? false : true %>
 s3_access_key  "<%= @aws_access_key_id %>"
 s3_secret_key  "<%= @aws_secret_access_key %>"
 s3_bucket      "<%= @aws_s3_cache_bucket %>"
