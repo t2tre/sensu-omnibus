@@ -21,7 +21,7 @@ if node['platform'] == 'freebsd'
   case node['platform_version'].split(".").first
   when /11/
     portsnap_bin = 'portsnap'
-    portsnap_options = 'cron'
+    portsnap_options = '--interactive'
   when /10/
     package "gcc"
 
