@@ -74,19 +74,12 @@ platforms:
     run_list: yum-epel::default
   - name: centos-5
     driver:
-      image_id: ami-2a911c1a
-      instance_type: m1.medium
-      user_data: "user-data/centos5.sh"
-    transport:
-      username: root
+      image_id: ami-5a309a3a
     run_list: yum-epel::default
   - name: centos-5-i386
     driver:
-      image_id: ami-60f77a50
+      image_id: ami-1a0ba17a
       instance_type: m1.medium
-      user_data: "user-data/centos5.sh"
-    transport:
-      username: root
     run_list: yum-epel::default
   - name: debian-8
     run_list: apt::default
