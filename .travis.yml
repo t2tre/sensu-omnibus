@@ -30,6 +30,8 @@ env:
   - BUILD_PLATFORM=centos-7-i386
   - BUILD_PLATFORM=centos-6
   - BUILD_PLATFORM=centos-6-i386
+  - BUILD_PLATFORM=centos-5
+  - BUILD_PLATFORM=centos-5-i386
   - BUILD_PLATFORM=freebsd-11
   - BUILD_PLATFORM=freebsd-10
   - BUILD_PLATFORM=freebsd-10-i386
