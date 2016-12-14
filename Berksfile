@@ -8,6 +8,6 @@ cookbook 'omnibus', git: 'https://github.com/sensu/omnibus-cookbook.git', ref: '
 
 group :integration do
   cookbook 'apt',      '~> 2.8'
-  cookbook 'freebsd',  '~> 0.3'
+  cookbook 'freebsd',  git: 'https://github.com/amdprophet/freebsd-chef.git', ref: 'freebsd-11'
   cookbook 'yum-epel', '~> 0.6'
 end
