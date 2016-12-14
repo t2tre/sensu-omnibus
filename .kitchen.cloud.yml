@@ -71,6 +71,9 @@ platforms:
   - name: centos-6
     run_list: yum-epel::default
   - name: centos-6-i386
+    driver:
+      image_id: ami-4fbf2f7f
+      instance_type: m1.medium
     run_list: yum-epel::default
   - name: centos-5
     driver:
