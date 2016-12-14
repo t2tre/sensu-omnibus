@@ -14,6 +14,11 @@ branches:
   only:
   - master
   - "/^v\\d.*\\.\\d.*\\.\\d.*-.*\\d$/"
+matrix:
+  allow_failures:
+  - env: BUILD_PLATFORM=debian-8-i386
+  - env: BUILD_PLATFORM=centos-7-i386
+  - env: BUILD_PLATFORM=ubuntu-1604-i386
 env:
   matrix:
   - BUILD_PLATFORM=debian-8
@@ -35,10 +40,6 @@ env:
   - BUILD_PLATFORM=freebsd-11
   - BUILD_PLATFORM=freebsd-10
   - BUILD_PLATFORM=freebsd-10-i386
-    allow_failures:
-      - env: BUILD_PLATFORM=debian-8-i386
-      - env: BUILD_PLATFORM=centos-7-i386
-      - env: BUILD_PLATFORM=ubuntu-1604-i386
   global:
   - AWS_REGION=us-west-2
   - AWS_S3_CACHE_BUCKET=sensu-omnibus-cache
