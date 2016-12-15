@@ -76,6 +76,8 @@ module Helpers
       "/usr/local/etc/rc.d"
     when :smf
       "/lib/svc/manifest/site"
+    when :ssys
+      "" # service is installed by postinst script
     else
       raise unknown_combo
     end
