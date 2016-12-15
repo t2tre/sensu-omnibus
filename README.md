@@ -1,126 +1,103 @@
-sensu Omnibus project
+Sensu Omnibus project
 =====================
-This project creates full-stack platform-specific packages for
-`sensu`!
+This project uses [Chef's Omnibus toolchain](https://github.com/chef/omnibus) to
+create full-stack platform-specific [Sensu](https://sensuapp.org) packages.
 
-Preparing Build Environments
-----------------------------
+The configuration data in this repository describes the various dependencies
+which are built and included in the Sensu omnibus package. In addition to
+omnibus configuration, the project also includes a Chef cookbook, Test
+Kitchen and Travis CI configuration for executing individual builds in AWS EC2
+compute instances.
 
-* [AIX](platform-docs/AIX.md)
-* [Solaris 10](platform-docs/SOLARIS_10.md)
+## Supported Platforms
 
-Installation
-------------
-You must have a sane Ruby 1.9+ environment with Bundler installed. Ensure all
+### Packages Built Using Automation Pipeline
+
+Packages for Linux platforms are built automatically whenever a tag following
+the format `$SENSU_VERSION-$BUILD_NUMBER` is created on this repository.
+
+This is accomplished using Travis CI to run Test Kitchen for the following
+platform and architecture combinations:
+
+| Platform & Version | 64bit | 32bit | Comments                 |
+|--------------------|-------|-------|--------------------------|
+| Ubuntu 12.04       | ✅     | ✅     |                          |
+| Ubuntu 14.04       | ✅     | ✅     |                          |
+| Ubuntu 16.04       | ✅     | ❌     | No official 32bit images |
+| Debian 7           | ✅     | ✅     |                          |
+| Debian 8           | ✅     | ❌     | No official 32bit images |
+| CentOS 5           | ✅     | ✅     | 32 and 64bit images built with [sensu-omnibus-packer](https://github.com/sensu/sensu-omnibus-packer) |
+| CentOS 6           | ✅     | ✅     | Using unofficial 32bit image |
+| CentOS 7           | ✅     | ❌     | No official 32bit images |
+| FreeBSD 10         | ✅     | ✅     |                          |
+| FreeBSD 11         | ✅     | ❌     | No official 32bit images |
+
+### Packages Built By Hand
+
+Additional platform packages are built by hand on an ad hoc basis. We hope to
+add these builds to the automation pipeline in the future.
+
+| Platform & Version | Architecture | Comments                                                        |
+|--------------------|--------------|-----------------------------------------------------------------|
+| AIX                | PowerPC      | See [AIX platform notes](platform-docs/AIX.md) for instructions |
+| macOS 10.8         | x86_64       | Built with homebrew-sensu, not yet using omnibus                |
+| macOS 10.9+        | x86_64       | Built with homebrew-sensu, not yet using omnibus                |
+| Solaris 10         | i386         | See [Solaris 10](platform-docs/SOLARIS_10.md) for instructions  |
+| Solaris 11         | i386         | Documentation needed                                            |
+| Windows            | x86          | To be automated; currently depends on a hand-crafted VM.        |
+
+## Installation
+
+This project requires a Ruby 1.9+ environment with Bundler installed. Ensure all
 the required gems are installed:
 
 ```shell
 $ bundle install --binstubs
 ```
 
-Usage
------
-### Build
+## Test Kitchen Usage
 
-You create a platform-specific package using the `build project` command:
+The Test Kitchen `.kitchen.yml` configuration in this project defines the
+list of platforms we can build using Test Kitchen + Travis CI automation.
 
-```shell
-$ bin/omnibus build sensu
-```
-
-The platform/architecture type of the package created will match the platform
-where the `build project` command is invoked. For example, running this command
-on a MacBook Pro will generate a Mac OS X package. After the build completes
-packages will be available in the `pkg/` folder.
-
-### Clean
-
-You can clean up all temporary files generated during the build process with
-the `clean` command:
+In combination with the `sensu_omnibus` cookbook and `Berksfile` included in
+this project, builds can be initiated on EC2 instances from your local
+environment using the `kitchen` command, e.g.:
 
 ```shell
-$ bin/omnibus clean sensu
+$ ./bin/kitchen test ubuntu-1204
 ```
 
-Adding the `--purge` purge option removes __ALL__ files generated during the
-build including the project install directory (`/opt/sensu`) and
-the package cache directory (`/var/cache/omnibus/pkg`):
-
-```shell
-$ bin/omnibus clean sensu --purge
-```
-
-### Publish
-
-Omnibus has a built-in mechanism for releasing to a variety of "backends", such
-as Amazon S3. You must set the proper credentials in your `omnibus.rb` config
-file or specify them via the command line.
-
-```shell
-$ bin/omnibus publish path/to/*.deb --backend s3
-```
-
-### Help
-
-Full help for the Omnibus command line interface can be accessed with the
-`help` command:
-
-```shell
-$ bin/omnibus help
-```
-
-Version Manifest
-----------------
-
-Git-based software definitions may specify branches as their
-default_version. In this case, the exact git revision to use will be
-determined at build-time unless a project override (see below) or
-external version manifest is used.  To generate a version manifest use
-the `omnibus manifest` command:
-
-```
-omnibus manifest PROJECT -l warn
-```
-
-This will output a JSON-formatted manifest containing the resolved
-version of every software definition.
-
-
-Kitchen-based Build Environment
--------------------------------
-Every Omnibus project ships will a project-specific
-[Berksfile](http://berkshelf.com/) that will allow you to build your omnibus projects on all of the projects listed
-in the `.kitchen.yml`. You can add/remove additional platforms as needed by
-changing the list found in the `.kitchen.yml` `platforms` YAML stanza.
-
-This build environment is designed to get you up-and-running quickly. However,
-there is nothing that restricts you to building on other platforms. Simply use
-the [omnibus cookbook](https://github.com/opscode-cookbooks/omnibus) to setup
-your desired platform and execute the build steps listed above.
-
-The default build environment requires Test Kitchen and VirtualBox for local
-development. Test Kitchen also exposes the ability to provision instances using
-various cloud providers like AWS, DigitalOcean, or OpenStack. For more
-information, please see the [Test Kitchen documentation](http://kitchen.ci).
-
-Once you have tweaked your `.kitchen.yml` (or `.kitchen.local.yml`) to your
-liking, you can bring up an individual build environment using the `kitchen`
-command.
-
-```shell
-$ bin/kitchen converge ubuntu-1204
-```
-
-Then login to the instance and build the project as described in the Usage
-section:
-
-```shell
-$ bundle exec kitchen login ubuntu-1204
-[vagrant@ubuntu...] $ cd sensu
-[vagrant@ubuntu...] $ bundle install
-[vagrant@ubuntu...] $ ...
-[vagrant@ubuntu...] $ bin/omnibus build sensu
-```
+This test will provision a new EC2 instance, install Chef and use Chef to
+initiate a Sensu package build using the values of environment variables
+described in the next section.
 
 For a complete list of all commands and platforms, run `kitchen list` or
 `kitchen help`.
+
+### Test Kitchen Environment Variables
+
+Automated builds use a Test Kitchen configuration which relies on the following
+environment variables set to appropriate values:
+
+| Environment Variable    | Description                                                     |
+|-------------------------|-----------------------------------------------------------------|
+| `AWS_REGION`            | Region where AWS instances will be created                      |
+| `AWS_ACCESS_KEY_ID`     | Access key ID for AWS account                                   |
+| `AWS_SECRET_ACCESS_KEY` | Secret access key for AWS account                               |
+| `AWS_SSH_KEY_NAME`      | Name of SSH key pair (must exist in specified AWS region)       |
+| `AWS_SSH_KEY_PATH`      | Local path to SSH private key matching named SSH key            |
+| `SENSU_VERSION`         | Must correspond to a published Sensu gem available on RubyGems  |
+| `BUILD_NUMBER`          | Denotes the incremental build number used for package artifacts |
+
+Additionally, the following optional environment variables are used if they are set:
+
+| Environment Variable    | Description                                                                  |
+|--------------------------|------------------------------------------------------------------------------|
+| `AWS_IAM_PROFILE_NAME`   | Optional IAM profile name to be associated with EC2 instances                |
+| `BUILD_PLATFORM`         | Optional platform name, set by Travis CI  when creating per-platform jobs    |
+| `TRAVIS_JOB_NUMBER`      | Optional job identifier, set by Travis CI. Used for tagging EC2 instances    |
+| `GPG_PASSPHRASE`         | Optional passphrase for signing package artifacts; currently unused          |
+| `GNUPG_PATH`             | Optional path to gpg keyring for signing package artifacts; currently unused |
+| `AWS_S3_CACHE_BUCKET`    | S3 bucket containing optional build dependency cache. If unset, dependencies are downloaded directly from upstream sources. |
+| `AWS_S3_ARTIFACT_BUCKET` | S3 bucket where build artifacts (packages) will be uploaded after a successful build. |
