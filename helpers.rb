@@ -52,7 +52,7 @@ module Helpers
         service.gsub("-", "_")
       end
     when :ssys
-      services = ["sensu-client"]
+      services = [] # service is installed by postinst script
     end
     services
   end
@@ -85,7 +85,7 @@ module Helpers
     case service_manager
     when :systemd
       "#{service}.service"
-    when :sysvinit, :ssys
+    when :sysvinit
       service
     when :rcd
       service.gsub("_", "-")
