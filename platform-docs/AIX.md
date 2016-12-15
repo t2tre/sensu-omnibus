@@ -29,7 +29,7 @@ than two hours.
 9. Select `IBM AIX 6.1` from `Select an image`.
 
 10. Unless you will be building a new Saved Image, select `Saved image` from
-`Select an image type` and `aix-6_1-with-xl-deps` from `Select an image`.
+`Select an image type` and `aix-6_1-with-xl-deps-2` from `Select an image`.
 
 11. Click `Add Resources to project`.
 
