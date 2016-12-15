@@ -6,26 +6,47 @@ before_install:
 - gem update --system
 - gem --version
 - gem install bundler --version 1.11.2
-- "openssl aes-256-cbc -K $encrypted_d8b89d758c52_key -iv $encrypted_d8b89d758c52_iv -in .travis/sensu-omnibus-artifact-builder.pem.enc -out .travis/sensu-omnibus-artifact-builder.pem -d"
-script: travis_wait 30 ./build.sh
+- openssl aes-256-cbc -K $encrypted_d8b89d758c52_key -iv $encrypted_d8b89d758c52_iv
+  -in .travis/sensu-omnibus-artifact-builder.pem.enc -out .travis/sensu-omnibus-artifact-builder.pem
+  -d
+script: travis_retry ./build.sh
 branches:
   only:
   - master
   - "/^v\\d.*\\.\\d.*\\.\\d.*-.*\\d$/"
+matrix:
+  allow_failures:
+  - env: BUILD_PLATFORM=debian-8-i386
+  - env: BUILD_PLATFORM=centos-7-i386
+  - env: BUILD_PLATFORM=ubuntu-1604-i386
 env:
   matrix:
-  - BUILD_PLATFORM=debian-7 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
-  - BUILD_PLATFORM=debian-7-i386 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
-  - BUILD_PLATFORM=debian-6 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
-  - BUILD_PLATFORM=ubuntu-1604 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
-  - BUILD_PLATFORM=ubuntu-1404 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
-  - BUILD_PLATFORM=ubuntu-1204 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
-  - BUILD_PLATFORM=ubuntu-1204-i386 ARTIFACTORY_REPOSITORY=sensu-apt-unstable
-  - BUILD_PLATFORM=centos-7 ARTIFACTORY_REPOSITORY=sensu-yum-unstable
-  - BUILD_PLATFORM=centos-6 ARTIFACTORY_REPOSITORY=sensu-yum-unstable
-  - BUILD_PLATFORM=freebsd-11 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
-  - BUILD_PLATFORM=freebsd-10 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
-  - BUILD_PLATFORM=freebsd-9 ARTIFACTORY_REPOSITORY=sensu-freebsd-unstable
+  - BUILD_PLATFORM=debian-8
+  - BUILD_PLATFORM=debian-8-i386
+  - BUILD_PLATFORM=debian-7
+  - BUILD_PLATFORM=debian-7-i386
+  - BUILD_PLATFORM=ubuntu-1604
+  - BUILD_PLATFORM=ubuntu-1604-i386
+  - BUILD_PLATFORM=ubuntu-1404
+  - BUILD_PLATFORM=ubuntu-1404-i386
+  - BUILD_PLATFORM=ubuntu-1204
+  - BUILD_PLATFORM=ubuntu-1204-i386
+  - BUILD_PLATFORM=centos-7
+  - BUILD_PLATFORM=centos-7-i386
+  - BUILD_PLATFORM=centos-6
+  - BUILD_PLATFORM=centos-6-i386
+  - BUILD_PLATFORM=centos-5
+  - BUILD_PLATFORM=centos-5-i386
+  - BUILD_PLATFORM=freebsd-11
+  - BUILD_PLATFORM=freebsd-10
+  - BUILD_PLATFORM=freebsd-10-i386
   global:
-  - secure: MCQDX/28gUPCwZaSaBNnvteYTqhuaulhxAmC7C7dixw+DyUnkyBsgfNBmi4FCLPIIsnDTVmuodGjP17gYTsmt/3HwhYtsH9SrN/9/meI3iS7kvYx1fHX2DnQqMqlOErlSbZ28BgIJNm/Ze7EhRFG4G03YpMT5/prSbus31TrmUkUIhZqj8cQ5LWfN7GlnMzDlGTikS/dRrBSKscBtjyiavbbNtF6LuVcBaLOAzcFxSv0PH73+2UviUK19sFs7s6xSQ69z12ovsn6QIPg0DztwLntk9Rkv2LUyp1KmASTYbWGmpv6bx+4W9lUL4syRNNTGlytdVLhTSis9KgNj8W8JCU179X1AXPwE0lmeFKQsA0J6cPPsuGMTDavfnaWMhV3CKCkQxAOoIhWPX/JBWrUSEFe5j52W1jpyXL0RN//B0mJHfXqFGuqVRTqxPIGkGVINvdpveys/PMQRCkwvAtPIkfQs5KG4it53OBYgpOyHl7kmTDzxwuyCY7yJeol2PPb3R8ZxFUqYBZiVnRz063hryhjbWgY+x1eLnd2P80oqxqmAx2EOczbh8/EQodqVmF4cWHsT6uYdnWrtYyDoSk7fXWVVn3aWuPGVhzWANhNDpUJ6aw4gl4rtt+hhvH+hricPK5rkEcBtdHwwYB+Ea+odQBONYNQPmHcWxk3GBuj7nQ=
-  - secure: 6CEXqx87BwQ8jIPAwHyXdQy+1TKKyqFae07Y0oVfbtrF3jfwAW5Y+d32zWPA5FF1CEX187KbvAcgpzfHzDnGJFOkpaZnDDyviFueTzpmDf8PfJ1RIWdwl0fO+LvPiTPbFYDRGoSOroXPnNE1IxqpaGmuKd2C2m5lQGSetQKsVtK7LTVHtDhRpVCbDIgukX52xK28Zssf+O4meWIoT0GLz9E4INO74+WZHZhuRRQCU9rgGw5iQvmdi83uaMp1G18WpMtlQZd7yzy6Pw0cRjPp/DrYxNjOw3rqi//CP4AkNv/eQXGig7+OG4BS+NTZU9Gf9J3gFQHOxJHJRVi+wI/9X4cQnOmoJZqf4l2G8U4kOaxXp6MQ8TZxy+R3ICFg8iaWOuSQXuKvwdAkyZzRpSvAqWVGFXQUVZCIYkAiboUiFzJcGgShkk95lnoHZh2Vr+jCy6FHVyW/Qzol7RHZioK9Z7DsMFwpUghMvNN7BU/OnOb/j8DFgCp2SmU8rWae+tnT9VcakLOMIP0iyHiFRifKERMf8tDoAtLYUNkxfKqOYoE5QTdzdnWv0GJxI/Nk64dACe8/WPM8+anYZjl2LfJ7p1u9DFN4iqRp3QoVxRTanKTQ8NQhCvqy4Aebd6HV2G5BWZi80gf/VUQmg7a6fzW2TIpLTprDfGkUE3EikLhH6x4=
+  - AWS_REGION=us-west-2
+  - AWS_S3_CACHE_BUCKET=sensu-omnibus-cache
+  - AWS_S3_ARTIFACT_BUCKET=sensu-omnibus-artifacts
+  - AWS_SSH_KEY_ID=sensu-omnibus-artifact-builder
+  - AWS_SSH_KEY_PATH=.travis/sensu-omnibus-artifact-builder.pem
+  - secure: b2j0L3FanQcjJNXtebkoHgk4P5EBc/5yPimFq3RcmNASIEOdtwR46fppe5tzYy0E5cgrgBpMfrRQnfPgZH0iHVG8h44N47D7R7ihSECTj5Ibl6gzu9rltYw7PjUHzyLyS1g/QkgRRmApJyYmoVKsjGl78AKnwHcEnGf/7SRpKS6o+K6fVoMNZujf/J12RWCuCSg902kUimAjA/DYSj0n3NebJ8AyV3WkXL4I81KbyVHKM5ymtNP5hsL5bDFNXXp0AEvHL8Cbp1YJlHZl2YQSj+hY6f3DGyL8zNOBAv2Ivppot8nOZBJvZoUt4ahCCxm5sy9e8gn8ijhSAqarNG2INuotwkAXzquBtejs+xz9OuosEC7RAlZXkuVK0y6RLF2DcxGDs1WV65RT948N/tRh9fGLo+nHNXi9I4GEG1laWRPCd6hmVwvxnDhp8lHYagN9f9ILp6+HEeU/9+sNoTz9pSL2s79tHF9xuxEh4FTyBbaVt4WOByrcW4J/dinb/XhDQ99ApQ+iUyJ2ABjfZwWjoGSkvWRK1AzYeViSSIfYtHPIsvaOCZZswA8AqR+Kb/GLm6/FcIhbWxJ6ynR13cVnzIKZne0IvJiVbWrrpGXTmz7HBNCP6yVKv1PzyKnOAbAp+7SEUBb3RNxRNp0M8rXdDYqDoQJAsDKJUeQ7B9B0VSE=
+notifications:
+  slack:
+    secure: s58pj2JUq70OuzwA+/LUf0ZdVGc7vdeFb4WZrt0bzRhK1tcplKmYCzscXZBnKBHYjYI3jx3y4b+neUq7MmSMbNCdaA/DdCxD2XzBi+BMM7RzXYtid/IIDrIhLdTtQh9GcibUZLpz3XlZWNZSb9uK373uQlC0k6JM+WS57jPC2ssmgUmftN10QgldFx+AkzOmrfAaueMOcAQcH9cUkCQdDvvLZ+tBVQAv4SHuQXwmM5bjVFb5qTsUAXIiPtlFc2hNu0ruhOChggt2B/cgrA5kL1r3lhFY8I2Ugj6je+F/3LNAwpmf7YASgbC4lNP+BE/iIb2nazr2TZtT5XcYHEWqjMofvysgwc8ooeLhclrc075CIWtkljKjsZEr9jOsMPYeL2D1bu2Hrz0UE5vOW5oby7mpr1kj+m+R6MJPh57hC5mBU5XQJgPT7+CVBV52GrZSKTG7QHK0qK1iY8gStmc8U63kz3I+p+Htnzo8VnppGSClJwksKokqis4gC/hHTjJnZHGJgGYfyDYFgSSNj6ztTgt0n+LHdiTRFb8UmZp18wbWWJnN1W6vjJbS4r/+76CBMcdz5iaUHrgbMKIU+kgCOIQWUKjnjAq/u1CfS1gA/pES9JtiVDFPMcVIPTqI/p59tyYNUtvEEQJNzB5YsnK0/21VDZ9/dl7FjGZTaRCwPp0=

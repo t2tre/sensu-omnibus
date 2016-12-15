@@ -3,6 +3,19 @@ build_version = ENV["SENSU_VERSION"]
 build_iteration = ENV["BUILD_NUMBER"]
 gpg_passphrase = ENV["GPG_PASSPHRASE"]
 gnupg_path = ENV["GNUPG_PATH"]
+aws_ssh_key_id = ENV["AWS_SSH_KEY_ID"]
+aws_ssh_key_path = ENV["AWS_SSH_KEY_PATH"]
+
+s3 = {}
+s3[:region] = ENV["AWS_REGION"]
+s3[:artifact_bucket] = ENV["AWS_S3_ARTIFACT_BUCKET"]
+s3[:cache_bucket] = ENV["AWS_S3_CACHE_BUCKET"]
+s3_enabled = !s3.any? { |k,v| v.nil? }
+
+if ENV.key?("AWS_ACCESS_KEY_ID") && ENV.key?("AWS_SECRET_ACCESS_KEY")
+  s3.merge!(:access_key_id => ENV["AWS_ACCESS_KEY_ID"])
+  s3.merge!(:secret_access_key => ENV["AWS_SECRET_ACCESS_KEY"])
+end
 
 if gpg_passphrase && gnupg_path
   # no-op
@@ -16,79 +29,109 @@ end
 %>
 
 driver:
-  name: vagrant
-  forward_agent: yes
-  customize:
-    cpus: 2
-    memory: 2048
-  synced_folders:
-    - ['.', '/home/vagrant/sensu', 'type: :rsync']
+  name: ec2
+  instance_type: m3.medium
+  <% if ENV['AWS_IAM_PROFILE_NAME'] %>
+  iam_profile_name: <% ENV['AWS_IAM_PROFILE_NAME'] %>
+  <% end %>
+  <% unless aws_ssh_key_id.nil? %>
+  aws_ssh_key_id: <%= aws_ssh_key_id %>
+  <% end %>
+  tags:
+    "Name": "sensu-omnibus-artifact-builder <%= ENV['BUILD_PLATFORM'] %>"
+    "created-by": "test-kitchen"
+  <% if ENV['TRAVIS'] == 'true' %>
+    "travis-job-number": "<%= ENV['TRAVIS_JOB_NUMBER'].nil? ? 'unknown' : ENV['TRAVIS_JOB_NUMBER'] %>"
+  <% end %>
+<% unless aws_ssh_key_path.nil? %>
+transport:
+  ssh_key: <%= aws_ssh_key_path %>
+<% end %>
 
 provisioner:
   name: chef_zero
   require_chef_omnibus: 12.13.37
+  attributes:
+    omnibus_sensu:
+      publishers:
+        <% if s3_enabled %>
+        s3:
+          region: <%= s3[:region] %>
+          access_key_id: <%= s3[:access_key_id] %>
+          secret_access_key: <%= s3[:secret_access_key] %>
+          artifact_bucket: <%= s3[:artifact_bucket] %>
+          cache_bucket: <%= s3[:cache_bucket] %>
+        <% end %>
 
 platforms:
-  - name: centos-7.1
+  - name: centos-7
     run_list: yum-epel::default
-    driver:
-      synced_folders:
-        - ['.', '/home/vagrant/sensu', 'type: :rsync']
-        <% if gpg_passphrase && gnupg_path %>
-        - ['<%= gnupg_path %>', '/home/vagrant/.gnupg', 'type: :rsync']
-        <% end %>
-  - name: centos-6.6
+  - name: centos-7-i386
     run_list: yum-epel::default
-    driver:
-      synced_folders:
-        - ['.', '/home/vagrant/sensu', 'type: :rsync']
-        <% if gpg_passphrase && gnupg_path %>
-        - ['<%= gnupg_path %>', '/home/vagrant/.gnupg', 'type: :rsync']
-        <% end %>
-  - name: centos-5.11
+  - name: centos-6
     run_list: yum-epel::default
+  - name: centos-6-i386
     driver:
-      box: sensu/centos-5.11
-      synced_folders:
-        - ['.', '/home/vagrant/sensu', 'type: :rsync']
-        <% if gpg_passphrase && gnupg_path %>
-        - ['<%= gnupg_path %>', '/home/vagrant/.gnupg', 'type: :rsync']
-        <% end %>
-  - name: centos-5.11-i386
-    driver:
-      synced_folders:
-        - ['.', '/home/vagrant/sensu', 'type: :rsync']
-        <% if gpg_passphrase && gnupg_path %>
-        - ['<%= gnupg_path %>', '/home/vagrant/.gnupg', 'type: :rsync']
-        <% end %>
+      image_id: ami-4fbf2f7f
+      instance_type: m1.medium
     run_list: yum-epel::default
-  - name: debian-7.8
+  - name: centos-5
+    driver:
+      image_id: ami-eee0558e
+    run_list: yum-epel::default
+  - name: centos-5-i386
+    driver:
+      image_id: ami-54ec5934
+      instance_type: m1.medium
+    run_list: yum-epel::default
+  - name: debian-8
     run_list: apt::default
-  - name: debian-7.8-i386
-    run_list: apt::default
-  - name: debian-6.0.10
-    run_list: apt::default
-  - name: freebsd-11.0
+  - name: debian-8-i386
     driver:
-      box: sensu/freebsd-11.0
+      instance_type: m1.medium
+    run_list: apt::default
+  - name: debian-7
+    run_list: apt::default
+  - name: debian-7-i386
+    driver:
+      instance_type: m1.medium
+    run_list: apt::default
+  - name: freebsd-11
+    driver:
+      user_data: "user-data/freebsd.sh"
     run_list:
       - omnibus_sensu::freebsd_portsnap
       - freebsd::pkgng
-  - name: freebsd-10.3
+  - name: freebsd-10
+    driver:
+      user_data: "user-data/freebsd.sh"
     run_list:
       - omnibus_sensu::freebsd_portsnap
       - freebsd::pkgng
-  - name: freebsd-9.3
+  - name: freebsd-10-i386
+    driver:
+      instance_type: m1.medium
+      user_data: "user-data/freebsd.sh"
     run_list:
-      - freebsd::portsnap
+      - omnibus_sensu::freebsd_portsnap
       - freebsd::pkgng
   - name: ubuntu-16.04
     run_list: apt::default
+  - name: ubuntu-16.04-i386
+    driver:
+      instance_type: m1.medium
+    run_list: apt::default
   - name: ubuntu-14.04
+    run_list: apt::default
+  - name: ubuntu-14.04-i386
+    driver:
+      instance_type: m1.medium
     run_list: apt::default
   - name: ubuntu-12.04
     run_list: apt::default
   - name: ubuntu-12.04-i386
+    driver:
+      instance_type: m1.medium
     run_list: apt::default
 
 suites:
@@ -96,10 +139,6 @@ suites:
     run_list:
     - omnibus_sensu::default
     attributes:
-      omnibus:
-        build_user:          vagrant
-        build_user_group:    vagrant
-        build_user_password: vagrant
       omnibus_sensu:
         build_version: "<%= build_version %>"
         build_iteration: "<%= build_iteration %>"

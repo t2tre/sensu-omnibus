@@ -38,21 +38,16 @@ append_timestamp false
 
 # Enable S3 asset caching
 # ------------------------------
-# use_s3_caching true
-# s3_access_key  ENV['AWS_ACCESS_KEY_ID']
-# s3_secret_key  ENV['AWS_SECRET_ACCESS_KEY']
-# s3_bucket      ENV['AWS_S3_BUCKET']
+use_s3_caching <%= @aws_s3_cache_bucket.nil? ? false : true %>
+s3_access_key  "<%= @aws_access_key_id %>"
+s3_secret_key  "<%= @aws_secret_access_key %>"
+s3_bucket      "<%= @aws_s3_cache_bucket %>"
+s3_region      "<%= @aws_region %>"
 
 # Enable S3 asset caching
 # ------------------------------
-publish_s3_access_key ENV['AWS_ACCESS_KEY_ID']
-publish_s3_secret_key ENV['AWS_SECRET_ACCESS_KEY']
-
-# Enable Artifactory asset publishing
-artifactory_base_path ENV["ARTIFACTORY_BASE_PATH"]
-artifactory_endpoint ENV["ARTIFACTORY_ENDPOINT"]
-artifactory_username ENV["ARTIFACTORY_USERNAME"]
-artifactory_password ENV["ARTIFACTORY_PASSWORD"]
+publish_s3_access_key "<%= @aws_access_key_id %>"
+publish_s3_secret_key "<%= @aws_secret_access_key %>"
 
 # Customize compiler bits
 # ------------------------------
