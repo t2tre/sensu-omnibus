@@ -82,7 +82,7 @@ create_sensu_user_group()
     <% case platform_family
     when "aix" -%>
     mkgroup sensu
-    <% when "solaris" -%>
+    <% when "solaris2" -%>
     groupadd sensu
     <% when "freebsd" -%>
     pw groupadd sensu
@@ -101,7 +101,7 @@ create_sensu_user_group()
     <% case platform_family
     when "aix" -%>
     create_sensu_user_aix
-    <% when "solaris" -%>
+    <% when "solaris2" -%>
     useradd -d $INSTALLER_DIR -g sensu sensu # user will be disabled by default
     passwd -N sensu # enable the user with nologin (NL)
     <% when "freebsd" -%>
