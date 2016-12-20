@@ -2,6 +2,7 @@ name "eventmachine"
 
 dependency "libstdc++"
 dependency "ruby"
+dependency "ruby-windows-devkit" if windows?
 
 source git: "https://github.com/eventmachine/eventmachine.git"
 

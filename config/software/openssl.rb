@@ -129,6 +129,7 @@ build do
   if windows?
     # Patch Makefile.org to update the compiler flags/options table for mingw.
     patch source: "openssl-1.0.1q-fix-compiler-flags-table-for-msys.patch", env: env
+    patch source: "openssl-1.0.1q-ar-needs-operation-before-target.patch", env: env
   end
 
   # Out of abundance of caution, we put the feature flags first and then
