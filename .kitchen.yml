@@ -52,6 +52,7 @@ provisioner:
   name: chef_zero
   require_chef_omnibus: 12.13.37
   attributes:
+    vagrant: true
     omnibus_sensu:
       publishers:
         <% if s3_enabled %>
@@ -133,6 +134,13 @@ platforms:
     driver:
       instance_type: m1.medium
     run_list: apt::default
+  - name: windows-2012-r2
+    transport:
+      name: winrm
+      elevated: true
+    attributes:
+      omnibus_sensu:
+        project_revision: feature/tk-windows
 
 suites:
   - name: default
