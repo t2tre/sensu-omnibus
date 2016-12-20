@@ -17,6 +17,9 @@ group :development do
 
   # Use Test Kitchen for converging the build environment
   gem 'test-kitchen',            '~> 1.4'
+  gem 'winrm'
+  gem 'winrm-fs'
+  gem 'winrm-elevated'
 end
 
 group :vagrant do
