@@ -2,8 +2,8 @@ DEPENDENCIES
   apt (~> 2.8)
   omnibus
     git: https://github.com/sensu/omnibus-cookbook.git
-    revision: bbc23e3c1bbcf5db0e767c5a6f54dbadc923fd00
-    ref: feature
+    revision: 03a3f1cc1607eeeb8b8a8f338ed89d6720931de8
+    ref: sensu
   omnibus_sensu
     path: site-cookbooks/omnibus_sensu
   yum-epel (~> 0.6)
@@ -24,8 +24,7 @@ GRAPH
     build-essential (>= 0.0.0)
     dmg (>= 0.0.0)
     yum-epel (>= 0.0.0)
-  homebrew (2.1.2)
-    build-essential (>= 2.1.2)
+  homebrew (3.0.0)
   languages (0.2.8)
     build-essential (>= 0.0.0)
     chef-sugar (>= 0.0.0)
@@ -34,6 +33,8 @@ GRAPH
   mingw (1.2.4)
     compat_resource (>= 0.0.0)
     seven_zip (>= 0.0.0)
+  ms_dotnet (3.1.0)
+    windows (>= 1.36.1)
   ohai (4.2.3)
     compat_resource (>= 12.14.7)
   omnibus (4.2.9)
@@ -48,8 +49,10 @@ GRAPH
     windows-sdk (>= 0.0.0)
     wix (>= 0.0.0)
   omnibus_sensu (0.1.0)
+    chef-sugar (~> 3.4)
     freebsd (~> 1.0)
     git (~> 5.0)
+    ms_dotnet (~> 3.1)
     omnibus (~> 4.2)
   remote_install (1.0.2)
   seven_zip (2.0.2)

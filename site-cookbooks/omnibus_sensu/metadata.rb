@@ -9,6 +9,8 @@ version '0.1.0'
 depends 'omnibus', '~> 4.2'
 depends 'git', '~> 5.0'
 depends 'freebsd', '~> 1.0'
+depends 'ms_dotnet', '~> 3.1'
+depends 'chef-sugar', '~> 3.4'
 
 # If you upload to Supermarket you should set this so your cookbook
 # gets a `View Issues` link
