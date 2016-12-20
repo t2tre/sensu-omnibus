@@ -35,8 +35,10 @@ module Helpers
       :ssys
     when /solaris2/
       :smf
+    when /windows/
+      :windows
     else
-      raise "#{platform_family} is not a supported build target"
+      raise "#{platform} is not a supported build target"
     end
   end
 
@@ -53,6 +55,8 @@ module Helpers
       end
     when :ssys
       services = [] # service is installed by postinst script
+    when :windows
+      services = []  # TODO: windows
     end
     services
   end
@@ -78,6 +82,8 @@ module Helpers
       "/lib/svc/manifest/site"
     when :ssys
       "" # service is installed by postinst script
+    when :windows
+      "" # TODO: windows
     else
       raise unknown_combo
     end
@@ -93,6 +99,8 @@ module Helpers
       service.gsub("_", "-")
     when :smf
       "#{service}.xml"
+    when :windows
+      ""  # TODO: windows
     else
       raise "Could not determine filename for #{service} and #{service_manager}"
     end
