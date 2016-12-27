@@ -135,6 +135,9 @@ platforms:
       instance_type: m1.medium
     run_list: apt::default
   - name: windows-2012-r2
+    driver:
+      name: vagrant
+      box: mwrock/windows2012r2
     transport:
       name: winrm
       elevated: true
