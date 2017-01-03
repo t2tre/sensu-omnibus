@@ -2,7 +2,7 @@ DEPENDENCIES
   apt (~> 2.8)
   omnibus
     git: https://github.com/sensu/omnibus-cookbook.git
-    revision: 03a3f1cc1607eeeb8b8a8f338ed89d6720931de8
+    revision: 6f4288579104b0e07db9d0f8d8297d29b1695ad6
     ref: sensu
   omnibus_sensu
     path: site-cookbooks/omnibus_sensu
@@ -10,14 +10,14 @@ DEPENDENCIES
 
 GRAPH
   apt (2.9.2)
-  build-essential (7.0.2)
-    compat_resource (>= 12.14)
+  build-essential (7.0.3)
+    compat_resource (>= 12.16.3)
     mingw (>= 1.1)
     seven_zip (>= 0.0.0)
   chef-ingredient (0.21.2)
     compat_resource (>= 12.10)
   chef-sugar (3.4.0)
-  compat_resource (12.16.2)
+  compat_resource (12.16.3)
   dmg (3.0.0)
   freebsd (1.0.1)
   git (5.0.1)
@@ -25,11 +25,6 @@ GRAPH
     dmg (>= 0.0.0)
     yum-epel (>= 0.0.0)
   homebrew (3.0.0)
-  languages (0.2.8)
-    build-essential (>= 0.0.0)
-    chef-sugar (>= 0.0.0)
-    homebrew (>= 0.0.0)
-    remote_install (>= 0.0.0)
   mingw (1.2.4)
     compat_resource (>= 0.0.0)
     seven_zip (>= 0.0.0)
@@ -37,14 +32,14 @@ GRAPH
     windows (>= 1.36.1)
   ohai (4.2.3)
     compat_resource (>= 12.14.7)
-  omnibus (4.2.9)
+  omnibus (5.0.0)
     build-essential (>= 6.0.0)
     chef-ingredient (>= 0.18.0)
     chef-sugar (>= 3.2.0)
     git (>= 0.0.0)
     homebrew (>= 0.0.0)
-    languages (>= 0.0.0)
     remote_install (>= 0.0.0)
+    seven_zip (>= 0.0.0)
     windows (>= 0.0.0)
     windows-sdk (>= 0.0.0)
     wix (>= 0.0.0)
@@ -53,7 +48,7 @@ GRAPH
     freebsd (~> 1.0)
     git (~> 5.0)
     ms_dotnet (~> 3.1)
-    omnibus (~> 4.2)
+    omnibus (~> 5.0)
   remote_install (1.0.2)
   seven_zip (2.0.2)
     windows (>= 1.2.2)
