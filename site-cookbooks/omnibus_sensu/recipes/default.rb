@@ -86,8 +86,7 @@ end
 shared_env = {
   "SENSU_VERSION" => node["omnibus_sensu"]["build_version"],
   "BUILD_NUMBER" => node["omnibus_sensu"]["build_iteration"],
-  "GPG_PASSPHRASE" => node["omnibus_sensu"]["gpg_passphrase"],
-  "OMNIBUS_WINDOWS_ARCH" => "x86"
+  "GPG_PASSPHRASE" => node["omnibus_sensu"]["gpg_passphrase"]
 }
 
 omnibus_build "sensu" do
