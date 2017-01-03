@@ -47,7 +47,7 @@ end
 
 gem_package "ffi-yajl" do
   if windows?
-    gem_binary "C:/languages/ruby/2.1.8/bin/gem"
+    gem_binary "C:/opscode/omnibus-toolchain/embedded/bin/gem"
   else
     gem_binary "/opt/omnibus-toolchain/bin/gem"
   end
