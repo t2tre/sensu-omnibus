@@ -11,10 +11,9 @@ build do
   bin_dir = File.join(install_dir, "bin")
 
   if windows?
-    framework = windows_arch_i386? ? "Framework" : "Framework64"
     mkdir(bin_dir)
     command_options = "/target:Clean;Build /p:Configuration=Release /p:PostBuildEvent="
-    command("C:/Windows/Microsoft.NET/#{framework}/v4.0.30319/MSBuild.exe src/winsw.sln #{command_options}", env: env)
+    command("C:/Windows/Microsoft.NET/Framework/v4.0.30319/MSBuild.exe src/winsw.sln #{command_options}", env: env)
     copy("bin/Release/winsw.exe", "#{bin_dir}/winsw.exe")
   end
 end
