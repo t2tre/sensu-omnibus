@@ -88,7 +88,6 @@ create_sensu_user_group()
     pw groupadd sensu
     <% when "debian", "rhel" -%>
     groupadd -r sensu
-    <% when "windows" -%>
     <% else raise "Group creation undefined for platform family \"#{platform_family}\"" -%>
     <% end -%>
   fi
@@ -109,7 +108,6 @@ create_sensu_user_group()
     pw adduser sensu -g sensu -d /nonexistent -s /usr/sbin/nologin -c "Sensu Monitoring Framework"
     <% when "debian", "rhel" -%>
     useradd -r -g sensu -d /opt/sensu -s /bin/false -c "Sensu Monitoring Framework" sensu
-    <% when "windows" -%>
     <% else raise "User creation undefined for platform family \"#{platform_family}\"" -%>
     <% end -%>
   fi

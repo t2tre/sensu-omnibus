@@ -57,7 +57,7 @@ end
 dependency "preparation"
 
 # package scripts erb templates
-dependency "package-scripts"
+dependency "package-scripts" unless windows?
 
 # sensu dependencies/components
 dependency "sensu-gem"
