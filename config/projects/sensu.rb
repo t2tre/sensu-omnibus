@@ -17,7 +17,7 @@ end
 name "sensu"
 maintainer "support@sensuapp.com"
 homepage "https://sensuapp.org"
-license "MIT License"
+license "MIT"
 description "A monitoring framework that aims to be simple, malleable, and scaleable."
 
 vendor = "Sensu <support@sensuapp.com>"
