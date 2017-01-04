@@ -1,10 +1,10 @@
 name "winsw"
 default_version "2.0.0"
 
-source url: "https://github.com/kohsuke/winsw/archive/#{version}.zip",
+source url: "https://github.com/kohsuke/winsw/archive/winsw-v#{version}.zip",
        md5: "5fdd30aeff7a8d09303e8ff32f34ef8c"
 
-relative_path "winsw-#{version}"
+relative_path "winsw-winsw-v#{version}"
 
 build do
   env = with_standard_compiler_flags(with_embedded_path)
