@@ -138,6 +138,8 @@ platforms:
     driver:
       name: vagrant
       box: mwrock/windows2012r2
+      customize:
+        memory: 4096
     transport:
       name: winrm
       elevated: true
