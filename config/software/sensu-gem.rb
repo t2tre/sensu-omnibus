@@ -6,6 +6,7 @@ dependency "rubygems"
 dependency "libffi"
 dependency "rb-readline-gem"
 dependency "eventmachine"
+dependency "winsw" if windows?
 
 build do
   env = with_standard_compiler_flags(with_embedded_path)
@@ -121,7 +122,13 @@ build do
   end
 
   # make symlinks
-  link("#{embedded_bin_dir}/sensu-client", "#{bin_dir}/sensu-client")
-  link("#{embedded_bin_dir}/sensu-server", "#{bin_dir}/sensu-server")
-  link("#{embedded_bin_dir}/sensu-api", "#{bin_dir}/sensu-api")
+  if windows?
+    copy("#{files_dir}/sensu-client-windows.xml", "#{bin_dir}/sensu-client.xml")
+    copy("#{files_dir}/sensu-client.exe.config", "#{bin_dir}/sensu-client.exe.config")
+    move("#{bin_dir}/winsw.exe", "#{bin_dir}/sensu-client.exe")
+  else
+    link("#{embedded_bin_dir}/sensu-client", "#{bin_dir}/sensu-client")
+    link("#{embedded_bin_dir}/sensu-server", "#{bin_dir}/sensu-server")
+    link("#{embedded_bin_dir}/sensu-api", "#{bin_dir}/sensu-api")
+  end
 end
