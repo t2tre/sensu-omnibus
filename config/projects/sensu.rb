@@ -22,9 +22,13 @@ description "A monitoring framework that aims to be simple, malleable, and scale
 
 vendor = "Sensu <support@sensuapp.com>"
 
-# Defaults to C:/sensu on Windows
+# Defaults to C:/opt/sensu on Windows
 # and /opt/sensu on all other platforms
-install_dir "#{default_root}/#{name}"
+if windows?
+  install_dir "#{default_root}/opt/#{name}"
+else
+  install_dir "#{default_root}/#{name}"
+end
 
 version = ENV["SENSU_VERSION"]
 build_version version
@@ -43,6 +47,11 @@ package :rpm do
   category "Monitoring"
   vendor vendor
   signing_passphrase ENV["GPG_PASSPHRASE"] unless (ENV["GPG_PASSPHRASE"].nil? || ENV["GPG_PASSPHRASE"].empty?)
+end
+
+package :msi do
+  upgrade_code "29B5AA66-46B3-4676-8D67-2F3FB31CC549"
+  wix_light_extension "WixNetFxExtension"
 end
 
 # TODO: config files are removed during actions such as dpkg --purge
