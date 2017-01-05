@@ -66,10 +66,9 @@ build do
   # sensu-install
   if windows?
     copy("#{files_dir}/sensu-install.bat", "#{bin_dir}/sensu-install")
-    copy("#{files_dir}/sensu-install.bat", "#{usr_bin_dir}/sensu-install")
   else
     copy("#{files_dir}/bin/sensu-install", bin_dir)
-   copy("#{files_dir}/bin/sensu-install", "#{usr_bin_dir}/sensu-install")
+    copy("#{files_dir}/bin/sensu-install", "#{usr_bin_dir}/sensu-install")
     command("chmod +x #{bin_dir}/sensu-install")
     command("chmod +x #{usr_bin_dir}/sensu-install")
   end
