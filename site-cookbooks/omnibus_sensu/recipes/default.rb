@@ -7,8 +7,19 @@
 include_recipe 'chef-sugar'
 
 if windows?
-  node.default['ms_dotnet']['v4']['version'] = '4.5.2'
-  include_recipe 'ms_dotnet::ms_dotnet4'
+  include_recipe 'chocolatey'
+
+  chocolatey 'dotnet3.5' do
+    version '3.5.20160716'
+  end
+
+  chocolatey 'windows-sdk-8.1' do
+    version '8.100.26654.0'
+  end
+
+  chocolatey 'microsoft-build-tools' do
+    version '14.0.25420.1'
+  end
 
   # If this is an ephemeral vagrant/test-kitchen instance, we relax the password
   # so that the default password "vagrant" can be used.
