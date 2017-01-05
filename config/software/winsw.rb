@@ -4,7 +4,7 @@ default_version "2.0.0"
 source url: "https://github.com/kohsuke/winsw/releases/download/winsw-v#{version}/WinSW.NET4.exe"
 
 version "2.0.0" do
-  source md5: "75421e5814f8b1c17a20c760d653a9be"
+  source md5: "3e085789b572149b73e727a48581dd72"
 end
 
 relative_path "winsw-v#{version}"
