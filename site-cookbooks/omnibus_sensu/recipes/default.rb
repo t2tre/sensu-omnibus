@@ -118,6 +118,17 @@ pkg_suffix_map = {
 
 artifact_id = [ node["omnibus_sensu"]["build_version"], node["omnibus_sensu"]["build_iteration"] ].join("-")
 
+publish_environment = case windows?
+                      when true
+                        shared_env
+                      when false
+                        shared_env.merge({
+                        'USER' => node["omnibus"]["build_user"],
+                        'USERNAME' => node["omnibus"]["build_user"],
+                        'LOGNAME' => node["omnibus"]["build_user"]
+                        })
+                      end
+
 execute "publish_sensu_#{artifact_id}_s3" do
   command(
     <<-CODE.gsub(/^ {10}/, '')
@@ -126,11 +137,7 @@ execute "publish_sensu_#{artifact_id}_s3" do
         CODE
   )
   cwd node["omnibus_sensu"]["project_dir"]
-  user node["omnibus"]["build_user"]
-  environment shared_env.merge!({
-    'USER' => node["omnibus"]["build_user"],
-    'USERNAME' => node["omnibus"]["build_user"],
-    'LOGNAME' => node["omnibus"]["build_user"]
-  })
+  user node["omnibus"]["build_user"] unless windows?
+  environment publish_environment
   not_if { node["omnibus_sensu"]["publishers"]["s3"].any? {|k,v| v.nil? } }
 end
