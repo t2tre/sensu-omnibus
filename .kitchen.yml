@@ -136,10 +136,7 @@ platforms:
     run_list: apt::default
   - name: windows-2012-r2
     driver:
-      name: vagrant
-      box: mwrock/windows2012r2
-      customize:
-        memory: 4096
+      instance_type: m3.xlarge
     transport:
       name: winrm
       elevated: true
