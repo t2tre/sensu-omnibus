@@ -1,21 +1,25 @@
 name "winsw"
 default_version "2.0.0"
 
-source url: "https://github.com/kohsuke/winsw/archive/winsw-v#{version}.zip",
-       md5: "5fdd30aeff7a8d09303e8ff32f34ef8c"
+source url: "https://github.com/kohsuke/winsw/releases/download/winsw-v#{version}/WinSW.NET4.exe"
 
-relative_path "winsw-winsw-v#{version}"
+version "2.0.0" do
+  source md5: "75421e5814f8b1c17a20c760d653a9be"
+end
+
+relative_path "winsw-v#{version}"
 
 build do
   env = with_standard_compiler_flags(with_embedded_path)
   bin_dir = File.join(install_dir, "bin")
 
   if windows?
-    framework = windows_arch_i386? ? "Framework" : "Framework64"
-    mkdir(bin_dir)
-    command_options = "/target:Clean;Build /p:Configuration=Release /p:PostBuildEvent="
-    command("MSBuild.exe src/winsw.sln #{command_options}", env: env)
-    copy("bin/Release/winsw.exe", "#{bin_dir}/winsw.exe")
+    # framework = windows_arch_i386? ? "Framework" : "Framework64"
+    # mkdir(bin_dir)
+    # command_options = "/target:Clean;Build /p:Configuration=Release /p:PostBuildEvent="
+    # command("MSBuild.exe src/winsw.sln #{command_options}", env: env)
+    # copy("bin/Release/winsw.exe", "#{bin_dir}/winsw.exe")
+    copy("WinSW.NET4.exe", "#{bin_dir}/winsw.exe")
   end
 end
 
