@@ -113,7 +113,8 @@ pkg_suffix_map = {
   [:redhat, :centos, :fedora, :suse]   => { :default => "rpm" },
   :solaris                             => { "5.10" => "solaris", "5.11" => "ips" },
   :aix                                 => { :default => "bff" },
-  :freebsd                             => { :default => "txz" }
+  :freebsd                             => { :default => "txz" },
+  :windows                             => { :default => "msi" }
 }
 
 artifact_id = [ node["omnibus_sensu"]["build_version"], node["omnibus_sensu"]["build_iteration"] ].join("-")
@@ -129,10 +130,17 @@ publish_environment = case windows?
                         })
                       end
 
+load_toolchain_cmd = case windows?
+                     when true
+                       "call #{::File.join(build_user_home, 'load-omnibus-toolchain.bat')}"
+                     when false
+                       ".  #{::File.join(build_user_home, 'load-omnibus-toolchain.sh')}"
+                     end
+
 execute "publish_sensu_#{artifact_id}_s3" do
   command(
     <<-CODE.gsub(/^ {10}/, '')
-          . #{::File.join(build_user_home, 'load-omnibus-toolchain.sh')}
+          #{load_toolchain_cmd}
           bundle exec omnibus publish s3 #{node["omnibus_sensu"]["publishers"]["s3"]["artifact_bucket"]} "pkg/sensu*.#{value_for_platform(pkg_suffix_map)}"
         CODE
   )
