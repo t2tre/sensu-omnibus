@@ -37,6 +37,8 @@ module Helpers
       :smf
     when /windows/
       :windows
+    when /mac_os_x/
+      :launchd
     else
       raise "#{platform} is not a supported build target"
     end
