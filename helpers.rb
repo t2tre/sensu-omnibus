@@ -59,7 +59,7 @@ module Helpers
       services = [] # service is installed by postinst script
     when :windows
       services = []  # TODO: windows
-    when :mac_os_x
+    when :launchd
       services = [] # TODO: mac_os_x
     end
     services
