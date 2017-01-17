@@ -140,9 +140,6 @@ platforms:
     transport:
       name: winrm
       elevated: true
-    attributes:
-      omnibus_sensu:
-        project_revision: feature/tk-windows
 
 suites:
   - name: default
