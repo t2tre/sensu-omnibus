@@ -6,9 +6,11 @@ description 'Installs/Configures omnibus_sensu'
 long_description 'Installs/Configures omnibus_sensu'
 version '0.1.0'
 
-depends 'omnibus', '~> 4.2'
+depends 'omnibus', '~> 5.0'
 depends 'git', '~> 5.0'
 depends 'freebsd', '~> 1.0'
+depends 'chef-sugar', '~> 3.4'
+depends 'chocolatey', '~> 1.0'
 
 # If you upload to Supermarket you should set this so your cookbook
 # gets a `View Issues` link

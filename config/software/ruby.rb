@@ -242,7 +242,7 @@ build do
     end
     dlls.each do |dll|
       arch_suffix = windows_arch_i386? ? "32" : "64"
-      windows_path = "C:/msys2/mingw#{arch_suffix}/bin/#{dll}.dll"
+      windows_path = "C:/opscode/omnibus-toolchain/embedded/bin/#{dll}.dll"
       if File.exist?(windows_path)
         copy windows_path, "#{install_dir}/embedded/bin/#{dll}.dll"
       else

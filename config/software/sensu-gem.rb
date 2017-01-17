@@ -6,6 +6,7 @@ dependency "rubygems"
 dependency "libffi"
 dependency "rb-readline-gem"
 dependency "eventmachine"
+dependency "winsw" if windows?
 
 build do
   env = with_standard_compiler_flags(with_embedded_path)
@@ -61,10 +62,16 @@ build do
   touch("/var/cache/sensu/.keep")
 
   # sensu-install (in omnibus bin dir)
-  copy("#{files_dir}/bin/sensu-install", bin_dir)
-  copy("#{files_dir}/bin/sensu-install", "#{usr_bin_dir}/sensu-install")
-  command("chmod +x #{bin_dir}/sensu-install")
-  command("chmod +x #{usr_bin_dir}/sensu-install")
+
+  # sensu-install
+  if windows?
+    copy("#{files_dir}/sensu-install.bat", "#{bin_dir}/sensu-install")
+  else
+    copy("#{files_dir}/bin/sensu-install", bin_dir)
+    copy("#{files_dir}/bin/sensu-install", "#{usr_bin_dir}/sensu-install")
+    command("chmod +x #{bin_dir}/sensu-install")
+    command("chmod +x #{usr_bin_dir}/sensu-install")
+  end
 
   # misc files
   copy("#{files_dir}/config.json.example", "#{etc_dir}/sensu/config.json.example")
@@ -114,7 +121,13 @@ build do
   end
 
   # make symlinks
-  link("#{embedded_bin_dir}/sensu-client", "#{bin_dir}/sensu-client")
-  link("#{embedded_bin_dir}/sensu-server", "#{bin_dir}/sensu-server")
-  link("#{embedded_bin_dir}/sensu-api", "#{bin_dir}/sensu-api")
+  if windows?
+    copy("#{files_dir}/sensu-client-windows.xml", "#{bin_dir}/sensu-client.xml")
+    copy("#{files_dir}/sensu-client.exe.config", "#{bin_dir}/sensu-client.exe.config")
+    move("#{bin_dir}/winsw.exe", "#{bin_dir}/sensu-client.exe")
+  else
+    link("#{embedded_bin_dir}/sensu-client", "#{bin_dir}/sensu-client")
+    link("#{embedded_bin_dir}/sensu-server", "#{bin_dir}/sensu-server")
+    link("#{embedded_bin_dir}/sensu-api", "#{bin_dir}/sensu-api")
+  end
 end
