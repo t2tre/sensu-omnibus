@@ -49,7 +49,7 @@ if node['platform'] == 'freebsd'
 
   # Ensure we have a ports tree
   unless File.exist?('/usr/ports/.portsnap.INDEX')
-    e = execute "#{portsnap_bin} #{portsnap_options} fetch extract".strip do
+    e = execute "#{portsnap_bin} #{portsnap_options} fetch extract > /dev/null".strip do
       live_stream(true)
       action(node['freebsd']['compiletime_portsnap'] ? :nothing : :run)
     end
