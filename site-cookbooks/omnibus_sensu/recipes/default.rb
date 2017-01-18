@@ -36,16 +36,16 @@ if freebsd?
   package "git"
 else
   include_recipe "git"
-end
 
-git_config "user.email" do
-  value "support@sensuapp.com"
-  options "--global"
-end
+  git_config "user.email" do
+    value "support@sensuapp.com"
+    options "--global"
+  end
 
-git_config "user.name" do
-  value "Sensu Omnibus Builder"
-  options "--global"
+  git_config "user.name" do
+    value "Sensu Omnibus Builder"
+    options "--global"
+  end
 end
 
 include_recipe "omnibus::default"
