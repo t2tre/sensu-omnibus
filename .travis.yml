@@ -16,14 +16,15 @@ branches:
 env:
   matrix:
   - BUILD_PLATFORM=debian-8
+  - BUILD_PLATFORM=centos-7
+  - BUILD_PLATFORM=ubuntu-1604
+  - BUILD_PLATFORM=windows-2012-r2
   - BUILD_PLATFORM=debian-7
   - BUILD_PLATFORM=debian-7-i386
-  - BUILD_PLATFORM=ubuntu-1604
   - BUILD_PLATFORM=ubuntu-1404
   - BUILD_PLATFORM=ubuntu-1404-i386
   - BUILD_PLATFORM=ubuntu-1204
   - BUILD_PLATFORM=ubuntu-1204-i386
-  - BUILD_PLATFORM=centos-7
   - BUILD_PLATFORM=centos-6
   - BUILD_PLATFORM=centos-6-i386
   - BUILD_PLATFORM=centos-5
