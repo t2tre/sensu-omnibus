@@ -31,7 +31,6 @@ env:
   - BUILD_PLATFORM=centos-5-i386
   - BUILD_PLATFORM=freebsd-11
   - BUILD_PLATFORM=freebsd-10
-  - BUILD_PLATFORM=freebsd-10-i386
   global:
   - AWS_REGION=us-west-2
   - AWS_S3_CACHE_BUCKET=sensu-omnibus-cache
