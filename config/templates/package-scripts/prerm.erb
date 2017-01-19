@@ -15,53 +15,9 @@
 
 set -e
 
-is_darwin()
-{
-  set +e
-  uname -v | grep "^Darwin" > /dev/null 2>&1
-  set -e
-}
-
-is_smartos()
-{
-  set +e
-  uname -v | grep "^joyent" > /dev/null 2>&1
-  set -e
-}
-
-is_aix()
-{
-  set +e
-  uname -a | grep "^AIX" > /dev/null 2>&1
-  set -e
-}
-
-is_freebsd()
-{
-  set +e
-  uname -v | grep "^FreeBSD" > /dev/null 2>&1
-  set -e
-}
-
-is_solaris()
-{
-  set +e
-  uname -a | grep "^SunOS" > /dev/null 2>&1
-  set -e
-}
-
-is_linux()
-{
-  set +e
-  uname -a | grep "^Linux" > /dev/null 2>&1
-  set -e
-}
-
 using_systemd()
 {
-  set +e
   [ -e "/proc/1/comm" ] && grep -q "^systemd$" /proc/1/comm
-  set -e
 }
 
 PROGNAME=`basename $0`
@@ -75,20 +31,25 @@ error_exit()
 stop_sensu_services()
 {
   set -e
-  if is_aix; then
-    stopsrc -s sensu-client > /dev/null 2>&1
-  elif is_solaris; then
-    svcadm disable sensu-client > /dev/null 2>&1
-  elif is_linux; then
-    sensu_services="client server api"
-    for sensu_service in $sensu_services; do
-      if using_systemd; then
-        systemctl stop "sensu-${sensu_service}" || true
-      else
-        /etc/init.d/sensu-$sensu_service stop || true
-      fi
-    done
-  fi
+<% case platform_family
+when "aix" -%>
+  stopsrc -s sensu-client > /dev/null 2>&1
+<% when "solaris" -%>
+  svcadm disable sensu-client > /dev/null 2>&1
+<% when "debian", "rhel" -%>
+  sensu_services="client server api"
+  for sensu_service in $sensu_services; do
+    set +e
+    if using_systemd; then
+      systemctl stop "sensu-${sensu_service}"
+      set -e
+    else
+      /etc/init.d/sensu-$sensu_service stop
+      set -e
+    fi
+  done
+<% else raise "Service management undefined for platform family \"#{platform_family}\"" -%>
+<% end -%>
 }
 
 stop_sensu_services
