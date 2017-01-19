@@ -23,7 +23,7 @@ if [ `git describe --tags --exact-match $OMNIBUS_COMMIT` ]; then
     export BUILD_NUMBER=`git describe --abbrev=0 --tags | awk -F'-' '{print $2}'`
     echo "============================ Building ${SENSU_VERSION}-${BUILD_NUMBER} on ${BUILD_PLATFORM} ============================"
 
-    if [[ "x$TRAVIS_WAIT" -eq "x" ]] ; then
+    if [[ "x$TRAVIS_WAIT" == "x" ]] ; then
         bundle exec rake kitchen:default-$BUILD_PLATFORM
     else
         travis_wait $TRAVIS_WAIT bundle exec rake kitchen:default-$BUILD_PLATFORM
