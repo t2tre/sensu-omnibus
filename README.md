@@ -29,7 +29,7 @@ platform and architecture combinations:
 | CentOS 5           | ✅     | ✅     | 32 and 64bit images built with [sensu-omnibus-packer](https://github.com/sensu/sensu-omnibus-packer) |
 | CentOS 6           | ✅     | ✅     | Using unofficial 32bit image |
 | CentOS 7           | ✅     | ❌     | No official 32bit images |
-| FreeBSD 10         | ✅     | ✅     |                          |
+| FreeBSD 10         | ✅     | ❌     | Official 32bit images are out of date |
 | FreeBSD 11         | ✅     | ❌     | No official 32bit images |
 
 ### Packages Built By Hand
