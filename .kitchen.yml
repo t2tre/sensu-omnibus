@@ -109,13 +109,6 @@ platforms:
     run_list:
       - omnibus_sensu::freebsd_portsnap
       - freebsd::pkgng
-  - name: freebsd-10-i386
-    driver:
-      instance_type: m1.medium
-      user_data: "user-data/freebsd.sh"
-    run_list:
-      - omnibus_sensu::freebsd_portsnap
-      - freebsd::pkgng
   - name: ubuntu-16.04
     run_list: apt::default
   - name: ubuntu-16.04-i386
