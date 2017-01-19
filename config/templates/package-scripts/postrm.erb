@@ -14,91 +14,24 @@
 
 set -e
 
-is_darwin()
-{
-  set +e
-  uname -v | grep "^Darwin" > /dev/null 2>&1
-  set -e
-}
-
-is_smartos()
-{
-  set +e
-  uname -v | grep "^joyent" > /dev/null 2>&1
-  set -e
-}
-
-is_aix()
-{
-  set +e
-  uname -a | grep "^AIX" > /dev/null 2>&1
-  set -e
-}
-
-is_freebsd()
-{
-  set +e
-  uname -v | grep "^FreeBSD" > /dev/null 2>&1
-  set -e
-}
-
-is_solaris()
-{
-  set +e
-  uname -a | grep "^SunOS" > /dev/null 2>&1
-  set -e
-}
-
-is_linux()
-{
-  set +e
-  uname -a | grep "^Linux" > /dev/null 2>&1
-  set -e
-}
-
-using_systemd()
-{
-  set +e
-  [ -e "/proc/1/comm" ] && grep -q "^systemd$" /proc/1/comm
-  set -e
-}
-
-purge_linux_service_files()
-{
-  set -e
-  sensu_services="client server api service-init"
-  for sensu_service in $sensu_services; do
-    systemd_file="/etc/systemd/system/sensu-${sensu_service}.service"
-    sysvinit_file="/etc/init.d/sensu-${sensu_service}"
-    if [ -f $systemd_file ]; then
-      rm -f $systemd_file
-    fi
-    if [ -f $sysvinit_file ]; then
-      rm -f $sysvinit_file
-    fi
-  done
-}
-
 purge_sensu_services()
 {
   set -e
-  if is_aix; then
-    rmssys -s sensu-client > /dev/null 2>&1
-    rmssys -s sensu-api > /dev/null 2>&1
-    rmssys -s sensu-server > /dev/null 2>&1
-  elif is_solaris; then
-    rm -f /lib/svc/manifest/site/sensu-client.xml
-  elif is_linux; then
-    purge_linux_service_files
-  fi
+<% case platform_family
+   when "aix" -%>
+  rmssys -s sensu-client > /dev/null 2>&1
+  rmssys -s sensu-api > /dev/null 2>&1
+  rmssys -s sensu-server > /dev/null 2>&1
+<% when "solaris" -%>
+  rm -f /lib/svc/manifest/site/sensu-client.xml
+<% when "debian", "rhel" -%>
+<% else raise "Service cleanup undefined for platform family \"#{platform_family}\"" -%>
+<% end -%>
 }
 
 purge_sensu_files()
 {
   set -e
-  if [ -d /usr/share/sensu ]; then
-    rm -r /usr/share/sensu
-  fi
   if [ -d /opt/sensu ]; then
     rm -r /opt/sensu
   fi
@@ -107,15 +40,8 @@ purge_sensu_files()
   fi
 }
 
-purge_sensu_symlinks()
-{
-  set -e
-  rm -f /usr/bin/sensu-install
-}
-
 purge_sensu_services
 purge_sensu_files
-purge_sensu_symlinks
 
 echo "Sensu has been uninstalled!"
 
