@@ -26,6 +26,7 @@ if [ `git describe --tags --exact-match $OMNIBUS_COMMIT` ]; then
     if [[ "x$TRAVIS_WAIT" == "x" ]] ; then
         bundle exec rake kitchen:default-$BUILD_PLATFORM
     else
+        source .travis/script/functions.sh
         travis_wait $TRAVIS_WAIT bundle exec rake kitchen:default-$BUILD_PLATFORM
     fi
 else
