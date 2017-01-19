@@ -44,7 +44,7 @@ add these builds to the automation pipeline in the future.
 | macOS 10.9+        | x86_64       | Built with homebrew-sensu, not yet using omnibus                |
 | Solaris 10         | i386         | See [Solaris 10](platform-docs/SOLARIS_10.md) for instructions  |
 | Solaris 11         | i386         | Documentation needed                                            |
-| Windows            | x86          | To be automated; currently depends on a hand-crafted VM.        |
+| Windows            | x64          | Supported in Test Kitchen, requires manual execution due to Travis build time limits |
 
 ## Installation
 
