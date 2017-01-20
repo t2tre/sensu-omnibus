@@ -53,17 +53,21 @@ build do
   mkdir("/lib/svc/manifest/site") if solaris?
   mkdir("#{etc_dir}/default") unless rhel? || debian? # if directory doesn't exist would be better
 
-  # .keep files to ensure all directories have at least one file
-  touch("#{etc_dir}/sensu/conf.d/.keep")
-  touch("#{etc_dir}/sensu/extensions/.keep")
-  touch("#{etc_dir}/sensu/plugins/.keep")
-  touch("/var/log/sensu/.keep")
-  touch("/var/run/sensu/.keep")
-  touch("/var/cache/sensu/.keep")
+
+  case ohai["platform_family"]
+  when "rhel", "debian"
+  else
+    # Packagers for non-linux platforms tend to need .keep files to ensure
+    # otherwise empty directories are part of the final package.
+    touch("#{etc_dir}/sensu/conf.d/.keep")
+    touch("#{etc_dir}/sensu/extensions/.keep")
+    touch("#{etc_dir}/sensu/plugins/.keep")
+    touch("/var/log/sensu/.keep")
+    touch("/var/run/sensu/.keep")
+    touch("/var/cache/sensu/.keep")
+  end
 
   # sensu-install (in omnibus bin dir)
-
-  # sensu-install
   if windows?
     copy("#{files_dir}/sensu-install.bat", "#{bin_dir}/sensu-install")
   else
