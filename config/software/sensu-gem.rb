@@ -65,6 +65,12 @@ build do
     touch("/var/log/sensu/.keep")
     touch("/var/run/sensu/.keep")
     touch("/var/cache/sensu/.keep")
+    project.extra_package_file("#{etc_dir}/sensu/conf.d/.keep")
+    project.extra_package_file("#{etc_dir}/sensu/extensions/.keep")
+    project.extra_package_file("#{etc_dir}/sensu/plugins/.keep")
+    project.extra_package_file("/var/log/sensu/.keep")
+    project.extra_package_file("/var/run/sensu/.keep")
+    project.extra_package_file("/var/cache/sensu/.keep")
   end
 
   # sensu-install (in omnibus bin dir)
@@ -87,12 +93,6 @@ build do
   project.extra_package_file("#{etc_dir}/default/sensu")
   project.extra_package_file("#{etc_dir}/logrotate.d/sensu")
   project.extra_package_file("#{usr_bin_dir}/sensu-install")
-  project.extra_package_file("#{etc_dir}/sensu/conf.d/.keep")
-  project.extra_package_file("#{etc_dir}/sensu/extensions/.keep")
-  project.extra_package_file("#{etc_dir}/sensu/plugins/.keep")
-  project.extra_package_file("/var/log/sensu/.keep")
-  project.extra_package_file("/var/run/sensu/.keep")
-  project.extra_package_file("/var/cache/sensu/.keep")
 
   # sensu-service
   copy("#{files_dir}/bin/sensu-service", bin_dir)
