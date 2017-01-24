@@ -21,6 +21,10 @@ if windows?
     version '14.0.25420.1'
   end
 
+  chocolatey 'awscli' do
+    version '1.11.41'
+  end
+
   # If this is an ephemeral vagrant/test-kitchen instance, we relax the password
   # so that the default password "vagrant" can be used.
   powershell_script 'Disable password complexity requirements' do
@@ -121,7 +125,11 @@ artifact_id = [ node["omnibus_sensu"]["build_version"], node["omnibus_sensu"]["b
 
 publish_environment = case windows?
                       when true
-                        shared_env
+                        shared_env.merge({
+                            'AWS_REGION' => node["omnibus_sensu"]["publishers"]["s3"]["region"],
+                            'AWS_ACCESS_KEY_ID' => node["omnibus_sensu"]["publishers"]["s3"]["access_key_id"],
+                            'AWS_SECRET_ACCESS_KEY' => node["omnibus_sensu"]["publishers"]["s3"]["secret_access_key"]
+                        })
                       when false
                         shared_env.merge({
                         'USER' => node["omnibus"]["build_user"],
@@ -137,15 +145,30 @@ load_toolchain_cmd = case windows?
                        ".  #{::File.join(build_user_home, 'load-omnibus-toolchain.sh')}"
                      end
 
-execute "publish_sensu_#{artifact_id}_s3" do
-  command(
-    <<-CODE.gsub(/^ {10}/, '')
-          #{load_toolchain_cmd}
-          bundle exec omnibus publish s3 #{node["omnibus_sensu"]["publishers"]["s3"]["artifact_bucket"]} "pkg/sensu*.#{value_for_platform(pkg_suffix_map)}"
-        CODE
-  )
-  cwd node["omnibus_sensu"]["project_dir"]
-  user node["omnibus"]["build_user"] unless windows?
-  environment publish_environment
-  not_if { node["omnibus_sensu"]["publishers"]["s3"].any? {|k,v| v.nil? } }
+case windows?
+when true
+  msi_name = "sensu-#{artifact_id}-x64.msi"
+  aws_cli = File.join('C:\"Program Files"\Amazon\AWSCLI\aws')
+
+  [ msi_name, "#{msi_name}.metadata.json" ].each do |pkg_file|
+    execute "publish_sensu_#{pkg_file}_s3_windows" do
+      command "#{aws_cli} s3 cp pkg\\#{pkg_file} s3://#{node["omnibus_sensu"]["publishers"]["s3"]["artifact_bucket"]}/windows/2012r2/x86_64/#{msi_name}/#{pkg_file}"
+      cwd node["omnibus_sensu"]["project_dir"]
+      environment publish_environment
+      not_if { node["omnibus_sensu"]["publishers"]["s3"].any? {|k,v| v.nil? } }
+    end
+  end
+else
+  execute "publish_sensu_#{artifact_id}_s3" do
+    command(
+      <<-CODE.gsub(/^ {10}/, '')
+            #{load_toolchain_cmd}
+            bundle exec omnibus publish s3 #{node["omnibus_sensu"]["publishers"]["s3"]["artifact_bucket"]} "pkg/sensu*.#{value_for_platform(pkg_suffix_map)}"
+          CODE
+    )
+    cwd node["omnibus_sensu"]["project_dir"]
+    user node["omnibus"]["build_user"] unless windows?
+    environment publish_environment
+    not_if { node["omnibus_sensu"]["publishers"]["s3"].any? {|k,v| v.nil? } }
+  end
 end
