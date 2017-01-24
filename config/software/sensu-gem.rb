@@ -54,24 +54,12 @@ build do
   mkdir("#{etc_dir}/default") unless rhel? || debian? # if directory doesn't exist would be better
 
 
-  case ohai["platform_family"]
-  when "rhel", "debian"
-  else
-    # Packagers for non-linux platforms tend to need .keep files to ensure
-    # otherwise empty directories are part of the final package.
-    touch("#{etc_dir}/sensu/conf.d/.keep")
-    touch("#{etc_dir}/sensu/extensions/.keep")
-    touch("#{etc_dir}/sensu/plugins/.keep")
-    touch("/var/log/sensu/.keep")
-    touch("/var/run/sensu/.keep")
-    touch("/var/cache/sensu/.keep")
-    project.extra_package_file("#{etc_dir}/sensu/conf.d/.keep")
-    project.extra_package_file("#{etc_dir}/sensu/extensions/.keep")
-    project.extra_package_file("#{etc_dir}/sensu/plugins/.keep")
-    project.extra_package_file("/var/log/sensu/.keep")
-    project.extra_package_file("/var/run/sensu/.keep")
-    project.extra_package_file("/var/cache/sensu/.keep")
-  end
+  project.extra_package_file("#{etc_dir}/sensu/conf.d")
+  project.extra_package_file("#{etc_dir}/sensu/extensions")
+  project.extra_package_file("#{etc_dir}/sensu/plugins")
+  project.extra_package_file("/var/log/sensu")
+  project.extra_package_file("/var/run/sensu")
+  project.extra_package_file("/var/cache/sensu")
 
   # sensu-install (in omnibus bin dir)
   if windows?
