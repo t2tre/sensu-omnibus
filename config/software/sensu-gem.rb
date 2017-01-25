@@ -53,13 +53,30 @@ build do
   mkdir("/lib/svc/manifest/site") if solaris?
   mkdir("#{etc_dir}/default") unless rhel? || debian? # if directory doesn't exist would be better
 
-
-  project.extra_package_file("#{etc_dir}/sensu/conf.d")
-  project.extra_package_file("#{etc_dir}/sensu/extensions")
-  project.extra_package_file("#{etc_dir}/sensu/plugins")
-  project.extra_package_file("/var/log/sensu")
-  project.extra_package_file("/var/run/sensu")
-  project.extra_package_file("/var/cache/sensu")
+  # The packager for FreeBSD does not support adding empty directories to the
+  # package manifest. To work around this limitation we add .sensu-keep files
+  # in each empty directory.
+  if freebsd?
+    touch("#{etc_dir}/sensu/conf.d/.sensu-keep")
+    touch("#{etc_dir}/sensu/extensions/.sensu-keep")
+    touch("#{etc_dir}/sensu/plugins/.sensu-keep")
+    touch("/var/log/sensu/.sensu-keep")
+    touch("/var/run/sensu/.sensu-keep")
+    touch("/var/cache/sensu/.sensu-keep")
+    project.extra_package_file("#{etc_dir}/sensu/conf.d/.sensu-keep")
+    project.extra_package_file("#{etc_dir}/sensu/extensions/.sensu-keep")
+    project.extra_package_file("#{etc_dir}/sensu/plugins/.sensu-keep")
+    project.extra_package_file("/var/log/sensu/.sensu-keep")
+    project.extra_package_file("/var/run/sensu/.sensu-keep")
+    project.extra_package_file("/var/cache/sensu/.sensu-keep")
+  else
+    project.extra_package_file("#{etc_dir}/sensu/conf.d")
+    project.extra_package_file("#{etc_dir}/sensu/extensions")
+    project.extra_package_file("#{etc_dir}/sensu/plugins")
+    project.extra_package_file("/var/log/sensu")
+    project.extra_package_file("/var/run/sensu")
+    project.extra_package_file("/var/cache/sensu")
+  end
 
   # sensu-install (in omnibus bin dir)
   if windows?
