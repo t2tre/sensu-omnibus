@@ -53,6 +53,12 @@ build do
   mkdir("/lib/svc/manifest/site") if solaris?
   mkdir("#{etc_dir}/default") unless rhel? || debian? # if directory doesn't exist would be better
 
+  # until we can figure out how to control files outside of install_dir on
+  # windows, let's create a conf.d directory in c:/opt/sensu for configuration
+  if windows?
+    mkdir("#{install_dir}/conf.d")
+  end
+
   # The packager for FreeBSD does not support adding empty directories to the
   # package manifest. To work around this limitation we add .sensu-keep files
   # in each empty directory.
