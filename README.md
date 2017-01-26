@@ -31,6 +31,7 @@ platform and architecture combinations:
 | CentOS 7           | ✅     | ❌     | No official 32bit images |
 | FreeBSD 10         | ✅     | ❌     | Official 32bit images are out of date |
 | FreeBSD 11         | ✅     | ❌     | No official 32bit images |
+| Windows 2012r2     | ✅     | ❌     |                          |
 
 ### Packages Built By Hand
 
@@ -44,7 +45,6 @@ add these builds to the automation pipeline in the future.
 | macOS 10.9+        | x86_64       | Built with homebrew-sensu, not yet using omnibus                |
 | Solaris 10         | i386         | See [Solaris 10](platform-docs/SOLARIS_10.md) for instructions  |
 | Solaris 11         | i386         | Documentation needed                                            |
-| Windows            | x64          | Supported in Test Kitchen, requires manual execution due to Travis build time limits |
 
 ## Installation
 
@@ -101,3 +101,20 @@ Additionally, the following optional environment variables are used if they are 
 | `GNUPG_PATH`             | Optional path to gpg keyring for signing package artifacts; currently unused |
 | `AWS_S3_CACHE_BUCKET`    | S3 bucket containing optional build dependency cache. If unset, dependencies are downloaded directly from upstream sources. |
 | `AWS_S3_ARTIFACT_BUCKET` | S3 bucket where build artifacts (packages) will be uploaded after a successful build. |
+
+### AWS Credential Security
+
+Automated build pipeline makes use of Travis CI encryption to secure sensitive
+environment variables, as well as a copy of the ssh private key required to
+access the EC2 instances this pipeline creates.
+
+As a result, should the AWS credentials or ssh key pair for this pipeline require
+rotating, the `travis` utility should be used to:
+
+* update the secure environment variables in `.travis.yml`:
+
+ `travis encrypt AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... --add`
+
+* update the ciphertext copy of ssh private key in `.travis/sensu-omnibus-artifact-builder.pem.enc`:
+
+  `travis encrypt-file sensu-omnibus-artifact-builder.pem`
