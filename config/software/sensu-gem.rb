@@ -4,7 +4,7 @@ default_version "0.26.1"
 dependency "ruby"
 dependency "rubygems"
 dependency "libffi"
-if freebsd?
+if freebsd? && ['os_version'].to_i < 1100000
   dependency "rubysl-readline-gem"
 else
   dependency "rb-readline-gem"
