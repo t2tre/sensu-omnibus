@@ -31,6 +31,7 @@ platform and architecture combinations:
 | CentOS 7           | ✅     | ❌     | No official 32bit images |
 | FreeBSD 10         | ✅     | ❌     | Official 32bit images are out of date |
 | FreeBSD 11         | ✅     | ❌     | No official 32bit images |
+| Windows 2012r2     | ✅     | ❌     |                          |
 
 ### Packages Built By Hand
 
@@ -44,7 +45,6 @@ add these builds to the automation pipeline in the future.
 | macOS 10.9+        | x86_64       | Built with homebrew-sensu, not yet using omnibus                |
 | Solaris 10         | i386         | See [Solaris 10](platform-docs/SOLARIS_10.md) for instructions  |
 | Solaris 11         | i386         | Documentation needed                                            |
-| Windows            | x64          | Supported in Test Kitchen, requires manual execution due to Travis build time limits |
 
 ## Installation
 
