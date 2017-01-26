@@ -101,3 +101,20 @@ Additionally, the following optional environment variables are used if they are 
 | `GNUPG_PATH`             | Optional path to gpg keyring for signing package artifacts; currently unused |
 | `AWS_S3_CACHE_BUCKET`    | S3 bucket containing optional build dependency cache. If unset, dependencies are downloaded directly from upstream sources. |
 | `AWS_S3_ARTIFACT_BUCKET` | S3 bucket where build artifacts (packages) will be uploaded after a successful build. |
+
+### AWS Credential Security
+
+Automated build pipeline makes use of Travis CI encryption to secure sensitive
+environment variables, as well as a copy of the ssh private key required to
+access the EC2 instances this pipeline creates.
+
+As a result, should the AWS credentials or ssh key pair for this pipeline require
+rotating, the `travis` utility should be used to:
+
+* update the secure environment variables in `.travis.yml`:
+
+ `travis encrypt AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... --add`
+
+* update the ciphertext copy of ssh private key in `.travis/sensu-omnibus-artifact-builder.pem.enc`:
+
+  `travis encrypt-file sensu-omnibus-artifact-builder.pem`
