@@ -4,7 +4,11 @@ default_version "0.26.1"
 dependency "ruby"
 dependency "rubygems"
 dependency "libffi"
-dependency "rb-readline-gem"
+if freebsd?
+  dependency "rubysl-readline-gem"
+else
+  dependency "rb-readline-gem"
+end
 dependency "eventmachine"
 dependency "winsw" if windows?
 
