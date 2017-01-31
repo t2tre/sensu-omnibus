@@ -119,6 +119,20 @@ build do
   platform_version = ohai["platform_version"]
   service_manager = Helpers::service_manager_for(platform, platform_version)
 
+  # Platforms with systemd as the default service manager symlink /var/run to
+  # /run and its contents are not persisted across reboots. To ensure that
+  # /var/run/sensu is recreated on boot a tmpfiles.d config file must be
+  # created.
+  if service_manager == :systemd
+    options = {
+      source: "tmpfilesd/sensu.conf.erb",
+      dest: "#{etc_dir}/tmpfiles.d/sensu.conf",
+      mode: 0644
+    }
+    erb(options)
+    project.extra_package_file("#{etc_dir}/tmpfiles.d/sensu.conf")
+  end
+
   # service wrappers
   service_dir = Helpers::directory_for_service(platform_family, service_manager)
 
