@@ -41,9 +41,17 @@ purge_sensu_files()
   fi
 }
 
+# only execute this script on rhel-based distros if an rpm uninstall
+# is taking place
+<% if platform_family == "rhel" -%>
+if [ $1 -eq 0 ]; then
+<% end -%>
+
 purge_sensu_services
 purge_sensu_files
 
-echo "Sensu has been uninstalled!"
+<% if platform_family == "rhel" -%>
+fi
+<% end -%>
 
 exit 0

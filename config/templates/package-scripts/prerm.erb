@@ -54,10 +54,20 @@ when "aix" -%>
 <% end -%>
 }
 
+# only execute this script on rhel-based distros if an rpm uninstall
+# is taking place
+<% if platform_family == "rhel" -%>
+if [ $1 -eq 0 ]; then
+<% end -%>
+
 stop_sensu_services
 
 # wait for services to stop
 sleep 6
+
+<% if platform_family == "rhel" -%>
+fi
+<% end -%>
 
 exit 0
 EOF
