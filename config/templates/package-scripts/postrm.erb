@@ -41,9 +41,32 @@ purge_sensu_files()
   fi
 }
 
+<% case platform_family
+  when "rhel" -%>
+# only execute this script on rhel-based distros if an rpm uninstall
+# is taking place
+if [ $1 -eq 0 ]; then
+  purge_sensu_services
+  purge_sensu_files
+fi
+<% when "debian" -%>
+case "$1" in
+  purge)
+    purge_sensu_services
+    purge_sensu_files
+    ;;
+
+  remove|upgrade|abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+  *)
+    echo "postinst called with unknown argument \`$1'" >&2
+    exit 1
+    ;;
+esac
+<% else -%>
 purge_sensu_services
 purge_sensu_files
-
-echo "Sensu has been uninstalled!"
+<% end -%>
 
 exit 0
