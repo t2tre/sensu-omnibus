@@ -54,10 +54,10 @@ when "aix" -%>
 <% end -%>
 }
 
-# only execute this script on rhel-based distros if an rpm uninstall
-# is taking place
 <% case platform_family
   when "rhel" -%>
+# only execute this script on rhel-based distros if an rpm uninstall
+# is taking place
 if [ $1 -eq 0 ]; then
   stop_sensu_services
 fi
