@@ -337,6 +337,16 @@ restart() {
     fi
 }
 
+ensure_dir() {
+    if [ ! -d $1 ]; then
+        mkdir -p $1
+        chown -R $2 $1
+        chmod 755 $1
+    fi
+}
+
+ensure_dir $PID_DIR $USER
+
 case "$1" in
     start)
         start
