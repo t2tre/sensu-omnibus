@@ -133,9 +133,32 @@ create_system_services()
   <% end -%>
 }
 
+<% case platform_family
+  when "rhel" -%>
+if [ $1 -eq 1 ]; then
+  create_sensu_user_group
+fi
+chown_sensu_dirs
+<% when "debian" -%>
+case "$1" in
+  configure)
+    create_sensu_user_group
+    chown_sensu_dirs
+    ;;
+
+  abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+  *)
+    echo "postinst called with unknown argument \`$1'" >&2
+    exit 1
+    ;;
+esac
+<% else -%>
 create_sensu_user_group
 chown_sensu_dirs
 create_system_services
+<% end -%>
 
 exit 0
 EOF
