@@ -129,7 +129,7 @@ create_system_services()
   set -e
   <% if platform_family == "aix" -%>
   rmssys -s sensu-client 2>&1 > /dev/null
-  mkssys -s sensu-client -p "/opt/sensu/bin/sensu-service client" -u sensu -S -n 15 -f 9 > /dev/null
+  mkssys -s sensu-client -p "/opt/sensu/bin/sensu-service" -a "start client" -u sensu -S -n 15 -f 9 > /dev/null
   <% end -%>
 }
 
