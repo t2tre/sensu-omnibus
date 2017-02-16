@@ -33,6 +33,7 @@ stop_sensu_services()
   set -e
 <% case platform_family
 when "aix" -%>
+  set +e
   stopsrc -s sensu-client > /dev/null 2>&1
 <% when "solaris" -%>
   svcadm disable sensu-client > /dev/null 2>&1
