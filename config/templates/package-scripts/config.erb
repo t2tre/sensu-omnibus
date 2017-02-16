@@ -1,0 +1,32 @@
+#!/bin/sh
+#
+# Perform necessary Sensu post install steps
+# after package is installed.
+#
+
+<% if platform_family == "freebsd" -%>
+ETC_DIR=/usr/local/etc
+<% else -%>
+ETC_DIR=/etc
+<% end -%>
+
+INSTALLER_DIR=/opt/sensu
+CONFIG_DIR=$ETC_DIR/sensu
+LOG_DIR=/var/log/sensu
+PID_DIR=/var/run/sensu
+TMP_DIR=/var/cache/sensu
+
+chown_sensu_dirs()
+{
+  chown -Rh 0:0 $INSTALLER_DIR
+  chown -R sensu:sensu $CONFIG_DIR
+  chown -R sensu:sensu $LOG_DIR
+  chown -R sensu:sensu $PID_DIR
+  chown -R sensu:sensu $TMP_DIR
+}
+
+<% if platform_family == "aix" -%>
+chown_sensu_dirs
+<% end -%>
+
+echo "Sensu has been configured!"

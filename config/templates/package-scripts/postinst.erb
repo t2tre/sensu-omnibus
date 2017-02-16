@@ -126,9 +126,10 @@ chown_sensu_dirs()
 
 create_system_services()
 {
-  set -e
   <% if platform_family == "aix" -%>
+  set +e
   rmssys -s sensu-client 2>&1 > /dev/null
+  set -e
   mkssys -s sensu-client -p "/opt/sensu/bin/sensu-service" -a "start client" -u sensu -S -n 15 -f 9 > /dev/null
   <% end -%>
 }
