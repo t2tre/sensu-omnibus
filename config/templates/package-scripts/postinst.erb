@@ -131,6 +131,9 @@ create_system_services()
   rmssys -s sensu-client 2>&1 > /dev/null
   set -e
   mkssys -s sensu-client -p "/opt/sensu/bin/sensu-service" -a "start client" -u sensu -S -n 15 -f 9 > /dev/null
+  <% else -%>
+  # this function is a noop on <%= platform_family %>
+  return
   <% end -%>
 }
 
