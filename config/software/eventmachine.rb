@@ -45,9 +45,7 @@ build do
   compile_options = ''
 
   if windows?
-    compile_options << " --with-ssl-dir=#{windows_install_prefix}\\bin"
-    compile_options << " --with-ssl-lib=#{windows_install_prefix}\\lib"
-    compile_options << " --with-ssl-include=#{windows_install_prefix}\\include"
+    compile_options << " --with-ssl-dir=#{windows_install_prefix}"
     compile_options << " --with-opt-include=#{windows_install_prefix}\\include"
   end
 
