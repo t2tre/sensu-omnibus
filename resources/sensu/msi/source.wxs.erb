@@ -28,8 +28,11 @@
       <![CDATA[Installed OR VersionNT >= 601]]>
     </Condition -->
 
-    <!-- We always do Major upgrades -->
-    <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeErrorMessage)" />
+    <!-- Major upgrade -->
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion OnlyDetect="yes" Minimum="$(var.VersionNumber)" IncludeMinimum="no" Property="NEWERVERSIONDETECTED" />
+      <UpgradeVersion Minimum="0.0.0.0" IncludeMinimum="yes" Maximum="$(var.VersionNumber)" IncludeMaximum="no" Property="OLDERVERSIONBEINGUPGRADED" />
+    </Upgrade>
 
     <!--
       If fastmsi is set, custom actions will be invoked during install to unzip
