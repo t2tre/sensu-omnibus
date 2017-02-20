@@ -6,6 +6,7 @@ description 'Installs/Configures omnibus_sensu'
 long_description 'Installs/Configures omnibus_sensu'
 version '0.1.0'
 
+depends 'aws', '~> 4.2'
 depends 'omnibus', '~> 5.0'
 depends 'git', '~> 5.0'
 depends 'freebsd', '~> 1.0'
