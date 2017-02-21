@@ -61,7 +61,7 @@ build do
     env["CFLAGS"] = "-I#{install_dir}/embedded/include"
     env["CPPFLAGS"] = env["CFLAGS"]
     env["CXXFLAGS"] = env["CFLAGS"]
-    env["LDFLAGS"] ="-L#{install_dir}/embedded/lib -fno-lto"
+    env["LDFLAGS"] ="-L#{install_dir}/embedded/lib -m32 -fno-lto"
   end
 
   configure_args = [
