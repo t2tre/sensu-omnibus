@@ -62,11 +62,16 @@
     <InstallExecuteSequence>
       <Custom Action="FastUnzip" After="InstallFiles">NOT Installed</Custom>
       <Custom Action="Cleanup" After="RemoveFiles">REMOVE~="ALL"</Custom>
+      <RemoveExistingProducts After="InstallValidate" />
     </InstallExecuteSequence>
 
     <UI>
       <ProgressText Action="FastUnzip">!(loc.FileExtractionProgress)</ProgressText>
     </UI>
+    <% else %>
+    <InstallExecuteSequence>
+      <RemoveExistingProducts After="InstallValidate" />
+    </InstallExecuteSequence>
     <% end %>
 
     <Directory Id="TARGETDIR" Name="SourceDir">
