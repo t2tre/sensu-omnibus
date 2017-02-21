@@ -35,7 +35,7 @@ build do
   if aix? || solaris?
     patch source: "disable-extensions.patch", plevel: 1, env: patch_env
   elsif windows?
-    command "rake compile -- --with-ssl-dir=#{windows_install_prefix}\\bin", env: env
+    command "rake compile -- --with-ssl-dir=#{windows_install_prefix}", env: env
   else
     command "rake compile", env: env
   end
