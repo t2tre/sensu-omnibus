@@ -147,12 +147,14 @@ load_toolchain_cmd = case windows?
 
 case windows?
 when true
-  msi_name = "sensu-#{artifact_id}-x64.msi"
+  arch = "i386" # i386 / x86_64
+  win_arch = arch == "i386" ? "x86" : "x64"
+  msi_name = "sensu-#{artifact_id}-#{win_arch}.msi"
   aws_cli = File.join('C:\"Program Files"\Amazon\AWSCLI\aws')
 
   [ msi_name, "#{msi_name}.metadata.json" ].each do |pkg_file|
     execute "publish_sensu_#{pkg_file}_s3_windows" do
-      command "#{aws_cli} s3 cp pkg\\#{pkg_file} s3://#{node["omnibus_sensu"]["publishers"]["s3"]["artifact_bucket"]}/windows/2012r2/x86_64/#{msi_name}/#{pkg_file}"
+      command "#{aws_cli} s3 cp pkg\\#{pkg_file} s3://#{node["omnibus_sensu"]["publishers"]["s3"]["artifact_bucket"]}/windows/2012r2/#{arch}/#{msi_name}/#{pkg_file}"
       cwd node["omnibus_sensu"]["project_dir"]
       environment publish_environment
       not_if { node["omnibus_sensu"]["publishers"]["s3"].any? {|k,v| v.nil? } }
