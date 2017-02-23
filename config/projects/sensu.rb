@@ -47,10 +47,10 @@ package :rpm do
   category "Monitoring"
   vendor vendor
   if Gem::Version.new(ohai["platform_version"]) >= Gem::Version.new(6)
-    if (ENV["GPG_PASSPHRASE"].nil? || ENV["GPG_PASSPHRASE"].empty?)
-      raise "GPG Passphrase not provided"
+    if ::File.exist?(::File.expand_path('~/.gpg_passphrase'))
+      signing_passphrase ::File.read(::File.expand_path('~/.gpg_passphrase'))
     else
-      signing_passphrase ENV["GPG_PASSPHRASE"]
+      raise "GPG Passphrase not provided"
     end
   end
 end
