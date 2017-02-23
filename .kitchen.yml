@@ -1,8 +1,6 @@
 <%
 build_version = ENV["SENSU_VERSION"]
 build_iteration = ENV["BUILD_NUMBER"]
-gpg_passphrase = ENV["GPG_PASSPHRASE"]
-gnupg_path = ENV["GNUPG_PATH"]
 aws_ssh_key_id = ENV["AWS_SSH_KEY_ID"]
 aws_ssh_key_path = ENV["AWS_SSH_KEY_PATH"]
 
@@ -15,12 +13,6 @@ s3_enabled = !s3.any? { |k,v| v.nil? }
 if ENV.key?("AWS_ACCESS_KEY_ID") && ENV.key?("AWS_SECRET_ACCESS_KEY")
   s3.merge!(:access_key_id => ENV["AWS_ACCESS_KEY_ID"])
   s3.merge!(:secret_access_key => ENV["AWS_SECRET_ACCESS_KEY"])
-end
-
-if gpg_passphrase && gnupg_path
-  # no-op
-elsif gpg_passphrase || gnupg_path
-  raise "Both GPG_PASSPHRASE and GNUPG_PATH must be set for signed RPMs"
 end
 
 unless build_version && build_iteration
@@ -142,4 +134,4 @@ suites:
       omnibus_sensu:
         build_version: "<%= build_version %>"
         build_iteration: "<%= build_iteration %>"
-        gpg_passphrase: "<%= gpg_passphrase %>"
+        gpg_passphrase: "<%= ENV["GPG_PASSPHRASE"] %>"
