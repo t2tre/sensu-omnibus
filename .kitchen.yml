@@ -43,6 +43,10 @@ driver:
   <% if ENV['TRAVIS'] == 'true' %>
     "travis-job-number": "<%= ENV['TRAVIS_JOB_NUMBER'].nil? ? 'unknown' : ENV['TRAVIS_JOB_NUMBER'] %>"
   <% end %>
+  block_device_mappings:
+    - device_name: /dev/sda1
+      ebs:
+        delete_on_termination: true
 <% unless aws_ssh_key_path.nil? %>
 transport:
   ssh_key: <%= aws_ssh_key_path %>
