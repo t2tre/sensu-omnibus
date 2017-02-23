@@ -35,7 +35,7 @@ build do
   if aix? || solaris?
     patch source: "disable-extensions.patch", plevel: 1, env: patch_env
   elsif windows?
-    command "rake compile -- --with-ssl-dir=#{windows_install_prefix}", env: env
+    command "rake compile -- --with-opt-lib=#{windows_install_prefix}\\bin", env: env
   else
     command "rake compile", env: env
   end
@@ -45,8 +45,7 @@ build do
   compile_options = ''
 
   if windows?
-    compile_options << " --with-ssl-dir=#{windows_install_prefix}"
-    compile_options << " --with-opt-include=#{windows_install_prefix}\\include"
+    compile_options << " --with-opt-lib=#{windows_install_prefix}\\bin"
   end
 
   command "gem install --no-document pkg/eventmachine-1.2.2.gem -- #{compile_options}", env: env
