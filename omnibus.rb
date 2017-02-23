@@ -61,3 +61,9 @@ publish_s3_secret_key ENV["AWS_SECRET_ACCESS_KEY"]
 # ------------------------------
 windows_arch   %w{x86 x64}.include?((ENV['OMNIBUS_WINDOWS_ARCH'] || '').downcase) ?
                  ENV['OMNIBUS_WINDOWS_ARCH'].downcase.to_sym : :x86
+
+redacted_environment_variables [
+  "AWS_ACCESS_KEY_ID",
+  "AWS_SECRET_ACCESS_KEY",
+  "GPG_PASSPHRASE",
+]

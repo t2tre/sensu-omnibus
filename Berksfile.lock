@@ -10,6 +10,8 @@ DEPENDENCIES
 
 GRAPH
   apt (2.9.2)
+  aws (4.2.0)
+    ohai (>= 4.0)
   build-essential (7.0.3)
     compat_resource (>= 12.16.3)
     mingw (>= 1.1)
@@ -44,6 +46,7 @@ GRAPH
     windows-sdk (>= 0.0.0)
     wix (>= 0.0.0)
   omnibus_sensu (0.1.0)
+    aws (~> 4.2)
     chef-sugar (~> 3.4)
     chocolatey (~> 1.0)
     freebsd (~> 1.0)

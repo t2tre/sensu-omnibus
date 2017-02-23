@@ -56,8 +56,28 @@ include_recipe "omnibus::default"
 
 case node["platform_family"]
 when "rhel"
-  package "gpg"
-  package "pygpgme"
+  # skip signing on Centos 5 because of Reasons
+  if Gem::Version.new(node["platform_version"]) >= Gem::Version.new(6)
+    package "gpg"
+    package "pygpgme"
+
+    gnupg_tar_path = ::File.join(build_user_home, 'gnupg.tar')
+
+    aws_s3_file gnupg_tar_path do
+      bucket node["omnibus_sensu"]["publishers"]["s3"]["cache_bucket"]
+      remote_path 'gpg/gnupg.tar'
+      aws_access_key node["omnibus_sensu"]["publishers"]["s3"]["access_key_id"]
+      aws_secret_access_key  node["omnibus_sensu"]["publishers"]["s3"]["secret_access_key"]
+      region node["omnibus_sensu"]["publishers"]["s3"]["region"]
+      owner node["omnibus"]["build_user"]
+      group node["omnibus"]["build_user_group"]
+    end
+
+    execute 'unpack-gpg-tarball' do
+      command "tar -xvf #{gnupg_tar_path}"
+      cwd '/root'
+    end
+  end
 end
 
 gem_package "ffi-yajl" do
