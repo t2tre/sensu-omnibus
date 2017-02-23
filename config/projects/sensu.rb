@@ -43,20 +43,15 @@ package :deb do
   vendor vendor
 end
 
-def sign_rpm?
-  Gem::Version.new(ohai["platform_version"]) >= Gem::Version.new(6)
-end
-
-def gpg_passphrase_set?
-  ! (ENV["GPG_PASSPHRASE"].nil? || ENV["GPG_PASSPHRASE"].empty?)
-end
-
 package :rpm do
   category "Monitoring"
   vendor vendor
-  if sign_rpm?
-    raise "GPG Passphrase not provided" unless gpg_passphrase_set?
-    signing_passphrase ENV["GPG_PASSPHRASE"]
+  if Gem::Version.new(ohai["platform_version"]) >= Gem::Version.new(6)
+    if (ENV["GPG_PASSPHRASE"].nil? || ENV["GPG_PASSPHRASE"].empty?)
+      raise "GPG Passphrase not provided"
+    else
+      signing_passphrase ENV["GPG_PASSPHRASE"]
+    end
   end
 end
 
