@@ -43,17 +43,23 @@ package :deb do
   vendor vendor
 end
 
+gpg_passphrase = begin
+                   ::File.read('/home/omnibus/.gpg_passphrase')
+                 rescue => e
+                   puts "Failed to load gpg_passphrase: #{e}"
+                   nil
+                 end
+
+platform_version = ohai["platform_version"]
+
 package :rpm do
   category "Monitoring"
   vendor vendor
-  if Gem::Version.new(ohai["platform_version"]) >= Gem::Version.new(6)
-    if ::File.exist?(::File.expand_path('~/.gpg_passphrase'))
-      signing_passphrase ::File.read(::File.expand_path('~/.gpg_passphrase'))
-    else
-      raise "GPG Passphrase not provided"
-    end
+  if Gem::Version.new(platform_version) >= Gem::Version.new(6)
+    signing_passphrase gpg_passphrase
   end
 end
+
 
 package :msi do
   upgrade_code "29B5AA66-46B3-4676-8D67-2F3FB31CC549"

@@ -62,7 +62,7 @@ when "rhel"
     package "pygpgme"
 
     file ::File.join(build_user_home, '.gpg_passphrase') do
-      owner 'root'
+      owner node["omnibus"]["build_user"]
       mode 0600
       content node["omnibus_sensu"]["gpg_passphrase"]
       sensitive true
