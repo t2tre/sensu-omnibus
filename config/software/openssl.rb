@@ -61,6 +61,11 @@ build do
     env["CFLAGS"] = "-I#{install_dir}/embedded/include"
     env["CPPFLAGS"] = env["CFLAGS"]
     env["CXXFLAGS"] = env["CFLAGS"]
+    if windows_arch_i386?
+      env["LDFLAGS"] ="-L#{install_dir}/embedded/lib -m32 -fno-lto"
+    else
+      env["LDFLAGS"] ="-L#{install_dir}/embedded/lib -m64 -fno-lto"
+    end
   end
 
   configure_args = [
@@ -101,7 +106,7 @@ build do
       platform = sparc? ? "solaris64-sparcv9-gcc" : "solaris64-x86_64-gcc"
       "/bin/bash ./Configure #{platform} -static-libgcc"
     elsif windows?
-      platform = "mingw"
+      platform = windows_arch_i386? ? "mingw" : "mingw64"
       "perl.exe ./Configure #{platform}"
     else
       prefix =

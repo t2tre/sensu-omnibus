@@ -129,6 +129,13 @@ platforms:
     transport:
       name: winrm
       elevated: true
+  - name: windows-2012-r2-i386
+    driver:
+      image_id: ami-1562d075
+      instance_type: m3.xlarge
+    transport:
+      name: winrm
+      elevated: true
 
 suites:
   - name: default
