@@ -147,8 +147,8 @@ load_toolchain_cmd = case windows?
 
 case windows?
 when true
-  arch = "i386" # i386 / x86_64
-  win_arch = arch == "i386" ? "x86" : "x64"
+  arch = windows_arch_i386? ? "i386" : "x86_64"
+  win_arch = windows_arch_i386? ? "x86" : "x64"
   msi_name = "sensu-#{artifact_id}-#{win_arch}.msi"
   aws_cli = File.join('C:\"Program Files"\Amazon\AWSCLI\aws')
 

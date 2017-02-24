@@ -154,4 +154,3 @@ suites:
         build_version: "<%= build_version %>"
         build_iteration: "<%= build_iteration %>"
         gpg_passphrase: "<%= gpg_passphrase %>"
-        project_revision: "windows-32bit-openssl"
