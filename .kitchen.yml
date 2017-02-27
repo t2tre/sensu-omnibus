@@ -71,6 +71,10 @@ platforms:
     driver:
       image_id: ami-4fbf2f7f
       instance_type: m1.medium
+      block_device_mappings:
+        - device_name: /dev/sda
+          ebs:
+            delete_on_termination: true
     run_list: yum-epel::default
   - name: centos-5
     driver:
