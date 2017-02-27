@@ -15,12 +15,17 @@ unless ENV.key?("BUILD_NUMBER")
 end
 
 name "sensu"
-maintainer "support@sensuapp.com"
-homepage "https://sensuapp.org"
+homepage "https://sensu.io"
 license "MIT"
 description "A monitoring framework that aims to be simple, malleable, and scalable."
 
-vendor = "Sensu <support@sensuapp.com>"
+if windows?
+  maintainer "Sensu, Inc."
+else
+  maintainer "support@sensu.io"
+end
+
+vendor = "Sensu <support@sensu.io>"
 
 # Defaults to C:/opt/sensu on Windows
 # and /opt/sensu on all other platforms
