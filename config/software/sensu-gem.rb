@@ -99,12 +99,10 @@ build do
   end
 
   # misc files
-  copy("#{files_dir}/config.json.example", "#{etc_dir}/sensu/config.json.example")
   copy("#{files_dir}/default/sensu", "#{etc_dir}/default/sensu")
   copy("#{files_dir}/logrotate.d/sensu", "#{etc_dir}/logrotate.d/sensu")
 
   # add extra package files (files outside of /opt/sensu)
-  project.extra_package_file("#{etc_dir}/sensu/config.json.example")
   project.extra_package_file("#{etc_dir}/default/sensu")
   project.extra_package_file("#{etc_dir}/logrotate.d/sensu")
   project.extra_package_file("#{usr_bin_dir}/sensu-install")
