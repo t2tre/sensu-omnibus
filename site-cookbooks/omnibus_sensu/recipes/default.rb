@@ -61,6 +61,13 @@ when "rhel"
     package "gpg"
     package "pygpgme"
 
+    file ::File.join(build_user_home, '.gpg_passphrase') do
+      owner node["omnibus"]["build_user"]
+      mode 0600
+      content node["omnibus_sensu"]["gpg_passphrase"]
+      sensitive true
+    end
+
     gnupg_tar_path = ::File.join(build_user_home, 'gnupg.tar')
 
     aws_s3_file gnupg_tar_path do
@@ -121,7 +128,6 @@ end
 shared_env = {
   "SENSU_VERSION" => node["omnibus_sensu"]["build_version"],
   "BUILD_NUMBER" => node["omnibus_sensu"]["build_iteration"],
-  "GPG_PASSPHRASE" => node["omnibus_sensu"]["gpg_passphrase"]
 }
 
 omnibus_build "sensu" do
