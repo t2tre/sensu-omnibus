@@ -37,6 +37,8 @@ module Helpers
       :smf
     when /windows/
       :windows
+    when /mac_os_x/
+      :launchd
     else
       raise "#{platform} is not a supported build target"
     end
@@ -57,6 +59,8 @@ module Helpers
       services = [] # service is installed by postinst script
     when :windows
       services = []  # TODO: windows
+    when :launchd
+      services = [] # TODO: mac_os_x
     end
     services
   end
@@ -84,6 +88,8 @@ module Helpers
       "" # service is installed by postinst script
     when :windows
       "" # TODO: windows
+    when :launchd
+      "" # TODO: add support for launchd
     else
       raise unknown_combo
     end
@@ -101,6 +107,8 @@ module Helpers
       "#{service}.xml"
     when :windows
       ""  # TODO: windows
+    when :launchd
+      ""
     else
       raise "Could not determine filename for #{service} and #{service_manager}"
     end
