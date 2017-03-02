@@ -39,6 +39,9 @@ build do
   if freebsd?
     etc_dir = "/usr/local/etc"
     usr_bin_dir = "/usr/local/bin"
+  elsif mac_os_x?
+    etc_dir = "/etc"
+    usr_bin_dir = "/usr/local/bin"
   else
     etc_dir = "/etc"
     usr_bin_dir = "/usr/bin"
