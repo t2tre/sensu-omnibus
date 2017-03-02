@@ -51,6 +51,8 @@ when "aix" -%>
   done
 <% when "freebsd" -%>
 # this is a noop on <%= platform_family %>
+<% when "mac_os_x" -%>
+# this is a noop on <%= platform_family %>
 <% else raise "Service management undefined for platform family \"#{platform_family}\"" -%>
 <% end -%>
 }

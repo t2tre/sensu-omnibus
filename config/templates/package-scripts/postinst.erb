@@ -83,7 +83,12 @@ create_sensu_user_group()
 {
   # create sensu group
   set +e
+  <% case platform_family
+  when "mac_os_x" -%>
+  dscl . -list /Groups | grep "^_sensu" > /dev/null
+  <% else -%>
   grep "^sensu:" /etc/group > /dev/null
+  <% end -%>
   RC=$?
   set -e
   if [ "${RC}" != "0" ]; then
@@ -96,13 +101,23 @@ create_sensu_user_group()
     pw groupadd sensu
     <% when "debian", "rhel" -%>
     groupadd -r sensu
+    <% when "mac_os_x" -%>
+    last_used_gid=`dscacheutil -q group | grep gid | tail -n 1 | awk '{ print $2 }'`
+    sensu_gid=`echo "$last_used_gid + 1" | bc`
+    dscl . -create Groups/_sensu
+    dscl . -create Groups/_sensu PrimaryGroupID $sensu_gid
     <% else raise "Group creation undefined for platform family \"#{platform_family}\"" -%>
     <% end -%>
   fi
 
   # create sensu user
   set +e
+  <% case platform_family
+  when "mac_os_x" -%>
+  dscl . -list /Users | grep "^_sensu" > /dev/null
+  <% else -%>
   grep "^sensu:" /etc/passwd > /dev/null
+  <% end -%>
   RC=$?
   set -e
   if [ "${RC}" != "0" ]; then
@@ -116,6 +131,11 @@ create_sensu_user_group()
     pw adduser sensu -g sensu -d /nonexistent -s /usr/sbin/nologin -c "Sensu Monitoring Framework"
     <% when "debian", "rhel" -%>
     useradd -r -g sensu -d /opt/sensu -s /bin/false -c "Sensu Monitoring Framework" sensu
+    <% when "mac_os_x" -%>
+    sensu_gid=`dscl . -read /Groups/_sensu | awk '($1 == "PrimaryGroupID:") { print $2 }'`
+    dscl . -create /Users/_sensu UniqueID $sensu_gid
+    dscl . -create /Users/_sensu PrimaryGroupID $sensu_gid
+    dscl . -create /Users/_sensu UserShell /usr/bin/false
     <% else raise "User creation undefined for platform family \"#{platform_family}\"" -%>
     <% end -%>
   fi
