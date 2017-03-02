@@ -24,7 +24,7 @@ purge_sensu_services()
   rmssys -s sensu-server > /dev/null 2>&1
 <% when "solaris" -%>
   rm -f /lib/svc/manifest/site/sensu-client.xml
-<% when "debian", "rhel", "freebsd" -%>
+<% when "debian", "rhel", "freebsd", "mac_os_x" -%>
 # this is a noop on <%= platform_family %>
 <% else raise "Service cleanup undefined for platform family \"#{platform_family}\"" -%>
 <% end -%>
