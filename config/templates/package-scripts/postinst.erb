@@ -47,6 +47,14 @@ SENSU_GEM_PATHS=$EMBEDDED_DIR/lib/ruby/gems/2.2.0:$GEM_PATH
 
 SYSV_SCRIPTS_EXIST=false
 
+<% if platform_family == "mac_os_x" -%>
+SENSU_USER=_sensu
+SENSU_GROUP=_sensu
+<% else -%>
+SENSU_USER=sensu
+SENSU_GROUP=sensu
+<% end -%>
+
 error_exit()
 {
   echo "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
@@ -138,10 +146,10 @@ chown_sensu_dirs()
   set -e
   # Ensure all files/directories in $INSTALLER_DIR are owned by root.
   chown -Rh 0:0 $INSTALLER_DIR
-  chown -R sensu:sensu $CONFIG_DIR
-  chown -R sensu:sensu $LOG_DIR
-  chown -R sensu:sensu $PID_DIR
-  chown -R sensu:sensu $TMP_DIR
+  chown -R $SENSU_USER:$SENSU_GROUP $CONFIG_DIR
+  chown -R $SENSU_USER:$SENSU_GROUP $LOG_DIR
+  chown -R $SENSU_USER:$SENSU_GROUP $PID_DIR
+  chown -R $SENSU_USER:$SENSU_GROUP $TMP_DIR
 }
 
 create_system_services()

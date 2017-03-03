@@ -16,13 +16,21 @@ LOG_DIR=/var/log/sensu
 PID_DIR=/var/run/sensu
 TMP_DIR=/var/cache/sensu
 
+<% if platform_family == "mac_os_x" -%>
+SENSU_USER=_sensu
+SENSU_GROUP=_sensu
+<% else -%>
+SENSU_USER=sensu
+SENSU_GROUP=sensu
+<% end -%>
+
 chown_sensu_dirs()
 {
   chown -Rh 0:0 $INSTALLER_DIR
-  chown -R sensu:sensu $CONFIG_DIR
-  chown -R sensu:sensu $LOG_DIR
-  chown -R sensu:sensu $PID_DIR
-  chown -R sensu:sensu $TMP_DIR
+  chown -R $SENSU_USER:$SENSU_GROUP $CONFIG_DIR
+  chown -R $SENSU_USER:$SENSU_GROUP $LOG_DIR
+  chown -R $SENSU_USER:$SENSU_GROUP $PID_DIR
+  chown -R $SENSU_USER:$SENSU_GROUP $TMP_DIR
 }
 
 <% if platform_family == "aix" -%>
