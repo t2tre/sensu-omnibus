@@ -84,6 +84,8 @@ module Helpers
       "" # service is installed by postinst script
     when :windows
       "" # TODO: windows
+    when :launchd
+      "/Library/LaunchDaemons"
     else
       raise unknown_combo
     end
@@ -101,6 +103,8 @@ module Helpers
       "#{service}.xml"
     when :windows
       ""  # TODO: windows
+    when :launchd
+      "org.sensuapp.#{service}.plist"
     else
       raise "Could not determine filename for #{service} and #{service_manager}"
     end
