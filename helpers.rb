@@ -59,8 +59,6 @@ module Helpers
       services = [] # service is installed by postinst script
     when :windows
       services = []  # TODO: windows
-    when :launchd
-      services = [] # TODO: mac_os_x
     end
     services
   end
@@ -89,7 +87,7 @@ module Helpers
     when :windows
       "" # TODO: windows
     when :launchd
-      "" # TODO: add support for launchd
+      "/Library/LaunchDaemons"
     else
       raise unknown_combo
     end
@@ -108,7 +106,7 @@ module Helpers
     when :windows
       ""  # TODO: windows
     when :launchd
-      ""
+      "org.sensuapp.#{service}.plist"
     else
       raise "Could not determine filename for #{service} and #{service_manager}"
     end
