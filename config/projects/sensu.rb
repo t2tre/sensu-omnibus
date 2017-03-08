@@ -40,8 +40,8 @@ build_version version
 build_iteration ENV["BUILD_NUMBER"]
 
 override "sensu-gem", version: version
-override "ruby", version: "2.3.0"
-override "rubygems", version: "2.6.6"
+override "ruby", version: "2.4.0"
+override "rubygems", version: "2.6.10"
 
 package :deb do
   section "Monitoring"
