@@ -73,7 +73,6 @@ end
 
 # TODO: config files are removed during actions such as dpkg --purge
 #if linux?
-#  config_file "/etc/sensu/config.json.example"
 #  config_file "/etc/sensu/conf.d/README.md"
 #  config_file "/etc/logrotate.d/sensu"
 #  config_file "/etc/default/sensu"
