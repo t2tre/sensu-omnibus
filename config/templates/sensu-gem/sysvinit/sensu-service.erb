@@ -195,6 +195,8 @@ wait_for_stop() {
 start() {
     log_daemon_msg "Starting $service_name"
 
+    set_sensu_paths
+
     [ -x $exec ] || exit 5
 
     status &> /dev/null
@@ -313,6 +315,7 @@ status() {
 }
 
 validate_config() {
+    set_sensu_paths
     validate_pidfile=$PID_DIR/$service_name-validate.pid
     start_daemon $USER $validate_pidfile $exec "validate <%= service_shortname %> fork"
 }

@@ -55,6 +55,7 @@ CONFIG_FILE=$CONFIG_DIR/config.json
 CONFD_DIR=$CONFIG_DIR/conf.d
 EXTENSION_DIR=$CONFIG_DIR/extensions
 PLUGINS_DIR=$CONFIG_DIR/plugins
+HANDLERS_DIR=$CONFIG_DIR/handlers
 PID_DIR=/var/run/sensu
 LOG_DIR=/var/log/sensu
 LOG_LEVEL=info
