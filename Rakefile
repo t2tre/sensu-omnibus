@@ -1,5 +1,7 @@
 require 'rake'
 
+STDOUT.sync = true
+
 begin
   require 'kitchen/rake_tasks'
   Kitchen::RakeTasks.new
