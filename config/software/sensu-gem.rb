@@ -150,7 +150,7 @@ build do
         :service_name => sensu_service,
         :service_shortname => sensu_service.gsub(/sensu[-_]/, "")
       },
-      mode: 0755
+      mode: Helpers::permissions_for_service_manager(service_manager)
     }
     erb(options)
     project.extra_package_file(destination)
