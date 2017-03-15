@@ -111,4 +111,13 @@ module Helpers
       raise "Could not determine filename for #{service} and #{service_manager}"
     end
   end
+
+  def self.permissions_for_service_manager(service_manager)
+    case service_manager
+    when :systemd
+      0644
+    else
+      0755
+    end
+  end
 end
