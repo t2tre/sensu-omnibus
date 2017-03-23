@@ -6,6 +6,7 @@ DEPENDENCIES
     ref: sensu
   omnibus_sensu
     path: site-cookbooks/omnibus_sensu
+  seven_zip (~> 2.0)
   yum-epel (~> 0.6)
 
 GRAPH
