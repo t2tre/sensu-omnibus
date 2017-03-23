@@ -20,12 +20,10 @@ license "OpenSSL"
 license_file "LICENSE"
 skip_transitive_dependency_licensing true
 
-fips_enabled = (project.overrides[:fips] && project.overrides[:fips][:enabled]) || false
-
 dependency "zlib"
 dependency "cacerts"
 dependency "makedepend" unless aix? || windows?
-dependency "openssl-fips" if fips_enabled
+dependency "openssl-fips" if fips_mode?
 
 default_version "1.0.2k"
 
@@ -62,6 +60,7 @@ build do
     env["CFLAGS"] = "-I#{install_dir}/embedded/include"
     env["CPPFLAGS"] = env["CFLAGS"]
     env["CXXFLAGS"] = env["CFLAGS"]
+
     if windows_arch_i386?
       env["LDFLAGS"] ="-L#{install_dir}/embedded/lib -m32 -fno-lto"
     else
@@ -79,9 +78,7 @@ build do
     "shared",
   ]
 
-  if fips_enabled
-    configure_args << "--with-fipsdir=#{install_dir}/embedded" << "fips"
-  end
+  configure_args += ["--with-fipsdir=#{install_dir}/embedded", "fips"] if fips_mode?
 
   if windows?
     configure_args << "zlib-dynamic"
@@ -123,17 +120,21 @@ build do
       "#{prefix} disable-gost"
     end
 
-  if aix?
+  patch_env = if aix?
+                # This enables omnibus to use 'makedepend'
+                # from fileset 'X11.adt.imake' (AIX install media)
+                env["PATH"] = "/usr/lpp/X11/bin:#{ENV["PATH"]}"
+                penv = env.dup
+                penv["PATH"] = "/opt/freeware/bin:#{env['PATH']}"
+                penv
+              else
+                env
+              end
 
-    # This enables omnibus to use 'makedepend'
-    # from fileset 'X11.adt.imake' (AIX install media)
-    env["PATH"] = "/usr/lpp/X11/bin:#{ENV["PATH"]}"
+  patch source: "openssl-1.0.1f-do-not-build-docs.patch", env: patch_env
 
-    patch_env = env.dup
-    patch_env["PATH"] = "/opt/freeware/bin:#{env['PATH']}"
-    patch source: "openssl-1.0.1f-do-not-build-docs.patch", env: patch_env
-  else
-    patch source: "openssl-1.0.1f-do-not-build-docs.patch", env: env
+  if version == "1.0.2k"
+    patch source: "openssl-1.0.2k-no-bang.patch", env: patch_env, plevel: 1
   end
 
   if windows?
