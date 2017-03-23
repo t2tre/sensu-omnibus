@@ -143,6 +143,7 @@ platforms:
     transport:
       name: winrm
       elevated: true
+    run_list: seven_zip::default
   - name: windows-2012-r2-i386
     driver:
       image_id: ami-1562d075
@@ -150,7 +151,7 @@ platforms:
     transport:
       name: winrm
       elevated: true
-
+    run_list: seven_zip::default
 suites:
   - name: default
     run_list:
