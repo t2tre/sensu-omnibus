@@ -38,6 +38,9 @@ if version && !source
     "2.4.5" => "5918319a439c33ac75fbbad7fd60749d",
     "2.4.8" => "dc77b51449dffe5b31776bff826bf559",
   }
+
+  known_tarballs["2.6.6"] = "7f969e32e9db8d602ee0b02c81a6ee7a" if solaris_10?
+
   known_tarballs.each do |version, md5|
     self.version version do
       source md5: md5, url: "http://production.cf.rubygems.org/rubygems/rubygems-#{version}.tgz"
