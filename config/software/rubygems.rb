@@ -42,7 +42,7 @@ if version && !source
   if solaris_10?
     known_tarballs["2.6.6"] = "7f969e32e9db8d602ee0b02c81a6ee7a"
     known_tarballs["2.6.10"] = "ab5a0028d2a0653691b29d7463bd0892"
-  }
+  end
 
   known_tarballs.each do |version, md5|
     self.version version do
