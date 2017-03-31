@@ -19,17 +19,10 @@ build do
 
   files_dir = "#{project.files_path}/#{name}"
 
-  gem_install_extras = ""
-
-  if solaris_10?
-    gem_install_extras << " --with-cflags=\"-fms-extensions\""
-  end
-
   gem "install sensu" \
       " --version '#{version}'" \
       " --bindir '#{install_dir}/embedded/bin'" \
-      " --no-ri --no-rdoc" \
-      " -- #{gem_install_extras}", env: env
+      " --no-ri --no-rdoc", env: env
 
   gem "install sensu-plugin" \
       " --version '1.4.5'" \
