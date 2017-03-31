@@ -139,6 +139,7 @@ platforms:
     run_list: apt::default
   - name: windows-2012-r2
     driver:
+      image_id: ami-6f64f00f
       instance_type: m3.xlarge
     transport:
       name: winrm
@@ -146,7 +147,7 @@ platforms:
     run_list: seven_zip::default
   - name: windows-2012-r2-i386
     driver:
-      image_id: ami-1562d075
+      image_id: ami-6f64f00f
       instance_type: m3.xlarge
     transport:
       name: winrm

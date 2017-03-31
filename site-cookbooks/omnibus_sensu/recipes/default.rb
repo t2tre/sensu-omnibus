@@ -136,6 +136,7 @@ omnibus_build "sensu" do
   build_user "root" unless windows?
   environment shared_env
   live_stream true
+  timeout 7200
 end
 
 pkg_suffix_map = {
