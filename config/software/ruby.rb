@@ -109,11 +109,14 @@ elsif aix?
 elsif solaris_10?
   if sparc?
     # Known issue with rubby where too much GCC optimization blows up miniruby on sparc
-    env["CFLAGS"] << " -std=c99 -O3 -g -pipe -mcpu=v9"
+    env["CFLAGS"] << " -std=c99 -O3 -g -pipe -mcpu=v9 -fms-extensions"
     env["LDFLAGS"] << " -mcpu=v9"
   else
-    env["CFLAGS"] << " -std=c99 -O3 -g -pipe"
+    env["CFLAGS"] << " -std=c99 -O3 -g -pipe -fms-extensions"
   end
+elsif solaris_11?
+  env["CFLAGS"] << " -std=c99"
+  env["CPPFLAGS"] << " -D_XOPEN_SOURCE=600 -D_XPG6"
 elsif windows?
   env["CPPFLAGS"] << " -DFD_SETSIZE=2048"
 else # including linux
