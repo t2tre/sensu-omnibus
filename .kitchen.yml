@@ -141,6 +141,11 @@ platforms:
     driver:
       image_id: ami-6f64f00f
       instance_type: m3.xlarge
+      block_device_mappings:
+        - device_name: /dev/sda1
+          ebs:
+            volume_size: 60
+            delete_on_termination: true
     transport:
       name: winrm
       elevated: true
@@ -149,6 +154,11 @@ platforms:
     driver:
       image_id: ami-6f64f00f
       instance_type: m3.xlarge
+      block_device_mappings:
+        - device_name: /dev/sda1
+          ebs:
+            volume_size: 60
+            delete_on_termination: true
     transport:
       name: winrm
       elevated: true

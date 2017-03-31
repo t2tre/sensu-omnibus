@@ -130,6 +130,28 @@ shared_env = {
   "BUILD_NUMBER" => node["omnibus_sensu"]["build_iteration"],
 }
 
+load_toolchain_cmd = case windows?
+                     when true
+                       "call #{::File.join(build_user_home, 'load-omnibus-toolchain.bat')}"
+                     when false
+                       ".  #{::File.join(build_user_home, 'load-omnibus-toolchain.sh')}"
+                     end
+
+execute "populate_omnibus_cache_s3" do
+  command(
+    <<-CODE.gsub(/^ {10}/, '')
+          #{load_toolchain_cmd}
+          bundle exec omnibus cache missing
+          bundle exec omnibus cache populate
+          bundle exec omnibus cache missing
+       CODE
+    )
+  cwd node["omnibus_sensu"]["project_dir"]
+  user node["omnibus"]["build_user"] unless windows?
+  environment shared_env
+  not_if { node["omnibus_sensu"]["publishers"]["s3"].any? {|k,v| v.nil? } }
+end
+
 omnibus_build "sensu" do
   project_dir node["omnibus_sensu"]["project_dir"]
   log_level :info
@@ -164,13 +186,6 @@ publish_environment = case windows?
                         'LOGNAME' => node["omnibus"]["build_user"]
                         })
                       end
-
-load_toolchain_cmd = case windows?
-                     when true
-                       "call #{::File.join(build_user_home, 'load-omnibus-toolchain.bat')}"
-                     when false
-                       ".  #{::File.join(build_user_home, 'load-omnibus-toolchain.sh')}"
-                     end
 
 case windows?
 when true
