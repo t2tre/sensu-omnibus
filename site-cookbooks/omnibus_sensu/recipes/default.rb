@@ -140,9 +140,9 @@ load_toolchain_cmd = case windows?
 execute "populate_omnibus_cache_s3" do
   command(
     <<-CODE.gsub(/^ {10}/, '')
-          #{load_toolchain_cmd}
-          bundle exec omnibus cache missing
-          bundle exec omnibus cache populate
+          #{load_toolchain_cmd} && \
+          bundle exec omnibus cache missing && \
+          bundle exec omnibus cache populate && \
           bundle exec omnibus cache missing
        CODE
     )
