@@ -23,7 +23,7 @@ build do
     # command_options = "/target:Clean;Build /p:Configuration=Release /p:PostBuildEvent="
     # command("MSBuild.exe src/winsw.sln #{command_options}", env: env)
     # copy("bin/Release/winsw.exe", "#{bin_dir}/winsw.exe")
-    copy("WinSW.NET4.exe", "#{bin_dir}/winsw.exe")
+    copy("WinSW.NET2.exe", "#{bin_dir}/winsw.exe")
   end
 end
 
