@@ -63,6 +63,7 @@ package :rpm do
   if Gem::Version.new(platform_version) >= Gem::Version.new(6)
     signing_passphrase gpg_passphrase
   end
+  runtime_dependency 'redhat-lsb'
 end
 
 
