@@ -57,15 +57,18 @@ gpg_passphrase = begin
 
 platform_version = ohai["platform_version"]
 
+case ohai['platform_family']
+when 'rhel'
+  runtime_dependency 'redhat-lsb'
+end
+
 package :rpm do
   category "Monitoring"
   vendor vendor
   if Gem::Version.new(platform_version) >= Gem::Version.new(6)
     signing_passphrase gpg_passphrase
   end
-  runtime_dependency 'redhat-lsb'
 end
-
 
 package :msi do
   upgrade_code "29B5AA66-46B3-4676-8D67-2F3FB31CC549"
