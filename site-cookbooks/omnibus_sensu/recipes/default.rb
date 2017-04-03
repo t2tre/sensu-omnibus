@@ -148,7 +148,7 @@ execute "populate_omnibus_cache_s3" do
        CODE
     )
   cwd node["omnibus_sensu"]["project_dir"]
-  user node["omnibus"]["build_user"] unless windows?
+  user "root" unless windows?
   environment shared_env
   not_if { node["omnibus_sensu"]["publishers"]["s3"].any? {|k,v| v.nil? } }
 end
