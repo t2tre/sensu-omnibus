@@ -47,7 +47,7 @@ transport:
 
 provisioner:
   name: chef_zero
-  require_chef_omnibus: 12.13.37
+  require_chef_omnibus: 12.19.36
   attributes:
     vagrant: true
     omnibus_sensu:
