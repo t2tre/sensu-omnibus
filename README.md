@@ -87,7 +87,7 @@ environment variables set to appropriate values:
 | `AWS_REGION`            | Region where AWS instances will be created                      |
 | `AWS_ACCESS_KEY_ID`     | Access key ID for AWS account                                   |
 | `AWS_SECRET_ACCESS_KEY` | Secret access key for AWS account                               |
-| `AWS_SSH_KEY_NAME`      | Name of SSH key pair (must exist in specified AWS region)       |
+| `AWS_SSH_KEY_ID`        | Name of SSH key pair (must exist in specified AWS region)       |
 | `AWS_SSH_KEY_PATH`      | Local path to SSH private key matching named SSH key            |
 | `SENSU_VERSION`         | Must correspond to a published Sensu gem available on RubyGems  |
 | `BUILD_NUMBER`          | Denotes the incremental build number used for package artifacts |
