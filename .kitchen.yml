@@ -50,6 +50,8 @@ provisioner:
   require_chef_omnibus: 12.13.37
   attributes:
     vagrant: true
+    omnibus:
+      toolchain_version: 1.1.64
     omnibus_sensu:
       publishers:
         <% if s3_enabled %>
