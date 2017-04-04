@@ -79,11 +79,11 @@ platforms:
     run_list: yum-epel::default
   - name: centos-5
     driver:
-      image_id: ami-eee0558e
+      image_id: ami-f4b62094
     run_list: yum-epel::default
   - name: centos-5-i386
     driver:
-      image_id: ami-54ec5934
+      image_id: ami-e68b1d86
       instance_type: m1.medium
     run_list: yum-epel::default
   - name: debian-8
