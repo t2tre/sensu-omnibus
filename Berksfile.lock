@@ -2,7 +2,7 @@ DEPENDENCIES
   apt (~> 2.8)
   omnibus
     git: https://github.com/sensu/omnibus-cookbook.git
-    revision: 3dbd8006dd66a61132260838486c67a628f4916c
+    revision: 97b39a37fedd1aa65415c51a2d2f4f8cbd13ddfc
     ref: sensu
   omnibus_sensu
     path: site-cookbooks/omnibus_sensu
