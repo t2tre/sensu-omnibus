@@ -165,3 +165,4 @@ suites:
         build_iteration: "<%= build_iteration %>"
         gpg_passphrase: "<%= ENV["GPG_PASSPHRASE"] %>"
         project_revision: "release/0.29"
+        windows_target_version: "<%= ENV["WINDOWS_TARGET_VERSION"] %>"

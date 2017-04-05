@@ -10,7 +10,15 @@ else
   dependency "rb-readline-gem"
 end
 dependency "eventmachine"
-dependency "winsw" if windows?
+
+if windows?
+  case ENV["WINDOWS_TARGET_VERSION"]
+  when "2003","2008","2008r2"
+    dependency "winsw-net2"
+  else
+    dependency "winsw-net4"
+  end
+end
 
 build do
   env = with_standard_compiler_flags(with_embedded_path)
