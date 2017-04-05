@@ -10,7 +10,15 @@ else
   dependency "rb-readline-gem"
 end
 dependency "eventmachine"
-dependency "winsw" if windows?
+
+if windows?
+  case Gem::Version.new(ohai["platform_version"]) > Gem::Version.new('6.2')
+  when
+    dependency "winsw-net4"
+  else
+    dependency "winsw-net2"
+  end
+end
 
 build do
   env = with_standard_compiler_flags(with_embedded_path)
