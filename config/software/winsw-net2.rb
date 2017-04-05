@@ -1,4 +1,4 @@
-name "winsw"
+name "winsw-net2"
 default_version "2.0.2"
 
 source url: "https://github.com/kohsuke/winsw/releases/download/winsw-v#{version}/WinSW.NET2.exe"
