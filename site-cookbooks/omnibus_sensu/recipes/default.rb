@@ -130,6 +130,12 @@ shared_env = {
   "BUILD_NUMBER" => node["omnibus_sensu"]["build_iteration"],
 }
 
+if windows?
+  shared_env.merge!(
+    "WINDOWS_TARGET_VERSION" => node["omnibus_sensu"]["windows_target_version"]
+  )
+end
+
 load_toolchain_cmd = case windows?
                      when true
                        "call #{::File.join(build_user_home, 'load-omnibus-toolchain.bat')}"
