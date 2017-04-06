@@ -88,7 +88,7 @@ ensure_dir() {
 set_sensu_paths() {
     if [ "x$EMBEDDED_RUBY" = "xtrue" ]; then
         PATH=$INSTALLER_DIR/embedded/bin:$PATH:$PLUGINS_DIR:$HANDLERS_DIR
-        GEM_PATH=$INSTALLER_DIR/embedded/lib/ruby/gems/2.3.0:$GEM_PATH
+        GEM_PATH=$INSTALLER_DIR/embedded/lib/ruby/gems/2.4.0:$GEM_PATH
         export PATH
         export GEM_PATH
     else
