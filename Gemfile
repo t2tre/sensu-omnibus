@@ -13,7 +13,7 @@ gem 'artifactory', '2.5.1'
 # by running `bundle install --without development` to speed up build times.
 group :development do
   # Use Berkshelf for resolving cookbook dependencies
-  gem 'berkshelf', '~> 4.2'
+  gem 'berkshelf', '~> 5.6'
 
   # Use Test Kitchen for converging the build environment
   gem 'test-kitchen',            '~> 1.4'

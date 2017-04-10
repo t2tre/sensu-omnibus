@@ -7,10 +7,13 @@
   <description>This service runs a Sensu client</description>
   <executable>C:\opt\sensu\embedded\bin\ruby</executable>
   <argument>C:\opt\sensu\embedded\bin\sensu-client</argument>
-  <argument>-l</argument>
-  <argument>C:\opt\sensu\sensu-client.log</argument>
   <argument>-c</argument>
   <argument>C:\opt\sensu\config.json</argument>
   <argument>-d</argument>
   <argument>C:\opt\sensu\conf.d</argument>
+  <logpath>C:\opt\sensu\</logpath>
+  <log mode="roll-by-size">
+    <sizeThreshold>102400</sizeThreshold>
+    <keepFiles>10</keepFiles>
+  </log>
 </service>

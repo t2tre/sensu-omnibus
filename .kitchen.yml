@@ -23,6 +23,7 @@ end
 driver:
   name: ec2
   instance_type: m3.medium
+  retryable_tries: 120
   <% if ENV['AWS_IAM_PROFILE_NAME'] %>
   iam_profile_name: <% ENV['AWS_IAM_PROFILE_NAME'] %>
   <% end %>
@@ -46,7 +47,7 @@ transport:
 
 provisioner:
   name: chef_zero
-  require_chef_omnibus: 12.13.37
+  require_chef_omnibus: 12.19.36
   attributes:
     vagrant: true
     omnibus_sensu:
@@ -78,11 +79,11 @@ platforms:
     run_list: yum-epel::default
   - name: centos-5
     driver:
-      image_id: ami-eee0558e
+      image_id: ami-f4b62094
     run_list: yum-epel::default
   - name: centos-5-i386
     driver:
-      image_id: ami-54ec5934
+      image_id: ami-e68b1d86
       instance_type: m1.medium
     run_list: yum-epel::default
   - name: debian-8
@@ -139,6 +140,7 @@ platforms:
     run_list: apt::default
   - name: windows-2012-r2
     driver:
+      image_id: ami-6f64f00f
       instance_type: m3.xlarge
     transport:
       name: winrm
@@ -146,7 +148,7 @@ platforms:
     run_list: seven_zip::default
   - name: windows-2012-r2-i386
     driver:
-      image_id: ami-1562d075
+      image_id: ami-6f64f00f
       instance_type: m3.xlarge
     transport:
       name: winrm
@@ -162,4 +164,4 @@ suites:
         build_version: "<%= build_version %>"
         build_iteration: "<%= build_iteration %>"
         gpg_passphrase: "<%= ENV["GPG_PASSPHRASE"] %>"
-        project_revision: "release/0.28"
+        windows_target_version: "<%= ENV["WINDOWS_TARGET_VERSION"] %>"

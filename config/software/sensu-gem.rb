@@ -10,7 +10,15 @@ else
   dependency "rb-readline-gem"
 end
 dependency "eventmachine"
-dependency "winsw" if windows?
+
+if windows?
+  case ENV["WINDOWS_TARGET_VERSION"]
+  when "2003","2008","2008r2"
+    dependency "winsw-net2"
+  else
+    dependency "winsw-net4"
+  end
+end
 
 build do
   env = with_standard_compiler_flags(with_embedded_path)
@@ -32,11 +40,11 @@ build do
       " -- #{gem_install_extras}", env: env
 
   gem "install sensu-plugin" \
-      " --version '1.2.0'" \
+      " --version '1.4.5'" \
       " --no-ri --no-rdoc", env: env
 
   gem "install sensu-plugin" \
-      " --version '1.4.4'" \
+      " --version '2.0.0'" \
       " --no-ri --no-rdoc", env: env
 
   share_dir = File.join(install_dir, "embedded", "share", "sensu")
@@ -109,12 +117,10 @@ build do
   end
 
   # misc files
-  copy("#{files_dir}/config.json.example", "#{etc_dir}/sensu/config.json.example")
   copy("#{files_dir}/default/sensu", "#{etc_dir}/default/sensu")
   copy("#{files_dir}/logrotate.d/sensu", "#{etc_dir}/logrotate.d/sensu")
 
   # add extra package files (files outside of /opt/sensu)
-  project.extra_package_file("#{etc_dir}/sensu/config.json.example")
   project.extra_package_file("#{etc_dir}/default/sensu")
   project.extra_package_file("#{etc_dir}/logrotate.d/sensu")
   project.extra_package_file("#{usr_bin_dir}/sensu-install")

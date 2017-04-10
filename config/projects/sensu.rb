@@ -40,8 +40,8 @@ build_version version
 build_iteration ENV["BUILD_NUMBER"]
 
 override "sensu-gem", version: version
-override "ruby", version: "2.3.0"
-override "rubygems", version: "2.6.6"
+override "ruby", version: "2.4.1"
+override "rubygems", version: "2.6.10"
 
 package :deb do
   section "Monitoring"
@@ -84,7 +84,6 @@ compress :dmg
 
 # TODO: config files are removed during actions such as dpkg --purge
 #if linux?
-#  config_file "/etc/sensu/config.json.example"
 #  config_file "/etc/sensu/conf.d/README.md"
 #  config_file "/etc/logrotate.d/sensu"
 #  config_file "/etc/default/sensu"
