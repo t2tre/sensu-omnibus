@@ -151,6 +151,7 @@ fi
 cd /opt/sensu
 
 exec="/opt/sensu/bin/sensu-service"
+daemon_exec="/opt/sensu/bin/sensu-<%= service_shortname %>"
 
 pidfile=$PID_DIR/$service_name.pid
 logfile=$LOG_DIR/$service_name.log
@@ -167,7 +168,7 @@ set_sensu_paths() {
 }
 
 pid_pgrep() {
-    pgrep -f -P 1 -u $USER " $exec "
+    pgrep -f -P 1 -u $USER " $daemon_exec "
 }
 
 wait_for_stop() {
