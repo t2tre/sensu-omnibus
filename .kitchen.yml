@@ -62,6 +62,13 @@ provisioner:
         <% end %>
 
 platforms:
+  - name: aix
+    driver:
+      name: ssh
+      username: root
+      hostname: aix
+      ssh_key: ~/.ssh/id_rsa
+      verbose: :debug
   - name: centos-7
     run_list: yum-epel::default
   - name: centos-7-i386

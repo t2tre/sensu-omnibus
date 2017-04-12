@@ -16,7 +16,10 @@ group :development do
   gem 'berkshelf', '~> 5.6'
 
   # Use Test Kitchen for converging the build environment
-  gem 'test-kitchen',            '~> 1.4'
+  gem 'test-kitchen', '= 1.15.0'
+  gem 'kitchen-ssh'
+  gem 'pry'
+  gem 'net-ssh'
   gem 'winrm'
   gem 'winrm-fs'
   gem 'winrm-elevated'
