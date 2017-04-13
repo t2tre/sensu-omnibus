@@ -89,6 +89,9 @@ compress :dmg
 #  config_file "/etc/default/sensu"
 #end
 
+# Make sure Windows gets a gem.bat
+dependency "shebang-cleanup" if windows?
+
 # Creates required build directories
 dependency "preparation"
 
