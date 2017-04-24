@@ -59,7 +59,8 @@ platform_version = ohai["platform_version"]
 
 case ohai['platform_family']
 when 'rhel'
-  runtime_dependency 'redhat-lsb'
+  runtime_dependency 'redhat-lsb-core'
+  runtime_dependency 'initscripts'
 end
 
 package :rpm do
