@@ -27,18 +27,18 @@ validate_config_cmd="<%= service_name %>_validate_config"
 
 <%= service_name %>_validate_config() {
   echo "Validating sensu-<%= service_shortname %> configuration"
-  su -m $sensu_client_user -c "${command} validate <%= service_shortname %>"
+  su -m $<%= service_name %>_user -c "${command} validate <%= service_shortname %>"
   if [ $? != 0 ]; then
     return 1
   fi
 }
 
 start_precmd() {
-  sensu_client_validate_config
+  <%= service_name %>_validate_config
 }
 
 restart_precmd() {
-  sensu_client_validate_config
+  <%= service_name %>_validate_config
 }
 
 load_rc_config $name
