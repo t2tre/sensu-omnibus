@@ -77,13 +77,6 @@ package :pkg do
 end
 compress :dmg
 
-# TODO: config files are removed during actions such as dpkg --purge
-#if linux?
-#  config_file "/etc/sensu/conf.d/README.md"
-#  config_file "/etc/logrotate.d/sensu"
-#  config_file "/etc/default/sensu"
-#end
-
 # Make sure Windows gets a gem.bat
 dependency "shebang-cleanup" if windows?
 
