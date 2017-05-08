@@ -122,12 +122,13 @@ build do
 
   # add config & extra package files (files outside of /opt/sensu)
   if linux?
+    # only deb and rpm packagers honor config_file directives
     project.config_file("#{etc_dir}/default/sensu")
     project.config_file("#{etc_dir}/logrotate.d/sensu")
-  else
-    project.extra_package_file("#{etc_dir}/default/sensu")
-    project.extra_package_file("#{etc_dir}/logrotate.d/sensu")
   end
+
+  project.extra_package_file("#{etc_dir}/default/sensu")
+  project.extra_package_file("#{etc_dir}/logrotate.d/sensu")
   project.extra_package_file("#{usr_bin_dir}/sensu-install")
 
   # sensu-service
