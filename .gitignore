@@ -10,3 +10,4 @@ files/**/cache/
 vendor/cookbooks
 *~
 .envrc
+site-cookbooks/omnibus_sensu/files/default/archive.zip

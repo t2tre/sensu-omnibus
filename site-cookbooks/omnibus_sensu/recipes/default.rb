@@ -104,12 +104,24 @@ end
 
 project_dir = windows? ? File.join("C:", node["omnibus_sensu"]["project_dir"]) : node["omnibus_sensu"]["project_dir"]
 
-git project_dir do
-  repository 'https://github.com/sensu/sensu-omnibus.git'
-  revision node["omnibus_sensu"]["project_revision"]
-  user node["omnibus"]["build_user"] unless windows?
-  group node["omnibus"]["build_user_group"] unless windows?
-  action :sync
+rev = node["omnibus_sensu"]["project_revision"]
+
+case rev
+when 'archive'
+  cookbook_file File.join(project_dir,'archive.zip') do
+    source 'archive.zip'
+    user node["omnibus"]["build_user"] unless windows?
+    group node["omnibus"]["build_user_group"] unless windows?
+    action :create
+  end
+else
+  git project_dir do
+    repository 'https://github.com/sensu/sensu-omnibus.git'
+    revision rev
+    user node["omnibus"]["build_user"] unless windows?
+    group node["omnibus"]["build_user_group"] unless windows?
+    action :sync
+  end
 end
 
 template ::File.join(node["omnibus_sensu"]["project_dir"], "omnibus.rb") do
