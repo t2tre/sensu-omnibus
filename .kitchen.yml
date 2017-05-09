@@ -161,7 +161,8 @@ suites:
     - omnibus_sensu::default
     attributes:
       omnibus_sensu:
+        project_revision: "<%= ENV['PROJECT_REVISION'] || 'master' %>"
         build_version: "<%= build_version %>"
         build_iteration: "<%= build_iteration %>"
-        gpg_passphrase: "<%= ENV["GPG_PASSPHRASE"] %>"
-        windows_target_version: "<%= ENV["WINDOWS_TARGET_VERSION"] %>"
+        gpg_passphrase: "<%= ENV['GPG_PASSPHRASE'] %>"
+        windows_target_version: "<%= ENV['WINDOWS_TARGET_VERSION'] %>"
