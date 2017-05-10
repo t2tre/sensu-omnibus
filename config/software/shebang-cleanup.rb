@@ -21,7 +21,7 @@
 
 name "shebang-cleanup"
 
-default_version "0.0.2"
+default_version "0.0.3"
 
 license :project_license
 skip_transitive_dependency_licensing true
@@ -61,7 +61,7 @@ build do
       end
 
       # Fix gem.bat
-      File.open("#{install_dir}/embedded/bin/gem.bat", "w") do |f|
+      File.open("#{install_dir}/embedded/bin/gem.bat", "w+") do |f|
         f.puts <<-EOF
 @ECHO OFF
 "%~dp0ruby.exe" "%~dpn0" %*
