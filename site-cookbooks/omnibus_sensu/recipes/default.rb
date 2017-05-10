@@ -108,11 +108,36 @@ rev = node["omnibus_sensu"]["project_revision"]
 
 case rev
 when 'archive'
-  cookbook_file File.join(project_dir,'archive.zip') do
+  directory project_dir do 
+    user node["omnibus"]["build_user"] unless windows?
+    group node["omnibus"]["build_user_group"] unless windows?
+    recursive true
+    action :create
+  end
+
+  archive_file = File.join(project_dir,'archive.zip')
+  cookbook_file archive_file do
     source 'archive.zip'
     user node["omnibus"]["build_user"] unless windows?
     group node["omnibus"]["build_user_group"] unless windows?
     action :create
+  end
+
+  chef_gem 'rubyzip'
+
+  ruby_block 'expand_archive' do 
+    block do
+      require 'zip'
+
+      Zip.on_exists_proc = true
+
+      Zip::File.open(archive_file) do |arcv|
+        arcv.each do |entry|
+          fpath = File.join(project_dir, entry.name)
+          entry.extract(fpath)
+        end
+      end
+    end
   end
 else
   git project_dir do
