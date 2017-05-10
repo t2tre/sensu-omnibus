@@ -77,9 +77,6 @@ package :pkg do
 end
 compress :dmg
 
-# Make sure Windows gets a gem.bat
-dependency "shebang-cleanup" if windows?
-
 # Creates required build directories
 dependency "preparation"
 
@@ -88,6 +85,9 @@ dependency "package-scripts" unless windows?
 
 # sensu dependencies/components
 dependency "sensu-gem"
+
+# Make sure Windows gets a gem.bat
+dependency "shebang-cleanup" if windows?
 
 # Version manifest file
 dependency "version-manifest"

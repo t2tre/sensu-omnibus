@@ -21,7 +21,7 @@
 
 name "shebang-cleanup"
 
-default_version "0.0.2"
+default_version "0.0.3"
 
 license :project_license
 skip_transitive_dependency_licensing true
@@ -29,69 +29,12 @@ skip_transitive_dependency_licensing true
 build do
   if windows?
     block "Update batch files to point at embedded ruby" do
-      load_gemspec = if Gem::VERSION >= "2"
-                       require "rubygems/package"
-                       Gem::Package.method(:new)
-                     else
-                       require "rubygems/format"
-                       Gem::Format.method(:from_file_by_path)
-                     end
-      Dir["#{install_dir.tr('\\', '/')}/embedded/lib/ruby/gems/**/cache/*.gem"].each do |gem_file|
-        load_gemspec.call(gem_file).spec.executables.each do |bin|
-          if File.exist?("#{install_dir}/bin/#{bin}")
-            File.open("#{install_dir}/bin/#{bin}.bat", "w") do |f|
-              f.puts <<-EOF
-@ECHO OFF
-"%~dp0..\\embedded\\bin\\ruby.exe" "%~dpn0" %*
-              EOF
-            end
-          end
-          if File.exist?("#{install_dir}/embedded/bin/#{bin}")
-            File.open("#{install_dir}/embedded/bin/#{bin}.bat", "w") do |f|
-              f.puts <<-EOF
-@ECHO OFF
-"%~dp0ruby.exe" "%~dpn0" %*
-              EOF
-            end
-          end
-          # Rubocop is silly and yells at you for structuring the
-          # last if statement the way it is.
-          next
-        end
-      end
-
       # Fix gem.bat
-      File.open("#{install_dir}/embedded/bin/gem.bat", "w") do |f|
+      File.open("#{install_dir}/embedded/bin/gem.bat", "w+") do |f|
         f.puts <<-EOF
 @ECHO OFF
 "%~dp0ruby.exe" "%~dpn0" %*
         EOF
-      end
-    end
-  else
-    block "Update shebangs to point to embedded Ruby" do
-      # Fix the shebang for binaries with shebangs that have:
-      # #!/usr/bin/env ruby
-      Dir.glob("#{install_dir}/embedded/bin/*") do |bin_file|
-        update_shebang = false
-        rest_of_the_file = ""
-
-        File.open(bin_file) do |f|
-          shebang = f.readline
-          if shebang.start_with?("#!") &&
-              shebang.include?("ruby") &&
-              !shebang.include?("#{install_dir}/embedded/bin/ruby")
-            rest_of_the_file = f.read
-            update_shebang = true
-          end
-        end
-
-        if update_shebang
-          File.open(bin_file, "w+") do |f|
-            f.puts("#!#{install_dir}/embedded/bin/ruby")
-            f.puts(rest_of_the_file)
-          end
-        end
       end
     end
   end

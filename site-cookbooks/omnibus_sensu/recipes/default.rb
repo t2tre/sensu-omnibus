@@ -104,12 +104,49 @@ end
 
 project_dir = windows? ? File.join("C:", node["omnibus_sensu"]["project_dir"]) : node["omnibus_sensu"]["project_dir"]
 
-git project_dir do
-  repository 'https://github.com/sensu/sensu-omnibus.git'
-  revision node["omnibus_sensu"]["project_revision"]
-  user node["omnibus"]["build_user"] unless windows?
-  group node["omnibus"]["build_user_group"] unless windows?
-  action :sync
+rev = node["omnibus_sensu"]["project_revision"]
+
+case rev
+when 'archive'
+  directory project_dir do 
+    user node["omnibus"]["build_user"] unless windows?
+    group node["omnibus"]["build_user_group"] unless windows?
+    recursive true
+    action :create
+  end
+
+  archive_file = File.join(project_dir,'archive.zip')
+  cookbook_file archive_file do
+    source 'archive.zip'
+    user node["omnibus"]["build_user"] unless windows?
+    group node["omnibus"]["build_user_group"] unless windows?
+    action :create
+  end
+
+  chef_gem 'rubyzip'
+
+  ruby_block 'expand_archive' do 
+    block do
+      require 'zip'
+
+      Zip.on_exists_proc = true
+
+      Zip::File.open(archive_file) do |arcv|
+        arcv.each do |entry|
+          fpath = File.join(project_dir, entry.name)
+          entry.extract(fpath)
+        end
+      end
+    end
+  end
+else
+  git project_dir do
+    repository 'https://github.com/sensu/sensu-omnibus.git'
+    revision rev
+    user node["omnibus"]["build_user"] unless windows?
+    group node["omnibus"]["build_user_group"] unless windows?
+    action :sync
+  end
 end
 
 template ::File.join(node["omnibus_sensu"]["project_dir"], "omnibus.rb") do
