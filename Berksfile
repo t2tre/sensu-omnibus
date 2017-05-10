@@ -6,7 +6,7 @@ cookbook 'omnibus', git: 'https://github.com/sensu/omnibus-cookbook.git', ref: '
 
 # Explicitly pull in seven_zip for windows. For some reason this is
 # suddenly not being installed by build-essential cookbook
-cookbook 'seven_zip', '~> 2.0'
+cookbook 'seven_zip', git: 'https://github.com/windowschefcookbooks/seven_zip', ref: 'v2.0.2'
 
 # Uncomment to use the latest version of the Omnibus cookbook from GitHub
 # cookbook 'omnibus', github: 'opscode-cookbooks/omnibus'
