@@ -14,6 +14,11 @@
 
 set -e
 
+using_systemd()
+{
+  [ -e "/proc/1/comm" ] && grep -q "^systemd$" /proc/1/comm
+}
+
 PROGNAME=`basename $0`
 
 <% if platform_family == "freebsd" -%>
@@ -170,6 +175,11 @@ create_system_services()
 if [ $1 -eq 1 ]; then
   create_sensu_user_group
 fi
+set +e
+if using_systemd; then
+  systemctl daemon-reload
+fi
+set -e
 chown_sensu_dirs
 <% when "debian" -%>
 case "$1" in
