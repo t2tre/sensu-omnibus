@@ -49,17 +49,41 @@ if is_freebsd; then
   ETC_DIR=/usr/local/etc
 fi
 
-INSTALLER_DIR=/opt/sensu
-CONFIG_DIR=$ETC_DIR/sensu
-CONFIG_FILE=$CONFIG_DIR/config.json
-CONFD_DIR=$CONFIG_DIR/conf.d
-EXTENSION_DIR=$CONFIG_DIR/extensions
-PLUGINS_DIR=$CONFIG_DIR/plugins
-HANDLERS_DIR=$CONFIG_DIR/handlers
-PID_DIR=/var/run/sensu
-LOG_DIR=/var/log/sensu
-LOG_LEVEL=info
-USER=sensu
+# Only set configuration env vars if they don't exist
+if [ -z "${INSTALLER_DIR}" ]; then
+   INSTALLER_DIR=/opt/sensu
+fi
+if [ -z "${CONFIG_DIR}" ]; then
+   CONFIG_DIR=$ETC_DIR/sensu
+fi
+if [ -z "${CONFIG_FILE}" ]; then
+   CONFIG_FILE=$CONFIG_DIR/config.json
+fi
+if [ -z "${CONFD_DIR}" ]; then
+   CONFD_DIR=$CONFIG_DIR/conf.d
+fi
+if [ -z "${EXTENSION_DIR}" ]; then
+   EXTENSION_DIR=$CONFIG_DIR/extensions
+fi
+if [ -z "${PLUGINS_DIR}" ]; then
+   PLUGINS_DIR=$CONFIG_DIR/plugins
+fi
+if [ -z "${HANDLERS_DIR}" ]; then
+   HANDLERS_DIR=$CONFIG_DIR/handlers
+fi
+if [ -z "${PID_DIR}" ]; then
+   PID_DIR=/var/run/sensu
+fi
+if [ -z "${LOG_DIR}" ]; then
+   LOG_DIR=/var/log/sensu
+fi
+if [ -z "${LOG_LEVEL}" ]; then
+   LOG_LEVEL=info
+fi
+if [ -z "${USER}" ]; then
+   USER=sensu
+fi
+
 
 if [ -f $ETC_DIR/default/sensu ]; then
     . $ETC_DIR/default/sensu
